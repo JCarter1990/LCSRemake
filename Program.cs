@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LCSRemake
 {
@@ -56,10 +57,15 @@ namespace LCSRemake
 	public class Faction
 	{
 		int funds;
+		string slogan;
+		List<Squad> squads;
+		Squad activesquad;
 
-		public Faction(int funds)
+		public Faction()
 		{
-			this.funds = funds;
+			this.funds = 0;
+			this.slogan = "We need a slogan!";
+			this.squads = new List<Squad>();
 		}
 
 		public int AccessFunds
@@ -73,13 +79,79 @@ namespace LCSRemake
 				this.funds = value;
 			}
 		}
+
+		public List<Squad> GetSquads()
+		{
+			return this.squads;
+		}
+
+		public void AddSquad(Squad squad)
+		{
+			this.squads.Add(squad);
+		}
+
+		public void RemoveSquad(Squad squad)
+		{
+			this.squads.Remove(squad);
+		}
+
+		public void SetActive(Squad squad)
+		{
+			this.activesquad = squad;
+		}
 	};
+
+	public class Squad
+    {
+		static int idcounter = 0;
+		int id;
+		string name;
+		List<Entity> entities;
+
+		public Squad()
+        {
+			this.id = idcounter;
+			idcounter++;
+			this.entities = new List<Entity>();
+        }
+
+		public void AddMember(Entity entity)
+        {
+			this.entities.Add(entity);
+        }
+
+		public void RemoveMember(Entity entity)
+        {
+			this.entities.Remove(entity);
+        }
+
+		public int GetID()
+        {
+			return this.id;
+        }
+
+		public string Name
+		{
+			get
+			{
+				return this.name;
+			}
+
+			set
+			{
+				this.name = value;
+			}
+		}
+	}
 
 	public class Entity
 	{
+		int squadid;
+
 		string firstname;
 		string lastname;
 		string fullname;
+		string handle;
 
 		int strength;
 		int intelligence;
@@ -107,13 +179,20 @@ namespace LCSRemake
 		int driving;
 		int writing;
 
+		int juice;
+
 		Weapon weapon;
 		Armour armour;
 
+		Location mybase;
+		Location location;
+
 		public Entity()
 		{
-			GiveName();
+			this.firstname = Program.RandomFirstName();
+			this.lastname = Program.RandomLastName();
 			this.fullname = firstname + " " + lastname;
+			this.handle = firstname;
 
 			this.strength = 4;
 			this.intelligence = 1;
@@ -140,218 +219,46 @@ namespace LCSRemake
 			this.garmentmaking = 0;
 			this.driving = 0;
 			this.writing = 0;
+
+			this.juice = 0;
 		}
 
-		void GiveName()
+		public int SquadID
 		{
-			Random random = new Random();
-
-			switch (random.Next(0, 100))
+			get
 			{
-				case 0: this.firstname = "Ryan"; break;
-				case 1: this.firstname = "Sergio"; break;
-				case 2: this.firstname = "Laura"; break;
-				case 3: this.firstname = "Anne"; break;
-				case 4: this.firstname = "Bill"; break;
-				case 5: this.firstname = "James"; break;
-				case 6: this.firstname = "Marty"; break;
-				case 7: this.firstname = "Jessica"; break;
-				case 8: this.firstname = "Lisa"; break;
-				case 9: this.firstname = "Bonita"; break;
-				case 10: this.firstname = "Angel"; break;
-				case 11: this.firstname = "Pat"; break;
-				case 12: this.firstname = "Toshiro"; break;
-				case 13: this.firstname = "Yan-ping"; break;
-				case 14: this.firstname = "Tetsuo"; break;
-				case 15: this.firstname = "Akira"; break;
-				case 16: this.firstname = "Jimmy"; break;
-				case 17: this.firstname = "Carlos"; break;
-				case 18: this.firstname = "William"; break;
-				case 19: this.firstname = "Billy Bob"; break;
-				case 20: this.firstname = "Carol"; break;
-				case 21: this.firstname = "Jenny"; break;
-				case 22: this.firstname = "Jennifer"; break;
-				case 23: this.firstname = "Manuela"; break;
-				case 24: this.firstname = "Douglas"; break;
-				case 25: this.firstname = "Kristin"; break;
-				case 26: this.firstname = "Steven"; break;
-				case 27: this.firstname = "Bonnie"; break;
-				case 28: this.firstname = "Howard"; break;
-				case 29: this.firstname = "Donald"; break;
-				case 30: this.firstname = "Barry"; break;
-				case 31: this.firstname = "Thomas"; break;
-				case 32: this.firstname = "Joann"; break;
-				case 33: this.firstname = "Derek"; break;
-				case 34: this.firstname = "Gary"; break;
-				case 35: this.firstname = "Archie"; break;
-				case 36: this.firstname = "Mayumi"; break;
-				case 37: this.firstname = "Felicia"; break;
-				case 38: this.firstname = "Sherry"; break;
-				case 39: this.firstname = "Judy"; break;
-				case 40: this.firstname = "Elinor"; break;
-				case 41: this.firstname = "Ned"; break;
-				case 42: this.firstname = "Randy"; break;
-				case 43: this.firstname = "Taylor"; break;
-				case 44: this.firstname = "Kim"; break;
-				case 45: this.firstname = "Ruthanne"; break;
-				case 46: this.firstname = "Roger"; break;
-				case 47: this.firstname = "Raymond"; break;
-				case 48: this.firstname = "Harvey"; break;
-				case 49: this.firstname = "Robert"; break;
-				case 50: this.firstname = "Michael"; break;
-				case 51: this.firstname = "Aaron"; break;
-				case 52: this.firstname = "George"; break;
-				case 53: this.firstname = "Noel"; break;
-				case 54: this.firstname = "Adrienne"; break;
-				case 55: this.firstname = "Lex"; break;
-				case 56: this.firstname = "Linda"; break;
-				case 57: this.firstname = "Chuck"; break;
-				case 58: this.firstname = "Charlie"; break;
-				case 59: this.firstname = "Charles"; break;
-				case 60: this.firstname = "Malcolm"; break;
-				case 61: this.firstname = "Martin"; break;
-				case 62: this.firstname = "Sean"; break;
-				case 63: this.firstname = "Raven"; break;
-				case 64: this.firstname = "Wolf"; break;
-				case 65: this.firstname = "Miguel"; break;
-				case 66: this.firstname = "Pablo"; break;
-				case 67: this.firstname = "Paul"; break;
-				case 68: this.firstname = "Jesus"; break;
-				case 69: this.firstname = "Ali"; break;
-				case 70: this.firstname = "Ingrid"; break;
-				case 71: this.firstname = "Kweisi"; break;
-				case 72: this.firstname = "Susanna"; break;
-				case 73: this.firstname = "Sharon"; break;
-				case 74: this.firstname = "Marion"; break;
-				case 75: this.firstname = "Kathy"; break;
-				case 76: this.firstname = "Bruce"; break;
-				case 77: this.firstname = "Dick"; break;
-				case 78: this.firstname = "Phillip"; break;
-				case 79: this.firstname = "Kirk"; break;
-				case 80: this.firstname = "Kurt"; break;
-				case 81: this.firstname = "John"; break;
-				case 82: this.firstname = "Alexander"; break;
-				case 83: this.firstname = "David"; break;
-				case 84: this.firstname = "Beau"; break;
-				case 85: this.firstname = "Elsie"; break;
-				case 86: this.firstname = "Satya"; break;
-				case 87: this.firstname = "Mumtaz"; break;
-				case 88: this.firstname = "Diwakar"; break;
-				case 89: this.firstname = "Dale"; break;
-				case 90: this.firstname = "Woody"; break;
-				case 91: this.firstname = "Ariel"; break;
-				case 92: this.firstname = "Hans"; break;
-				case 93: this.firstname = "Barbara"; break;
-				case 94: this.firstname = "Jun"; break;
-				case 95: this.firstname = "Rosemary"; break;
-				case 96: this.firstname = "Chin-Yuan"; break;
-				case 97: this.firstname = "Aiko"; break;
-				case 98: this.firstname = "Vithara"; break;
-				case 99: this.firstname = "Deepak"; break;
+				return this.squadid;
 			}
 
-			switch (random.Next(0, 100))
+			set
 			{
-				case 0: this.lastname = "King"; break;
-				case 1: this.lastname = "Lewis"; break;
-				case 2: this.lastname = "Black"; break;
-				case 3: this.lastname = "White"; break;
-				case 4: this.lastname = "Ames"; break;
-				case 5: this.lastname = "Warner"; break;
-				case 6: this.lastname = "Simpson"; break;
-				case 7: this.lastname = "Parker"; break;
-				case 8: this.lastname = "Suave"; break;
-				case 9: this.lastname = "Mifune"; break;
-				case 10: this.lastname = "Gu"; break;
-				case 11: this.lastname = "Bolger"; break;
-				case 12: this.lastname = "Ross"; break;
-				case 13: this.lastname = "Ramirez"; break;
-				case 14: this.lastname = "Kurosawa"; break;
-				case 15: this.lastname = "Johnson"; break;
-				case 16: this.lastname = "Buchanan"; break;
-				case 17: this.lastname = "Adamson"; break;
-				case 18: this.lastname = "Hendrix"; break;
-				case 19: this.lastname = "Rojo"; break;
-				case 20: this.lastname = "Villa"; break;
-				case 21: this.lastname = "Fields"; break;
-				case 22: this.lastname = "Templeton"; break;
-				case 23: this.lastname = "Ivanson"; break;
-				case 24: this.lastname = "Blitzer"; break;
-				case 25: this.lastname = "Muhammed"; break;
-				case 26: this.lastname = "Stone"; break;
-				case 27: this.lastname = "Cho"; break;
-				case 28: this.lastname = "Childress"; break;
-				case 29: this.lastname = "Africa"; break;
-				case 30: this.lastname = "Balgos"; break;
-				case 31: this.lastname = "Baird"; break;
-				case 32: this.lastname = "Bailey"; break;
-				case 33: this.lastname = "Diaz"; break;
-				case 34: this.lastname = "Decker"; break;
-				case 35: this.lastname = "Ericson"; break;
-				case 36: this.lastname = "Loeb"; break;
-				case 37: this.lastname = "Meffert"; break;
-				case 38: this.lastname = "McLeod"; break;
-				case 39: this.lastname = "Tucker"; break;
-				case 40: this.lastname = "Takayoshi"; break;
-				case 41: this.lastname = "Tanner"; break;
-				case 42: this.lastname = "Lipman"; break;
-				case 43: this.lastname = "Little"; break;
-				case 44: this.lastname = "Logsdon"; break;
-				case 45: this.lastname = "Krasow"; break;
-				case 46: this.lastname = "Krieger"; break;
-				case 47: this.lastname = "Dahmer"; break;
-				case 48: this.lastname = "Gacy"; break;
-				case 49: this.lastname = "Krishna"; break;
-				case 50: this.lastname = "la Russa"; break;
-				case 51: this.lastname = "Savedra"; break;
-				case 52: this.lastname = "Scardino"; break;
-				case 53: this.lastname = "Keitel"; break;
-				case 54: this.lastname = "Wallace"; break;
-				case 55: this.lastname = "Buckman"; break;
-				case 56: this.lastname = "Fulsom"; break;
-				case 57: this.lastname = "Smith"; break;
-				case 58: this.lastname = "Venus"; break;
-				case 59: this.lastname = "Straley"; break;
-				case 60: this.lastname = "Purcell"; break;
-				case 61: this.lastname = "al Fadil"; break;
-				case 62: this.lastname = "Storm"; break;
-				case 63: this.lastname = "Patterson"; break;
-				case 64: this.lastname = "Pelton"; break;
-				case 65: this.lastname = "Ng"; break;
-				case 66: this.lastname = "Filler"; break;
-				case 67: this.lastname = "Buttman"; break;
-				case 68: this.lastname = "Fingleton"; break;
-				case 69: this.lastname = "Fenoglio"; break;
-				case 70: this.lastname = "de la Cruz"; break;
-				case 71: this.lastname = "Delgado"; break;
-				case 72: this.lastname = "Hatcher"; break;
-				case 73: this.lastname = "Jameson"; break;
-				case 74: this.lastname = "Franklin"; break;
-				case 75: this.lastname = "Washington"; break;
-				case 76: this.lastname = "Jefferson"; break;
-				case 77: this.lastname = "Strossen"; break;
-				case 78: this.lastname = "Hannemann"; break;
-				case 79: this.lastname = "Hammond"; break;
-				case 80: this.lastname = "Logan"; break;
-				case 81: this.lastname = "Hutchison"; break;
-				case 82: this.lastname = "Jimison"; break;
-				case 83: this.lastname = "Sawyer"; break;
-				case 84: this.lastname = "Santiago"; break;
-				case 85: this.lastname = "Rudkin"; break;
-				case 86: this.lastname = "Bump"; break;
-				case 87: this.lastname = "Simon"; break;
-				case 88: this.lastname = "Davis"; break;
-				case 89: this.lastname = "Reagan"; break;
-				case 90: this.lastname = "Bush"; break;
-				case 91: this.lastname = "Bradshaw"; break;
-				case 92: this.lastname = "Yamaguchi"; break;
-				case 93: this.lastname = "Roy"; break;
-				case 94: this.lastname = "Colt"; break;
-				case 95: this.lastname = "Rothstein"; break;
-				case 96: this.lastname = "Spears"; break;
-				case 97: this.lastname = "Lopez"; break;
-				case 98: this.lastname = "Aguilera"; break;
-				case 99: this.lastname = "Carey"; break;
+				this.squadid = value;
+			}
+		}
+
+		public string FirstName
+		{
+			get
+			{
+				return this.firstname;
+			}
+
+			set
+            {
+				this.firstname = value;
+            }
+		}
+
+		public string LastName
+		{
+			get
+			{
+				return this.lastname;
+			}
+
+			set
+			{
+				this.lastname = value;
 			}
 		}
 
@@ -361,9 +268,18 @@ namespace LCSRemake
 			{
 				return this.fullname;
 			}
+		}
+
+		public string Handle
+		{
+			get
+			{
+				return this.handle;
+			}
+
 			set
 			{
-				this.fullname = value;
+				this.handle = value;
 			}
 		}
 
@@ -498,13 +414,554 @@ namespace LCSRemake
 				this.armour = value;
 			}
 		}
+
+		public Location AccessBase
+		{
+			get
+			{
+				return this.mybase;
+			}
+			set
+			{
+				this.mybase = value;
+			}
+		}
+
+		public Location AccessLocation
+		{
+			get
+			{
+				return this.location;
+			}
+			set
+			{
+				this.location = value;
+			}
+		}
+	}
+
+	class City
+    {
+		string cityname;
+		List<Location> locations;
+
+		public City()
+        {
+			RandomCityName();
+			this.locations = new List<Location>();
+        }
+
+		public string GetName()
+        {
+			return this.cityname;
+        }
+
+		public List<Location> GetLocations()
+        {
+			return this.locations;
+        }
+
+		public void AddLocation(Location location)
+		{
+			this.locations.Add(location);
+		}
+
+		public void RemoveLocation(Location location)
+		{
+			this.locations.Remove(location);
+		}
+
+		public void RandomCityName()
+		{
+			Random random = new Random();
+
+			switch (random.Next(20))
+			{
+				case 0: this.cityname = "San Francisco, CA"; break;
+				case 1: this.cityname = "Boston, MA"; break;
+				case 2: this.cityname = "Los Angeles, CA"; break;
+				case 3: this.cityname = "Detroit, MC"; break;
+				case 4: this.cityname = "Cleveland, OH"; break;
+				case 5: this.cityname = "Cincinnati, OH"; break;
+				case 6: this.cityname = "New York, NY"; break;
+				case 7: this.cityname = "Chicago, IL"; break;
+				case 8: this.cityname = "Trenton, NJ"; break;
+				case 9: this.cityname = "Denver, CO"; break;
+				case 10: this.cityname = "Phoenix, AZ"; break;
+				case 11: this.cityname = "Little Rock, AR"; break;
+				case 12: this.cityname = "Houston, TX"; break;
+				case 13: this.cityname = "Dallas, TX"; break;
+				case 14: this.cityname = "Hartford, CT"; break;
+				case 15: this.cityname = "Miami, FL"; break;
+				case 16: this.cityname = "Baton Rouge, LA"; break;
+				case 17: this.cityname = "Seattle, WA"; break;
+				case 18: this.cityname = "Salt Lake City, UT"; break;
+				case 19: this.cityname = "Philadelphia, PA"; break;
+			}
+		}
+	}
+
+	public class Location
+    {
+		string name;
+		string shortname;
+		string conservativename;
+		string conservativeshortname;
+		string type;
+		int parent;
+		bool needcar;
+		bool renting;
+
+		public Location(string name, string shortname, string conservativename, string conservativeshortname, string type, int parent, bool needcar, bool renting)
+        {
+			this.name = name;
+			this.shortname = shortname;
+			this.conservativename = conservativename;
+			this.conservativeshortname = conservativeshortname;
+			this.type = type;
+			this.parent = parent;
+			this.needcar = needcar;
+			this.renting = renting;
+        }
+
+		public string GetLocationType()
+        {
+			return this.type;
+        }
+
+		public void RandomPrisonName()
+		{
+			Random random = new Random();
+
+			string firstpart = null;
+			string secondpart = null;
+
+			switch (random.Next(5))
+			{
+				case 0: firstpart = "Happy"; break;
+				case 1: firstpart = "Cheery"; break;
+				case 2: firstpart = "Quiet"; break;
+				case 3: firstpart = "Green"; break;
+				case 4: firstpart = "Nectar"; break;
+			}
+
+			switch (random.Next(5))
+			{
+				case 0: secondpart = "Valley"; break;
+				case 1: secondpart = "Meadow"; break;
+				case 2: secondpart = "Hills"; break;
+				case 3: secondpart = "Glade"; break;
+				case 4: secondpart = "Forest"; break;
+			}
+
+			this.conservativename = firstpart + " " + secondpart + " Re-education Camp";
+		}
+
+		public void RandomWarehouseName()
+		{
+			Random random = new Random();
+
+			switch (random.Next(5))
+			{
+				case 0:
+					this.name = "Abandoned Meat Plant";
+					this.shortname = "Meat Plant";
+					break;
+				case 1:
+					this.name = "Abandoned Warehouse";
+					this.shortname = "Warehouse";
+					break;
+				case 2:
+					this.name = "Abandoned Paper Mill";
+					this.shortname = "Paper Mill";
+					break;
+				case 3:
+					this.name = "Abandoned Cement Factory";
+					this.shortname = "Cement";
+					break;
+				case 4:
+					this.name = "Abandoned Fertilizer Plant";
+					this.shortname = "Fertilizer";
+					break;
+			}
+		}
+
+		public void RandomPolluterName()
+		{
+			Random random = new Random();
+
+			switch (random.Next(5))
+			{
+				case 0:
+					this.name = "Aluminum Factory";
+					this.shortname = "Alum Fact";
+					break;
+				case 1:
+					this.name = "Plastic Factory";
+					this.shortname = "Plast Fact";
+					break;
+				case 2:
+					this.name = "Oil Refinery";
+					this.shortname = "Refinery";
+					break;
+				case 3:
+					this.name = "Auto Plant";
+					this.shortname = "Auto Plant";
+					break;
+				case 4:
+					this.name = "Chemical Factory";
+					this.shortname = "Chem Fact";
+					break;
+			}
+		}
+
+		public void RandomAptName()
+        {
+			string aptname = Program.RandomLastName();
+
+			this.name = aptname + " Apartments";
+			this.shortname = aptname + " Apts";
+        }
+
+		public void RandomVeganName()
+		{
+			Random random = new Random();
+
+			string firstpart = null;
+			string secondpart = null;
+
+			switch (random.Next(5))
+			{
+				case 0: firstpart = "Asparagus"; break;
+				case 1: firstpart = "Tofu"; break;
+				case 2: firstpart = "Broccoli"; break;
+				case 3: firstpart = "Radish"; break;
+				case 4: firstpart = "Eggplant"; break;
+			}
+
+			switch (random.Next(5))
+			{
+				case 0: secondpart = "Forest"; break;
+				case 1: secondpart = "Rainbow"; break;
+				case 2: secondpart = "Garden"; break;
+				case 3: secondpart = "Farm"; break;
+				case 4: secondpart = "Meadow"; break;
+			}
+
+			this.name = firstpart + " " + secondpart + " Vegan Co-op";
+		}
+
+		public void RandomJuiceName()
+		{
+			Random random = new Random();
+
+			string firstpart = null;
+			string secondpart = null;
+
+			switch (random.Next(5))
+			{
+				case 0: firstpart = "Natural"; break;
+				case 1: firstpart = "Harmonious"; break;
+				case 2: firstpart = "Restful"; break;
+				case 3: firstpart = "Healthy"; break;
+				case 4: firstpart = "New You"; break;
+			}
+
+			switch (random.Next(5))
+			{
+				case 0: secondpart = "Diet"; break;
+				case 1: secondpart = "Methods"; break;
+				case 2: secondpart = "Plan"; break;
+				case 3: secondpart = "Orange"; break;
+				case 4: secondpart = "Carrot"; break;
+			}
+
+			this.name = firstpart + " " + secondpart + " Juice Bar";
+		}
+
+		public void RandomInternetName()
+		{
+			Random random = new Random();
+
+			string firstpart = null;
+			string secondpart = null;
+
+			switch (random.Next(5))
+			{
+				case 0: firstpart = "Electric"; break;
+				case 1: firstpart = "Wired"; break;
+				case 2: firstpart = "Nano"; break;
+				case 3: firstpart = "Micro"; break;
+				case 4: firstpart = "Techno"; break;
+			}
+
+			switch (random.Next(5))
+			{
+				case 0: secondpart = "Panda"; break;
+				case 1: secondpart = "Troll"; break;
+				case 2: secondpart = "Latte"; break;
+				case 3: secondpart = "Unicorn"; break;
+				case 4: secondpart = "Pixie"; break;
+			}
+
+			this.name = firstpart + " " + secondpart + " Internet Cafe";
+		}
+
+		public void RandomLatteName()
+		{
+			Random random = new Random();
+
+			string firstpart = null;
+			string secondpart = null;
+
+			switch (random.Next(5))
+			{
+				case 0: firstpart = "Frothy"; break;
+				case 1: firstpart = "Milky"; break;
+				case 2: firstpart = "Caffine"; break;
+				case 3: firstpart = "Morning"; break;
+				case 4: firstpart = "Evening"; break;
+			}
+
+			switch (random.Next(5))
+			{
+				case 0: secondpart = "Mug"; break;
+				case 1: secondpart = "Cup"; break;
+				case 2: secondpart = "Jolt"; break;
+				case 3: secondpart = "Wonder"; break;
+				case 4: secondpart = "Express"; break;
+			}
+
+			this.name = firstpart + " " + secondpart + " Latte Stand";
+		}
 	}
 
 	class Program
 	{
+		static Random random = new Random();
+
+		static public string RandomFirstName()
+		{
+			switch (random.Next(0, 100))
+			{
+				case 0: return "Ryan";
+				case 1: return "Sergio";
+				case 2: return "Laura";
+				case 3: return "Anne";
+				case 4: return "Bill";
+				case 5: return "James";
+				case 6: return "Marty";
+				case 7: return "Jessica";
+				case 8: return "Lisa";
+				case 9: return "Bonita";
+				case 10: return "Angel";
+				case 11: return "Pat";
+				case 12: return "Toshiro";
+				case 13: return "Yan-ping";
+				case 14: return "Tetsuo";
+				case 15: return "Akira";
+				case 16: return "Jimmy";
+				case 17: return "Carlos";
+				case 18: return "William";
+				case 19: return "Billy Bob";
+				case 20: return "Carol";
+				case 21: return "Jenny";
+				case 22: return "Jennifer";
+				case 23: return "Manuela";
+				case 24: return "Douglas";
+				case 25: return "Kristin";
+				case 26: return "Steven";
+				case 27: return "Bonnie";
+				case 28: return "Howard";
+				case 29: return "Donald";
+				case 30: return "Barry";
+				case 31: return "Thomas";
+				case 32: return "Joann";
+				case 33: return "Derek";
+				case 34: return "Gary";
+				case 35: return "Archie";
+				case 36: return "Mayumi";
+				case 37: return "Felicia";
+				case 38: return "Sherry";
+				case 39: return "Judy";
+				case 40: return "Elinor";
+				case 41: return "Ned";
+				case 42: return "Randy";
+				case 43: return "Taylor";
+				case 44: return "Kim";
+				case 45: return "Ruthanne";
+				case 46: return "Roger";
+				case 47: return "Raymond";
+				case 48: return "Harvey";
+				case 49: return "Robert";
+				case 50: return "Michael";
+				case 51: return "Aaron";
+				case 52: return "George";
+				case 53: return "Noel";
+				case 54: return "Adrienne";
+				case 55: return "Lex";
+				case 56: return "Linda";
+				case 57: return "Chuck";
+				case 58: return "Charlie";
+				case 59: return "Charles";
+				case 60: return "Malcolm";
+				case 61: return "Martin";
+				case 62: return "Sean";
+				case 63: return "Raven";
+				case 64: return "Wolf";
+				case 65: return "Miguel";
+				case 66: return "Pablo";
+				case 67: return "Paul";
+				case 68: return "Jesus";
+				case 69: return "Ali";
+				case 70: return "Ingrid";
+				case 71: return "Kweisi";
+				case 72: return "Susanna";
+				case 73: return "Sharon";
+				case 74: return "Marion";
+				case 75: return "Kathy";
+				case 76: return "Bruce";
+				case 77: return "Dick";
+				case 78: return "Phillip";
+				case 79: return "Kirk";
+				case 80: return "Kurt";
+				case 81: return "John";
+				case 82: return "Alexander";
+				case 83: return "David";
+				case 84: return "Beau";
+				case 85: return "Elsie";
+				case 86: return "Satya";
+				case 87: return "Mumtaz";
+				case 88: return "Diwakar";
+				case 89: return "Dale";
+				case 90: return "Woody";
+				case 91: return "Ariel";
+				case 92: return "Hans";
+				case 93: return "Barbara";
+				case 94: return "Jun";
+				case 95: return "Rosemary";
+				case 96: return "Chin-Yuan";
+				case 97: return "Aiko";
+				case 98: return "Vithara";
+				case 99: return "Deepak";
+			}
+			return null;
+		}
+
+		static public string RandomLastName()
+        {
+			switch (random.Next(0, 100))
+			{
+				case 0: return "King";
+				case 1: return "Lewis";
+				case 2: return "Black";
+				case 3: return "White";
+				case 4: return "Ames";
+				case 5: return "Warner";
+				case 6: return "Simpson";
+				case 7: return "Parker";
+				case 8: return "Suave";
+				case 9: return "Mifune";
+				case 10: return "Gu";
+				case 11: return "Bolger";
+				case 12: return "Ross";
+				case 13: return "Ramirez";
+				case 14: return "Kurosawa";
+				case 15: return "Johnson";
+				case 16: return "Buchanan";
+				case 17: return "Adamson";
+				case 18: return "Hendrix";
+				case 19: return "Rojo";
+				case 20: return "Villa";
+				case 21: return "Fields";
+				case 22: return "Templeton";
+				case 23: return "Ivanson";
+				case 24: return "Blitzer";
+				case 25: return "Muhammed";
+				case 26: return "Stone";
+				case 27: return "Cho";
+				case 28: return "Childress";
+				case 29: return "Africa";
+				case 30: return "Balgos";
+				case 31: return "Baird";
+				case 32: return "Bailey";
+				case 33: return "Diaz";
+				case 34: return "Decker";
+				case 35: return "Ericson";
+				case 36: return "Loeb";
+				case 37: return "Meffert";
+				case 38: return "McLeod";
+				case 39: return "Tucker";
+				case 40: return "Takayoshi";
+				case 41: return "Tanner";
+				case 42: return "Lipman";
+				case 43: return "Little";
+				case 44: return "Logsdon";
+				case 45: return "Krasow";
+				case 46: return "Krieger";
+				case 47: return "Dahmer";
+				case 48: return "Gacy";
+				case 49: return "Krishna";
+				case 50: return "la Russa";
+				case 51: return "Savedra";
+				case 52: return "Scardino";
+				case 53: return "Keitel";
+				case 54: return "Wallace";
+				case 55: return "Buckman";
+				case 56: return "Fulsom";
+				case 57: return "Smith";
+				case 58: return "Venus";
+				case 59: return "Straley";
+				case 60: return "Purcell";
+				case 61: return "al Fadil";
+				case 62: return "Storm";
+				case 63: return "Patterson";
+				case 64: return "Pelton";
+				case 65: return "Ng";
+				case 66: return "Filler";
+				case 67: return "Buttman";
+				case 68: return "Fingleton";
+				case 69: return "Fenoglio";
+				case 70: return "de la Cruz";
+				case 71: return "Delgado";
+				case 72: return "Hatcher";
+				case 73: return "Jameson";
+				case 74: return "Franklin";
+				case 75: return "Washington";
+				case 76: return "Jefferson";
+				case 77: return "Strossen";
+				case 78: return "Hannemann";
+				case 79: return "Hammond";
+				case 80: return "Logan";
+				case 81: return "Hutchison";
+				case 82: return "Jimison";
+				case 83: return "Sawyer";
+				case 84: return "Santiago";
+				case 85: return "Rudkin";
+				case 86: return "Bump";
+				case 87: return "Simon";
+				case 88: return "Davis";
+				case 89: return "Reagan";
+				case 90: return "Bush";
+				case 91: return "Bradshaw";
+				case 92: return "Yamaguchi";
+				case 93: return "Roy";
+				case 94: return "Colt";
+				case 95: return "Rothstein";
+				case 96: return "Spears";
+				case 97: return "Lopez";
+				case 98: return "Aguilera";
+				case 99: return "Carey";
+			}
+			return null;
+        }
+
 		static void CharacterCreation()
 		{
-			Faction liberals = new Faction(0);
+			City maincity = new City();
+			Location newlocation;
+			Faction liberals = new Faction();
+			Squad newsquad = new Squad();
 			Entity newcharacter = new Entity();
 
 			for (int q = 0; q < 10; q++)
@@ -589,29 +1046,35 @@ namespace LCSRemake
 						Console.SetCursorPosition(4, 8); Console.WriteLine("B - a violent criminal.  Nothing can change that.");
 						Console.SetCursorPosition(4, 10); Console.WriteLine("C - volunteering for prominent liberals, but I know there's a better way.");
 
-						//Console.SetCursorPosition(4, 14); Console.WriteLine("I live in " + lcityname + ", and it's about to experience real change.");
+						Console.SetCursorPosition(4, 14); Console.WriteLine("I live in " + maincity.GetName() + ", and it's about to experience real change.");
 						break;
 				}
 
-				char input = Console.ReadKey(true).KeyChar;
+				char keyinput;
+
+				do
+				{
+					keyinput = Console.ReadKey(true).KeyChar;
+				} 
+				while (keyinput != 'a' && keyinput != 'b' && keyinput != 'c');
 
 				switch (q)
 				{
 					case 0:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("charisma", 2);
 							newcharacter.AttributeInc("heart", 1);
 							newcharacter.SkillInc("persuasion", 2);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.AttributeInc("agility", 1);
 							newcharacter.AttributeInc("health", 1);
 							newcharacter.SkillInc("pistol", 2);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 3);
 							newcharacter.SkillInc("computers", 2);
@@ -619,18 +1082,18 @@ namespace LCSRemake
 						break;
 
 					case 1:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("charisma", 1);
 							newcharacter.SkillInc("persuasion", 2);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("health", 1);
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.SkillInc("handtohand", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 1);
 							newcharacter.SkillInc("writing", 1);
@@ -639,18 +1102,18 @@ namespace LCSRemake
 						break;
 
 					case 2:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("charisma", 1);
 							newcharacter.SkillInc("persuasion", 2);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.AttributeInc("agility", 1);
 							newcharacter.SkillInc("handtohand", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 1);
 							newcharacter.SkillInc("writing", 1);
@@ -659,19 +1122,19 @@ namespace LCSRemake
 						break;
 
 					case 3:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("intelligence", 1);
 							newcharacter.SkillInc("writing", 1);
 							newcharacter.SkillInc("law", 1);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.AttributeInc("agility", 1);
 							newcharacter.SkillInc("club", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 2);
 							newcharacter.SkillInc("computers", 1);
@@ -679,36 +1142,36 @@ namespace LCSRemake
 						break;
 
 					case 4:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("charisma", 1);
 							newcharacter.SkillInc("security", 1);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.SkillInc("knife", 1);
 							newcharacter.SkillInc("club", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 2);
 						}
 						break;
 
 					case 5:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("intelligence", 1);
 							newcharacter.SkillInc("driving", 1);
 							newcharacter.SkillInc("security", 1);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("agility", 1);
 							newcharacter.SkillInc("rifle", 1);
 							newcharacter.SkillInc("assaultrifle", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.SkillInc("disguise", 2);
 							newcharacter.SkillInc("garmentmaking", 1);
@@ -716,18 +1179,18 @@ namespace LCSRemake
 						break;
 
 					case 6:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.SkillInc("driving", 1);
 							newcharacter.SkillInc("security", 2);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.SkillInc("rifle", 1);
 							newcharacter.SkillInc("assaultrifle", 1);
 							newcharacter.SkillInc("pistol", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.AttributeInc("agility", 2);
@@ -735,19 +1198,19 @@ namespace LCSRemake
 						break;
 
 					case 7:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("intelligence", 1);
 							newcharacter.SkillInc("security", 1);
 							newcharacter.SkillInc("disguise", 1);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("strength", 1);
 							newcharacter.AttributeInc("health", 1);
 							newcharacter.SkillInc("handtohand", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("heart", 1);
 							newcharacter.SkillInc("law", 1);
@@ -756,22 +1219,22 @@ namespace LCSRemake
 						break;
 
 					case 8:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AccessArmour = new Armour("securityuniform", 1, 0);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AccessWeapon = new Weapon("semirifleak47", new Clip("assault", 9), 30, true);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							liberals.AccessFunds = 1000;
 						}
 						break;
 
 					case 9:
-						if (input == 'a')
+						if (keyinput == 'a')
 						{
 							newcharacter.AttributeInc("intelligence", 2);
 							newcharacter.AttributeInc("agility", 2);
@@ -780,7 +1243,7 @@ namespace LCSRemake
 							newcharacter.SkillInc("security", 2);
 							newcharacter.SkillInc("driving", 1);
 						}
-						if (input == 'b')
+						if (keyinput == 'b')
 						{
 							newcharacter.AttributeInc("agility", 2);
 							newcharacter.AttributeInc("strength", 1);
@@ -791,7 +1254,7 @@ namespace LCSRemake
 							newcharacter.SkillInc("knife", 1);
 							newcharacter.SkillInc("club", 1);
 						}
-						if (input == 'c')
+						if (keyinput == 'c')
 						{
 							newcharacter.AttributeInc("intelligence", 2);
 							newcharacter.AttributeInc("heart", 2);
@@ -803,6 +1266,189 @@ namespace LCSRemake
 						break;
 				}
 			}
+
+			Console.Clear();
+			Console.SetCursorPosition(4, 2);
+			Console.Write("What is your name to the People?");
+			Console.SetCursorPosition(4, 3);
+
+			string nameinput = Console.ReadLine();
+
+			if (nameinput == null)
+            {
+				newcharacter.Handle = newcharacter.FullName;
+            }
+            else
+            {
+				newcharacter.Handle = nameinput;
+			}
+
+			newlocation = new Location("Downtown", "Downtown", null, null, "downtown", -1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The University District", "U-District", null, null, "unidistrict", -1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The Industrial District", "I-District", null, null, "inddistrict", -1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("On the Outskirts of the City", "Outskirts", null, null, "outskirts", -1, true, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Police Station", "Police Station", null, null, "policestation", 0, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Court House", "Court House", "Halls of Ultimate Judgement", "Judge Hall", "courthouse", 0, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(RandomLastName() + " Prison", "Prison", null, "Re-ed Camp", "prison", 3, true, false);
+			newlocation.RandomPrisonName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Nuclear Power Plant", "NPower Plant", null, null, "nuclear", 3, true, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Intelligence HQ", "Int. HQ", "Ministry of Love", "Min. Love", "intelligencehq", 3, true, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Corporate HQ", "Corp. HQ", null, null, "corporatehq", 3, true, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("CEO Residence", "CEO House", "CEO Castle", "CEO Castle", "corporatehouse", 3, true, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Homeless Shelter", "Shelter", null, null, "shelter", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
+			newlocation.RandomWarehouseName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
+			newlocation.RandomWarehouseName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
+			newlocation.RandomWarehouseName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
+			newlocation.RandomPolluterName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
+			newlocation.RandomPolluterName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
+			newlocation.RandomPolluterName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("Cable News Station", "News Station", null, null, "cablenews", 0, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("AM Radio Station", "Radio Station", null, null, "amradio", 0, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "upscaleapt", 0, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "upscaleapt", 0, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "apt", 1, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "apt", 1, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "tenement", 2, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, null, null, null, "tenement", 2, false, false);
+			newlocation.RandomAptName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The University Hospital", "U Hospital", null, null, "hospitaluni", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The Free CLINIC", "CLINIC", null, null, "hospitalclinic", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " Genetics", "Genetics Lab", null, null, "labgenetic", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " Cosmetics", "Cosmetics Lab", null, null, "labcosmetics", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " Cash & Loans", "Pawnshop", null, null, "pawnshop", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + "'s Department Store", "Dept. Store", null, null, "deptstore", 0, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The Oubliette", "Oubliette", null, null, "halloween", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", null, null, "sweatshop", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", null, null, "sweatshop", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, "Vegan Co-op", null, null, "vegancoop", 1, false, false);
+			newlocation.RandomVeganName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, "Juice Bar", null, null, "juicebar", 1, false, false);
+			newlocation.RandomJuiceName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, "Net Cafe", null, null, "internetcafe", 1, false, false);
+			newlocation.RandomInternetName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location("The " + Program.RandomLastName() + " Gentlemen's Club", "Cigar Bar", null, null, "cigarbar", 1, false, false);
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, "Latte Stand", null, null, "lattestand", 0, false, false);
+			newlocation.RandomLatteName();
+			maincity.AddLocation(newlocation);
+
+			newlocation = new Location(null, "Latte Stand", null, null, "lattestand", 0, false, false);
+			newlocation.RandomLatteName();
+			maincity.AddLocation(newlocation);
+
+			newsquad.AddMember(newcharacter);
+			newcharacter.SquadID = newsquad.GetID();
+			newsquad.Name = "The Liberal Crime Squad";
+
+			for (int i = 0; i < maincity.GetLocations().Count; i++)
+			{
+				if (maincity.GetLocations()[i].GetLocationType() == "shelter")
+				{
+					newcharacter.AccessBase = maincity.GetLocations()[i];
+					newcharacter.AccessLocation = maincity.GetLocations()[i];
+					break;
+				}
+			}
+
+			liberals.AddSquad(newsquad);
+			liberals.SetActive(newsquad);
 		}
 
 		static void Border()

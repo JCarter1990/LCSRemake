@@ -3,743 +3,342 @@ using System.Collections.Generic;
 
 namespace LCSRemake
 {
-	public class Clip
-	{
-		string type;
-		int holds;
-
-		public Clip(string type, int holds)
-		{
-			this.type = type;
-			this.holds = holds;
-		}
-	}
-
-	public class Weapon
-	{
-		string type;
-		Clip clip;
-		int ammo;
-		bool ranged;
-
-		public Weapon(string type, Clip clip, int ammo, bool ranged)
-		{
-			this.type = type;
-			this.clip = clip;
-			this.ammo = ammo;
-			this.ranged = ranged;
-		}
-	};
-
-	public class Armour
-	{
-		string type;
-		string subtype;
-		int quality;
-		int flag;
-
-		public Armour(string type, string subtype, int quality, int flag)
-		{
-			this.type = type;
-			this.subtype = subtype;
-			this.quality = quality;
-			this.flag = flag;
-		}
-
-		public Armour(string type, int quality, int flag)
-		{
-			this.type = type;
-			this.quality = quality;
-			this.flag = flag;
-		}
-	};
-
-	public class Faction
-	{
-		int funds;
-		string slogan;
-		List<Squad> squads;
-		Squad activesquad;
-
-		public Faction()
-		{
-			this.funds = 0;
-			this.slogan = "We need a slogan!";
-			this.squads = new List<Squad>();
-		}
-
-		public int AccessFunds
-		{
-			get
-			{
-				return this.funds;
-			}
-			set
-			{
-				this.funds = value;
-			}
-		}
-
-		public List<Squad> GetSquads()
-		{
-			return this.squads;
-		}
-
-		public void AddSquad(Squad squad)
-		{
-			this.squads.Add(squad);
-		}
-
-		public void RemoveSquad(Squad squad)
-		{
-			this.squads.Remove(squad);
-		}
-
-		public void SetActive(Squad squad)
-		{
-			this.activesquad = squad;
-		}
-	};
-
-	public class Squad
-    {
-		static int idcounter = 0;
-		int id;
-		string name;
-		List<Entity> entities;
-
-		public Squad()
-        {
-			this.id = idcounter;
-			idcounter++;
-			this.entities = new List<Entity>();
-        }
-
-		public void AddMember(Entity entity)
-        {
-			this.entities.Add(entity);
-        }
-
-		public void RemoveMember(Entity entity)
-        {
-			this.entities.Remove(entity);
-        }
-
-		public int GetID()
-        {
-			return this.id;
-        }
-
-		public string Name
-		{
-			get
-			{
-				return this.name;
-			}
-
-			set
-			{
-				this.name = value;
-			}
-		}
-	}
-
-	public class Entity
-	{
-		int squadid;
-
-		string firstname;
-		string lastname;
-		string fullname;
-		string handle;
-
-		int strength;
-		int intelligence;
-		int wisdom;
-		int agility;
-		int health;
-		int charisma;
-		int heart;
-
-		int handtohand;
-		int knife;
-		int club;
-		int sword;
-		int axe;
-		int spear;
-		int pistol;
-		int rifle;
-		int assaultrifle;
-		int persuasion;
-		int law;
-		int security;
-		int disguise;
-		int computers;
-		int garmentmaking;
-		int driving;
-		int writing;
-
-		int juice;
-
-		Weapon weapon;
-		Armour armour;
-
-		Location mybase;
-		Location location;
-
-		public Entity()
-		{
-			this.firstname = Program.RandomFirstName();
-			this.lastname = Program.RandomLastName();
-			this.fullname = firstname + " " + lastname;
-			this.handle = firstname;
-
-			this.strength = 4;
-			this.intelligence = 1;
-			this.wisdom = 1;
-			this.agility = 4;
-			this.health = 4;
-			this.charisma = 0;
-			this.heart = 5;
-
-			this.handtohand = 0;
-			this.knife = 0;
-			this.club = 0;
-			this.sword = 0;
-			this.axe = 0;
-			this.spear = 0;
-			this.pistol = 0;
-			this.rifle = 0;
-			this.assaultrifle = 0;
-			this.persuasion = 0;
-			this.law = 0;
-			this.security = 0;
-			this.disguise = 0;
-			this.computers = 0;
-			this.garmentmaking = 0;
-			this.driving = 0;
-			this.writing = 0;
-
-			this.juice = 0;
-		}
-
-		public int SquadID
-		{
-			get
-			{
-				return this.squadid;
-			}
-
-			set
-			{
-				this.squadid = value;
-			}
-		}
-
-		public string FirstName
-		{
-			get
-			{
-				return this.firstname;
-			}
-
-			set
-            {
-				this.firstname = value;
-            }
-		}
-
-		public string LastName
-		{
-			get
-			{
-				return this.lastname;
-			}
-
-			set
-			{
-				this.lastname = value;
-			}
-		}
-
-		public string FullName
-		{
-			get
-			{
-				return this.fullname;
-			}
-		}
-
-		public string Handle
-		{
-			get
-			{
-				return this.handle;
-			}
-
-			set
-			{
-				this.handle = value;
-			}
-		}
-
-		public void AttributeInc(string att, int incby)
-		{
-			switch (att)
-			{
-				case "strength":
-					this.strength += incby;
-					break;
-
-				case "intelligence":
-					this.intelligence += incby;
-					break;
-
-				case "wisdom":
-					this.wisdom += incby;
-					break;
-
-				case "agility":
-					this.agility += incby;
-					break;
-
-				case "health":
-					this.health += incby;
-					break;
-
-				case "charisma":
-					this.charisma += incby;
-					break;
-
-				case "heart":
-					this.heart += incby;
-					break;
-			}
-		}
-
-		public void SkillInc(string skill, int incby)
-		{
-			switch (skill)
-			{
-				case "handtohand":
-					this.handtohand += incby;
-					break;
-
-				case "knife":
-					this.knife += incby;
-					break;
-
-				case "club":
-					this.club += incby;
-					break;
-
-				case "sword":
-					this.sword += incby;
-					break;
-
-				case "axe":
-					this.axe += incby;
-					break;
-
-				case "spear":
-					this.spear += incby;
-					break;
-
-				case "pistol":
-					this.pistol += incby;
-					break;
-
-				case "rifle":
-					this.rifle += incby;
-					break;
-
-				case "assaultrifle":
-					this.assaultrifle += incby;
-					break;
-
-				case "persuasion":
-					this.persuasion += incby;
-					break;
-
-				case "law":
-					this.law += incby;
-					break;
-
-				case "security":
-					this.security += incby;
-					break;
-
-				case "disguise":
-					this.disguise += incby;
-					break;
-
-				case "computers":
-					this.computers += incby;
-					break;
-
-				case "garmentmaking":
-					this.garmentmaking += incby;
-					break;
-
-				case "driving":
-					this.driving += incby;
-					break;
-
-				case "writing":
-					this.writing += incby;
-					break;
-			}
-		}
-
-		public Weapon AccessWeapon
-		{
-			get
-			{
-				return this.weapon;
-			}
-			set
-			{
-				this.weapon = value;
-			}
-		}
-
-		public Armour AccessArmour
-		{
-			get
-			{
-				return this.armour;
-			}
-			set
-			{
-				this.armour = value;
-			}
-		}
-
-		public Location AccessBase
-		{
-			get
-			{
-				return this.mybase;
-			}
-			set
-			{
-				this.mybase = value;
-			}
-		}
-
-		public Location AccessLocation
-		{
-			get
-			{
-				return this.location;
-			}
-			set
-			{
-				this.location = value;
-			}
-		}
-	}
-
 	class City
-    {
-		string cityname;
-		List<Location> locations;
+	{
+		public string Cityname { get; }
+		public List<Location> Locations { get; }
 
 		public City()
-        {
-			RandomCityName();
-			this.locations = new List<Location>();
-        }
-
-		public string GetName()
-        {
-			return this.cityname;
-        }
-
-		public List<Location> GetLocations()
-        {
-			return this.locations;
-        }
-
-		public void AddLocation(Location location)
 		{
-			this.locations.Add(location);
+			this.Cityname = RandomCityName();
+			this.Locations = new List<Location>();
 		}
 
-		public void RemoveLocation(Location location)
-		{
-			this.locations.Remove(location);
-		}
-
-		public void RandomCityName()
+		public string RandomCityName()
 		{
 			Random random = new Random();
 
 			switch (random.Next(20))
 			{
-				case 0: this.cityname = "San Francisco, CA"; break;
-				case 1: this.cityname = "Boston, MA"; break;
-				case 2: this.cityname = "Los Angeles, CA"; break;
-				case 3: this.cityname = "Detroit, MC"; break;
-				case 4: this.cityname = "Cleveland, OH"; break;
-				case 5: this.cityname = "Cincinnati, OH"; break;
-				case 6: this.cityname = "New York, NY"; break;
-				case 7: this.cityname = "Chicago, IL"; break;
-				case 8: this.cityname = "Trenton, NJ"; break;
-				case 9: this.cityname = "Denver, CO"; break;
-				case 10: this.cityname = "Phoenix, AZ"; break;
-				case 11: this.cityname = "Little Rock, AR"; break;
-				case 12: this.cityname = "Houston, TX"; break;
-				case 13: this.cityname = "Dallas, TX"; break;
-				case 14: this.cityname = "Hartford, CT"; break;
-				case 15: this.cityname = "Miami, FL"; break;
-				case 16: this.cityname = "Baton Rouge, LA"; break;
-				case 17: this.cityname = "Seattle, WA"; break;
-				case 18: this.cityname = "Salt Lake City, UT"; break;
-				case 19: this.cityname = "Philadelphia, PA"; break;
+				case 0: return "San Francisco, CA";
+				case 1: return "Boston, MA";
+				case 2: return "Los Angeles, CA";
+				case 3: return "Detroit, MC";
+				case 4: return "Cleveland, OH";
+				case 5: return "Cincinnati, OH";
+				case 6: return "New York, NY";
+				case 7: return "Chicago, IL";
+				case 8: return "Trenton, NJ";
+				case 9: return "Denver, CO";
+				case 10: return "Phoenix, AZ";
+				case 11: return "Little Rock, AR";
+				case 12: return "Houston, TX";
+				case 13: return "Dallas, TX";
+				case 14: return "Hartford, CT";
+				case 15: return "Miami, FL";
+				case 16: return "Baton Rouge, LA";
+				case 17: return "Seattle, WA";
+				case 18: return "Salt Lake City, UT";
+				case 19: return "Philadelphia, PA";
 			}
+			return null;
 		}
 	}
 
 	public class Location
+	{
+		public string Name { get; set; }
+		public string Shortname { get; set; }
+		public string Type { get; set; }
+		public bool Needs_car { get; set; }
+		public Faction Owner { get; set; }
+
+		public Location(string name, string shortname, string type, bool needcar, Faction owner)
+		{
+			this.Name = name;
+			this.Shortname = shortname;
+			this.Type = type;
+			this.Needs_car = needcar;
+			this.Owner = owner;
+		}
+
+		public string RandomName(List<string> list)
+		{
+			Random random = new Random();
+			string name = list[random.Next(0, list.Count)];
+			return name;
+		}
+
+		public string RandomName(List<string> firstlist, List<string> secondlist)
+        {
+			Random random = new Random();
+			string name = firstlist[random.Next(0, firstlist.Count)] + " " + secondlist[random.Next(0, secondlist.Count)];
+			return name;
+		}
+	}
+
+	public class Faction
+	{
+		public int Funds { get; set; }
+		public string Slogan { get; set; }
+		public List<Squad> Squads { get; }
+		public Squad Activesquad { get; set; }
+		public bool Disbanding { get; set; }
+		public List<Entity> Pool { get; }
+
+		public Faction()
+		{
+			this.Funds = 0;
+			this.Slogan = "We need a slogan!";
+			this.Squads = new List<Squad>();
+			this.Pool = new List<Entity>();
+			this.Disbanding = false;
+		}
+	};
+
+	public class Squad
+	{
+		static int idcounter = 0;
+		public int ID { get; }
+		public string Name { get; set; }
+		public List<Entity> Entities { get; }
+		public Location Location { get; set; }
+
+		public Squad()
+		{
+			this.ID = idcounter;
+			idcounter++;
+			this.Entities = new List<Entity>();
+		}
+	}
+
+	public class Entity
+	{
+		public int ID { get; set; }
+		static int idcounter = 0;
+
+		public string Firstname { get; set; }
+		public string Lastname { get; set; }
+		public string Fullname { get; set; }
+		public string Handle { get; set; }
+
+		public int Strength { get; set; }
+		public int Intelligence { get; set; }
+		public int Wisdom { get; set; }
+		public int Agility { get; set; }
+		public int Health { get; set; }
+		public int Charisma { get; set; }
+		public int Heart { get; set; }
+
+		public int Handtohand { get; set; }
+		public int Knife { get; set; }
+		public int Club { get; set; }
+		public int Sword { get; set; }
+		public int Axe { get; set; }
+		public int Spear { get; set; }
+		public int Pistol { get; set; }
+		public int Rifle { get; set; }
+		public int Assaultrifle { get; set; }
+		public int Persuasion { get; set; }
+		public int Law { get; set; }
+		public int Security { get; set; }
+		public int Disguise { get; set; }
+		public int Computers { get; set; }
+		public int Garmentmaking { get; set; }
+		public int Driving { get; set; }
+		public int Writing { get; set; }
+
+		public int Juice { get; set; }
+
+		public Weapon Weapon { get; set; }
+		public Armour Armour { get; set; }
+		public Location Mybase { get; set; }
+		public Location Location { get; set; }
+		public Location Worklocation { get; set; }
+		public Entity Prisoner { get; set; }
+
+		public Entity()
+		{
+			this.ID = idcounter;
+			idcounter++;
+
+			this.Firstname = Program.RandomFirstName();
+			this.Lastname = Program.RandomLastName();
+			this.Fullname = Firstname + " " + Lastname;
+
+			this.Strength = 4;
+			this.Intelligence = 1;
+			this.Wisdom = 1;
+			this.Agility = 4;
+			this.Health = 4;
+			this.Charisma = 0;
+			this.Heart = 5;
+
+			this.Handtohand = 0;
+			this.Knife = 0;
+			this.Club = 0;
+			this.Sword = 0;
+			this.Axe = 0;
+			this.Spear = 0;
+			this.Pistol = 0;
+			this.Rifle = 0;
+			this.Assaultrifle = 0;
+			this.Persuasion = 0;
+			this.Law = 0;
+			this.Security = 0;
+			this.Disguise = 0;
+			this.Computers = 0;
+			this.Garmentmaking = 0;
+			this.Driving = 0;
+			this.Writing = 0;
+
+			this.Juice = 0;
+		}
+	}
+
+	public class Weapon
+	{
+		public string Type { get; }
+		public string Cliptype { get; }
+		public Clip Ammo { get; set; }
+		public bool Ranged { get; }
+
+		public Weapon(string type, string cliptype, Clip ammo, bool ranged)
+		{
+			this.Type = type;
+			this.Cliptype = cliptype;
+			this.Ammo = ammo;
+			this.Ranged = ranged;
+		}
+	};
+
+	public class Clip
+	{
+		public string Type { get; }
+		public int Amount { get; set; }
+
+		public Clip(string type, int amount)
+		{
+			this.Type = type;
+			this.Amount = amount;
+		}
+	}
+
+	public class Armour
+	{
+		public string Type { get; }
+		public int Quality { get; }
+		public bool Damaged { get; set; }
+
+		public Armour(string type, int quality)
+		{
+			this.Type = type;
+			this.Quality = quality;
+			this.Damaged = false;
+		}
+	};
+
+	public class Date
     {
-		string name;
-		string shortname;
-		string conservativename;
-		string conservativeshortname;
-		string type;
-		int parent;
-		bool needcar;
-		bool renting;
+		public int Day { get; set; }
+		public int Month { get; set; }
+		public int Year { get; set; }
 
-		public Location(string name, string shortname, string conservativename, string conservativeshortname, string type, int parent, bool needcar, bool renting)
+		public Date()
         {
-			this.name = name;
-			this.shortname = shortname;
-			this.conservativename = conservativename;
-			this.conservativeshortname = conservativeshortname;
-			this.type = type;
-			this.parent = parent;
-			this.needcar = needcar;
-			this.renting = renting;
+			this.Day = 1;
+			this.Month = 1;
+			this.Year = 2005;
         }
 
-		public string GetLocationType()
+		public void Advancetime()
         {
-			return this.type;
+			if(this.Day == 30)
+            {
+				this.Day = 1;
+
+				if(this.Month == 12)
+                {
+					this.Month = 1;
+					this.Year += 1;
+                }
+				else
+                {
+					this.Month += 1;
+                }
+            }
+			else
+            {
+				this.Day += 1;
+            }
         }
 
-		public void RandomPrisonName()
-		{
-			Random random = new Random();
+		public string PrintDate()
+        {
+			string month = null;
 
-			string firstpart = null;
-			string secondpart = null;
-
-			switch (random.Next(5))
-			{
-				case 0: firstpart = "Happy"; break;
-				case 1: firstpart = "Cheery"; break;
-				case 2: firstpart = "Quiet"; break;
-				case 3: firstpart = "Green"; break;
-				case 4: firstpart = "Nectar"; break;
-			}
-
-			switch (random.Next(5))
-			{
-				case 0: secondpart = "Valley"; break;
-				case 1: secondpart = "Meadow"; break;
-				case 2: secondpart = "Hills"; break;
-				case 3: secondpart = "Glade"; break;
-				case 4: secondpart = "Forest"; break;
-			}
-
-			this.conservativename = firstpart + " " + secondpart + " Re-education Camp";
-		}
-
-		public void RandomWarehouseName()
-		{
-			Random random = new Random();
-
-			switch (random.Next(5))
-			{
-				case 0:
-					this.name = "Abandoned Meat Plant";
-					this.shortname = "Meat Plant";
-					break;
+			switch(this.Month)
+            {
 				case 1:
-					this.name = "Abandoned Warehouse";
-					this.shortname = "Warehouse";
+					month = "January";
 					break;
+
 				case 2:
-					this.name = "Abandoned Paper Mill";
-					this.shortname = "Paper Mill";
+					month = "February";
 					break;
+
 				case 3:
-					this.name = "Abandoned Cement Factory";
-					this.shortname = "Cement";
+					month = "March";
 					break;
+
 				case 4:
-					this.name = "Abandoned Fertilizer Plant";
-					this.shortname = "Fertilizer";
+					month = "April";
+					break;
+
+				case 5:
+					month = "May";
+					break;
+
+				case 6:
+					month = "June";
+					break;
+
+				case 7:
+					month = "July";
+					break;
+
+				case 8:
+					month = "August";
+					break;
+
+				case 9:
+					month = "September";
+					break;
+
+				case 10:
+					month = "October";
+					break;
+
+				case 11:
+					month = "November";
+					break;
+
+				case 12:
+					month = "December";
 					break;
 			}
-		}
 
-		public void RandomPolluterName()
-		{
-			Random random = new Random();
-
-			switch (random.Next(5))
-			{
-				case 0:
-					this.name = "Aluminum Factory";
-					this.shortname = "Alum Fact";
-					break;
-				case 1:
-					this.name = "Plastic Factory";
-					this.shortname = "Plast Fact";
-					break;
-				case 2:
-					this.name = "Oil Refinery";
-					this.shortname = "Refinery";
-					break;
-				case 3:
-					this.name = "Auto Plant";
-					this.shortname = "Auto Plant";
-					break;
-				case 4:
-					this.name = "Chemical Factory";
-					this.shortname = "Chem Fact";
-					break;
-			}
-		}
-
-		public void RandomAptName()
-        {
-			string aptname = Program.RandomLastName();
-
-			this.name = aptname + " Apartments";
-			this.shortname = aptname + " Apts";
+			return this.Day.ToString() + " " + month + " " + this.Year.ToString();
         }
-
-		public void RandomVeganName()
-		{
-			Random random = new Random();
-
-			string firstpart = null;
-			string secondpart = null;
-
-			switch (random.Next(5))
-			{
-				case 0: firstpart = "Asparagus"; break;
-				case 1: firstpart = "Tofu"; break;
-				case 2: firstpart = "Broccoli"; break;
-				case 3: firstpart = "Radish"; break;
-				case 4: firstpart = "Eggplant"; break;
-			}
-
-			switch (random.Next(5))
-			{
-				case 0: secondpart = "Forest"; break;
-				case 1: secondpart = "Rainbow"; break;
-				case 2: secondpart = "Garden"; break;
-				case 3: secondpart = "Farm"; break;
-				case 4: secondpart = "Meadow"; break;
-			}
-
-			this.name = firstpart + " " + secondpart + " Vegan Co-op";
-		}
-
-		public void RandomJuiceName()
-		{
-			Random random = new Random();
-
-			string firstpart = null;
-			string secondpart = null;
-
-			switch (random.Next(5))
-			{
-				case 0: firstpart = "Natural"; break;
-				case 1: firstpart = "Harmonious"; break;
-				case 2: firstpart = "Restful"; break;
-				case 3: firstpart = "Healthy"; break;
-				case 4: firstpart = "New You"; break;
-			}
-
-			switch (random.Next(5))
-			{
-				case 0: secondpart = "Diet"; break;
-				case 1: secondpart = "Methods"; break;
-				case 2: secondpart = "Plan"; break;
-				case 3: secondpart = "Orange"; break;
-				case 4: secondpart = "Carrot"; break;
-			}
-
-			this.name = firstpart + " " + secondpart + " Juice Bar";
-		}
-
-		public void RandomInternetName()
-		{
-			Random random = new Random();
-
-			string firstpart = null;
-			string secondpart = null;
-
-			switch (random.Next(5))
-			{
-				case 0: firstpart = "Electric"; break;
-				case 1: firstpart = "Wired"; break;
-				case 2: firstpart = "Nano"; break;
-				case 3: firstpart = "Micro"; break;
-				case 4: firstpart = "Techno"; break;
-			}
-
-			switch (random.Next(5))
-			{
-				case 0: secondpart = "Panda"; break;
-				case 1: secondpart = "Troll"; break;
-				case 2: secondpart = "Latte"; break;
-				case 3: secondpart = "Unicorn"; break;
-				case 4: secondpart = "Pixie"; break;
-			}
-
-			this.name = firstpart + " " + secondpart + " Internet Cafe";
-		}
-
-		public void RandomLatteName()
-		{
-			Random random = new Random();
-
-			string firstpart = null;
-			string secondpart = null;
-
-			switch (random.Next(5))
-			{
-				case 0: firstpart = "Frothy"; break;
-				case 1: firstpart = "Milky"; break;
-				case 2: firstpart = "Caffine"; break;
-				case 3: firstpart = "Morning"; break;
-				case 4: firstpart = "Evening"; break;
-			}
-
-			switch (random.Next(5))
-			{
-				case 0: secondpart = "Mug"; break;
-				case 1: secondpart = "Cup"; break;
-				case 2: secondpart = "Jolt"; break;
-				case 3: secondpart = "Wonder"; break;
-				case 4: secondpart = "Express"; break;
-			}
-
-			this.name = firstpart + " " + secondpart + " Latte Stand";
-		}
 	}
 
 	class Program
 	{
 		static Random random = new Random();
-
+		static Date theDate = new Date();
+		static City maincity = new City();
+		static Faction liberals = new Faction();
+		
 		static public string RandomFirstName()
 		{
 			switch (random.Next(0, 100))
@@ -958,9 +557,7 @@ namespace LCSRemake
 
 		static void CharacterCreation()
 		{
-			City maincity = new City();
 			Location newlocation;
-			Faction liberals = new Faction();
 			Squad newsquad = new Squad();
 			Entity newcharacter = new Entity();
 
@@ -981,7 +578,7 @@ namespace LCSRemake
 						Console.SetCursorPosition(4, 10); Console.WriteLine("C - was the day the Macintosh was introduced.");
 
 						Console.SetCursorPosition(4, 14);
-						Console.WriteLine("My parents named me " + newcharacter.FullName + ".");
+						Console.WriteLine("My parents named me " + newcharacter.Fullname + ".");
 						break;
 
 					case 1:
@@ -1046,7 +643,7 @@ namespace LCSRemake
 						Console.SetCursorPosition(4, 8); Console.WriteLine("B - a violent criminal.  Nothing can change that.");
 						Console.SetCursorPosition(4, 10); Console.WriteLine("C - volunteering for prominent liberals, but I know there's a better way.");
 
-						Console.SetCursorPosition(4, 14); Console.WriteLine("I live in " + maincity.GetName() + ", and it's about to experience real change.");
+						Console.SetCursorPosition(4, 14); Console.WriteLine("I live in " + maincity.Cityname + ", and it's about to experience real change.");
 						break;
 				}
 
@@ -1063,211 +660,212 @@ namespace LCSRemake
 					case 0:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("charisma", 2);
-							newcharacter.AttributeInc("heart", 1);
-							newcharacter.SkillInc("persuasion", 2);
+							newcharacter.Charisma += 2;
+							newcharacter.Heart += 1;
+							newcharacter.Persuasion += 2;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("agility", 1);
-							newcharacter.AttributeInc("health", 1);
-							newcharacter.SkillInc("pistol", 2);
+							newcharacter.Strength += 1;
+							newcharacter.Agility += 1;
+							newcharacter.Health += 1;
+							newcharacter.Pistol += 2;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 3);
-							newcharacter.SkillInc("computers", 2);
+							newcharacter.Intelligence += 3;
+							newcharacter.Computers += 2;
 						}
 						break;
 
 					case 1:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("charisma", 1);
-							newcharacter.SkillInc("persuasion", 2);
+							newcharacter.Charisma += 1;
+							newcharacter.Persuasion += 2;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("health", 1);
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.SkillInc("handtohand", 1);
+							newcharacter.Health += 1;
+							newcharacter.Strength += 1;
+							newcharacter.Handtohand += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 1);
-							newcharacter.SkillInc("writing", 1);
-							newcharacter.SkillInc("computers", 1);
+							newcharacter.Intelligence += 1;
+							newcharacter.Writing += 1;
+							newcharacter.Computers += 1;
 						}
 						break;
 
 					case 2:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("charisma", 1);
-							newcharacter.SkillInc("persuasion", 2);
+							newcharacter.Charisma += 1;
+							newcharacter.Persuasion += 2;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("agility", 1);
-							newcharacter.SkillInc("handtohand", 1);
+							newcharacter.Strength += 1;
+							newcharacter.Agility += 1;
+							newcharacter.Handtohand += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 1);
-							newcharacter.SkillInc("writing", 1);
-							newcharacter.SkillInc("computers", 1);
+							newcharacter.Intelligence += 1;
+							newcharacter.Writing += 1;
+							newcharacter.Computers += 1;
 						}
 						break;
 
 					case 3:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("intelligence", 1);
-							newcharacter.SkillInc("writing", 1);
-							newcharacter.SkillInc("law", 1);
+							newcharacter.Intelligence += 1;
+							newcharacter.Writing += 1;
+							newcharacter.Law += 1;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("agility", 1);
-							newcharacter.SkillInc("club", 1);
+							newcharacter.Strength += 1;
+							newcharacter.Agility += 1;
+							newcharacter.Club += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 2);
-							newcharacter.SkillInc("computers", 1);
+							newcharacter.Intelligence += 2;
+							newcharacter.Computers += 1;
 						}
 						break;
 
 					case 4:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("charisma", 1);
-							newcharacter.SkillInc("security", 1);
+							newcharacter.Charisma += 1;
+							newcharacter.Security += 1;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.SkillInc("knife", 1);
-							newcharacter.SkillInc("club", 1);
+							newcharacter.Knife += 1;
+							newcharacter.Club += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 2);
+							newcharacter.Intelligence += 2;
 						}
 						break;
 
 					case 5:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("intelligence", 1);
-							newcharacter.SkillInc("driving", 1);
-							newcharacter.SkillInc("security", 1);
+							newcharacter.Intelligence += 1;
+							newcharacter.Driving += 1;
+							newcharacter.Security += 1;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("agility", 1);
-							newcharacter.SkillInc("rifle", 1);
-							newcharacter.SkillInc("assaultrifle", 1);
+							newcharacter.Agility += 1;
+							newcharacter.Rifle += 1;
+							newcharacter.Assaultrifle += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.SkillInc("disguise", 2);
-							newcharacter.SkillInc("garmentmaking", 1);
+							newcharacter.Disguise += 2;
+							newcharacter.Garmentmaking += 1;
 						}
 						break;
 
 					case 6:
 						if (keyinput == 'a')
 						{
-							newcharacter.SkillInc("driving", 1);
-							newcharacter.SkillInc("security", 2);
+							newcharacter.Driving += 1;
+							newcharacter.Security += 2;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.SkillInc("rifle", 1);
-							newcharacter.SkillInc("assaultrifle", 1);
-							newcharacter.SkillInc("pistol", 1);
+							newcharacter.Rifle += 1;
+							newcharacter.Assaultrifle += 1;
+							newcharacter.Pistol += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("agility", 2);
+							newcharacter.Strength += 1;
+							newcharacter.Agility += 2;
 						}
 						break;
 
 					case 7:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("intelligence", 1);
-							newcharacter.SkillInc("security", 1);
-							newcharacter.SkillInc("disguise", 1);
+							newcharacter.Intelligence += 1;
+							newcharacter.Security += 1;
+							newcharacter.Disguise += 1;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("health", 1);
-							newcharacter.SkillInc("handtohand", 1);
+							newcharacter.Strength += 1;
+							newcharacter.Health += 1;
+							newcharacter.Handtohand += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("heart", 1);
-							newcharacter.SkillInc("law", 1);
-							newcharacter.SkillInc("persuasion", 1);
+							newcharacter.Heart += 1;
+							newcharacter.Law += 1;
+							newcharacter.Persuasion += 1;
 						}
 						break;
 
 					case 8:
 						if (keyinput == 'a')
 						{
-							newcharacter.AccessArmour = new Armour("securityuniform", 1, 0);
+							newcharacter.Armour = new Armour("securityuniform", 1);
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AccessWeapon = new Weapon("semirifleak47", new Clip("assault", 9), 30, true);
+							newcharacter.Weapon = new Weapon("semirifleak47", "assault", new Clip("assault", 9), true);
 						}
 						if (keyinput == 'c')
 						{
-							liberals.AccessFunds = 1000;
+							liberals.Funds = 1000;
 						}
 						break;
 
 					case 9:
 						if (keyinput == 'a')
 						{
-							newcharacter.AttributeInc("intelligence", 2);
-							newcharacter.AttributeInc("agility", 2);
-							newcharacter.AttributeInc("health", 1);
-							newcharacter.SkillInc("disguise", 2);
-							newcharacter.SkillInc("security", 2);
-							newcharacter.SkillInc("driving", 1);
+							newcharacter.Intelligence += 2;
+							newcharacter.Agility += 2;
+							newcharacter.Health += 1;
+							newcharacter.Disguise += 2;
+							newcharacter.Security += 2;
+							newcharacter.Driving += 1;
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.AttributeInc("agility", 2);
-							newcharacter.AttributeInc("strength", 1);
-							newcharacter.AttributeInc("health", 2);
-							newcharacter.SkillInc("rifle", 1);
-							newcharacter.SkillInc("assaultrifle", 1);
-							newcharacter.SkillInc("pistol", 1);
-							newcharacter.SkillInc("knife", 1);
-							newcharacter.SkillInc("club", 1);
+							newcharacter.Agility += 2;
+							newcharacter.Strength += 1;
+							newcharacter.Health += 2;
+							newcharacter.Rifle += 1;
+							newcharacter.Assaultrifle += 1;
+							newcharacter.Pistol += 1;
+							newcharacter.Knife += 1;
+							newcharacter.Club += 1;
 						}
 						if (keyinput == 'c')
 						{
-							newcharacter.AttributeInc("intelligence", 2);
-							newcharacter.AttributeInc("heart", 2);
-							newcharacter.AttributeInc("health", 1);
-							newcharacter.SkillInc("law", 2);
-							newcharacter.SkillInc("writing", 2);
-							newcharacter.SkillInc("persuasion", 1);
+							newcharacter.Intelligence += 2;
+							newcharacter.Heart += 2;
+							newcharacter.Health += 1;
+							newcharacter.Law += 2;
+							newcharacter.Writing += 2;
+							newcharacter.Persuasion += 1;
 						}
 						break;
 				}
 			}
 
 			Console.Clear();
+			Border();
 			Console.SetCursorPosition(4, 2);
 			Console.Write("What is your name to the People?");
 			Console.SetCursorPosition(4, 3);
@@ -1276,179 +874,180 @@ namespace LCSRemake
 
 			if (nameinput == null)
             {
-				newcharacter.Handle = newcharacter.FullName;
+				newcharacter.Handle = newcharacter.Fullname;
             }
             else
             {
 				newcharacter.Handle = nameinput;
 			}
 
-			newlocation = new Location("Downtown", "Downtown", null, null, "downtown", -1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Downtown", "Downtown", "downtown", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The University District", "U-District", null, null, "unidistrict", -1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The University District", "U-District", "unidistrict", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The Industrial District", "I-District", null, null, "inddistrict", -1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The Industrial District", "I-District", "inddistrict", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("On the Outskirts of the City", "Outskirts", null, null, "outskirts", -1, true, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("On the Outskirts of the City", "Outskirts", "outskirts", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Police Station", "Police Station", null, null, "policestation", 0, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Police Station", "Police Station", "policestation", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Court House", "Court House", "Halls of Ultimate Judgement", "Judge Hall", "courthouse", 0, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Court House", "Court House", "courthouse", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(RandomLastName() + " Prison", "Prison", null, "Re-ed Camp", "prison", 3, true, false);
-			newlocation.RandomPrisonName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(RandomLastName() + " Prison", "Prison", "prison", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Nuclear Power Plant", "NPower Plant", null, null, "nuclear", 3, true, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Nuclear Power Plant", "NPower Plant", "nuclear", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Intelligence HQ", "Int. HQ", "Ministry of Love", "Min. Love", "intelligencehq", 3, true, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Intelligence HQ", "Int. HQ", "intelligencehq", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Corporate HQ", "Corp. HQ", null, null, "corporatehq", 3, true, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Corporate HQ", "Corp. HQ", "corporatehq", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("CEO Residence", "CEO House", "CEO Castle", "CEO Castle", "corporatehouse", 3, true, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("CEO Residence", "CEO House", "corporatehouse", true, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Homeless Shelter", "Shelter", null, null, "shelter", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Homeless Shelter", "Shelter", "shelter", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
-			newlocation.RandomWarehouseName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "warehouse", false, null);
+			newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
-			newlocation.RandomWarehouseName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "warehouse", false, null);
+			newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "warehouse", 2, false, false);
-			newlocation.RandomWarehouseName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "warehouse", false, null);
+			newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
-			newlocation.RandomPolluterName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "polluter", false, null);
+			newlocation.RandomName(new List<string> { "Aluminum Factory", "Plastic Factory", "Oil Refinery", "Auto Plant", "Chemical Factory" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
-			newlocation.RandomPolluterName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "polluter", false, null);
+			newlocation.RandomName(new List<string> { "Aluminum Factory", "Plastic Factory", "Oil Refinery", "Auto Plant", "Chemical Factory" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "polluter", 2, false, false);
-			newlocation.RandomPolluterName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, null, "polluter", false, null);
+			newlocation.RandomName(new List<string> { "Aluminum Factory", "Plastic Factory", "Oil Refinery", "Auto Plant", "Chemical Factory" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("Cable News Station", "News Station", null, null, "cablenews", 0, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("Cable News Station", "News Station", "cablenews", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("AM Radio Station", "Radio Station", null, null, "amradio", 0, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("AM Radio Station", "Radio Station", "amradio", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "upscaleapt", 0, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			string randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "upscaleapt", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "upscaleapt", 0, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "upscaleapt", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "apt", 1, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "apt", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "apt", 1, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "apt", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "tenement", 2, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "tenement", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, null, null, null, "tenement", 2, false, false);
-			newlocation.RandomAptName();
-			maincity.AddLocation(newlocation);
+			randomname = RandomLastName();
+			newlocation = new Location(randomname + " Apartments", randomname + " Apts", "tenement", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The University Hospital", "U Hospital", null, null, "hospitaluni", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The University Hospital", "U Hospital", "hospitaluni", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The Free CLINIC", "CLINIC", null, null, "hospitalclinic", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The Free CLINIC", "CLINIC", "hospitalclinic", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " Genetics", "Genetics Lab", null, null, "labgenetic", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " Genetics", "Genetics Lab", "labgenetic", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " Cosmetics", "Cosmetics Lab", null, null, "labcosmetics", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " Cosmetics", "Cosmetics Lab", "labcosmetics", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " Cash & Loans", "Pawnshop", null, null, "pawnshop", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " Cash & Loans", "Pawnshop", "pawnshop", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + "'s Department Store", "Dept. Store", null, null, "deptstore", 0, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + "'s Department Store", "Dept. Store", "deptstore", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The Oubliette", "Oubliette", null, null, "halloween", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The Oubliette", "Oubliette", "halloween", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", null, null, "sweatshop", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", "sweatshop", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", null, null, "sweatshop", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " Garment Makers", "Sweatshop", "sweatshop", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", "crackhouse", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", "crackhouse", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", null, null, "crackhouse", 2, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(Program.RandomLastName() + " St. Crack House", "Crack House", "crackhouse", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, "Vegan Co-op", null, null, "vegancoop", 1, false, false);
-			newlocation.RandomVeganName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, "Vegan Co-op", "vegancoop", false, null);
+			newlocation.RandomName(new List<string> { "Asparagus", "Tofu", "Broccoli", "Radish", "Eggplant" }, new List<string> { "Forest", "Rainbow", "Garden", "Farm", "Meadow" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, "Juice Bar", null, null, "juicebar", 1, false, false);
-			newlocation.RandomJuiceName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, "Juice Bar", "juicebar", false, null);
+			newlocation.RandomName(new List<string> { "Natural", "Harmonious", "Restful", "Healthy", "New You" }, new List<string> { "Diet", "Methods", "Plan", "Orange", "Carrot" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, "Net Cafe", null, null, "internetcafe", 1, false, false);
-			newlocation.RandomInternetName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, "Net Cafe", "internetcafe", false, null);
+			newlocation.RandomName(new List<string> { "Electric", "Wired", "Nano", "Micro", "Techno" }, new List<string> { "Panda", "Troll", "Latte", "Unicorn", "Pixie" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location("The " + Program.RandomLastName() + " Gentlemen's Club", "Cigar Bar", null, null, "cigarbar", 1, false, false);
-			maincity.AddLocation(newlocation);
+			newlocation = new Location("The " + Program.RandomLastName() + " Gentlemen's Club", "Cigar Bar", "cigarbar", false, null);
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, "Latte Stand", null, null, "lattestand", 0, false, false);
-			newlocation.RandomLatteName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, "Latte Stand", "lattestand", false, null);
+			newlocation.RandomName(new List<string> { "Frothy", "Milky", "Caffine", "Morning", "Evening" }, new List<string> { "Mug", "Cup", "Jolt", "Wonder", "Express" });
+			maincity.Locations.Add(newlocation);
 
-			newlocation = new Location(null, "Latte Stand", null, null, "lattestand", 0, false, false);
-			newlocation.RandomLatteName();
-			maincity.AddLocation(newlocation);
+			newlocation = new Location(null, "Latte Stand", "lattestand", false, null);
+			newlocation.RandomName(new List<string> { "Frothy", "Milky", "Caffine", "Morning", "Evening" }, new List<string> { "Mug", "Cup", "Jolt", "Wonder", "Express" });
+			maincity.Locations.Add(newlocation);
 
-			newsquad.AddMember(newcharacter);
-			newcharacter.SquadID = newsquad.GetID();
+			newsquad.Entities.Add(newcharacter);
 			newsquad.Name = "The Liberal Crime Squad";
 
-			for (int i = 0; i < maincity.GetLocations().Count; i++)
+			for (int i = 0; i < maincity.Locations.Count; i++)
 			{
-				if (maincity.GetLocations()[i].GetLocationType() == "shelter")
+				if (maincity.Locations[i].Type == "shelter")
 				{
-					newcharacter.AccessBase = maincity.GetLocations()[i];
-					newcharacter.AccessLocation = maincity.GetLocations()[i];
+					newcharacter.Mybase = maincity.Locations[i];
+					newcharacter.Location = maincity.Locations[i];
+					newsquad.Location = maincity.Locations[i];
 					break;
 				}
 			}
 
-			liberals.AddSquad(newsquad);
-			liberals.SetActive(newsquad);
+			liberals.Squads.Add(newsquad);
+			liberals.Activesquad = newsquad;
+
+			Mode_base();
 		}
 
 		static void Border()
@@ -1517,6 +1116,25 @@ namespace LCSRemake
 			}
 
 			CharacterCreation();
+		}
+
+		static void Mode_base()
+        {
+			Console.Clear();
+			Border();
+			Console.SetCursorPosition(4, 2);
+			Console.Write(liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
+
+			string activity = "Hanging Out";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (activity.Length / 2), 2);
+			Console.Write(activity);
+
+			Console.SetCursorPosition(Console.BufferWidth - 10, 2);
+			Console.Write("$" + liberals.Funds);
+
+			Console.SetCursorPosition(4 ,3);
+			Console.Write("#-CODE NAME------------SKILL------------WEAPON------------ARMOUR------------HEALTH------------TRANSPORT----------#");
+			Console.ReadKey();
 		}
 
 		static void Main(string[] args)

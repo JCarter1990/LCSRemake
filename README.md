@@ -10,4 +10,5 @@ That is, let them see their True Liberal Nature.
 Then arm them and send them forth to Stop Evil.
 Eventually the public will fall behind us, and we will put more Elite Liberals in government for greater justice.
 
-A remake of the text based game Liberal Crime Squad in C# that Tarn Adams at bay12games.com made years ago.
+A remake i am currently working on of the text based game Liberal Crime Squad that Tarn Adams at bay12games.com made years ago.
+Although he used C++ i have decided to remake it using C#.

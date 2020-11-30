@@ -338,7 +338,34 @@ namespace LCSRemake
 		static Date theDate = new Date();
 		static City maincity = new City();
 		static Faction liberals = new Faction();
-		
+
+		static void Border()
+		{
+			for (int x = 2; x < Console.BufferWidth; x++)
+			{
+				Console.SetCursorPosition(x, 0);
+				Console.Write("\u2588");
+			}
+
+			for (int x = 2; x < Console.BufferWidth; x++)
+			{
+				Console.SetCursorPosition(x, Console.BufferHeight - 2);
+				Console.Write("\u2588");
+			}
+
+			for (int y = 1; y < Console.BufferHeight - 2; y++)
+			{
+				Console.SetCursorPosition(2, y);
+				Console.Write("\u2588");
+			}
+
+			for (int y = 1; y < Console.BufferHeight - 2; y++)
+			{
+				Console.SetCursorPosition(Console.BufferWidth - 1, y);
+				Console.Write("\u2588");
+			}
+		}
+
 		static public string RandomFirstName()
 		{
 			switch (random.Next(0, 100))
@@ -554,6 +581,47 @@ namespace LCSRemake
 			}
 			return null;
         }
+
+		static void Titlescreen()
+		{
+			Console.Clear();
+			Border();
+
+			string str = "Liberal Crime Squad";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 4);
+			Console.WriteLine(str);
+
+			str = "Inspired by the 1983 version of Oubliette";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 6);
+			Console.WriteLine(str);
+
+			str = "v3.06 Copyright (C) 2002-4, Tarn Adams";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 13);
+			Console.WriteLine(str);
+
+			str = "A Bay 12 Games Production";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 14);
+			Console.WriteLine(str);
+
+			str = "www.bay12games.com";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 15);
+			Console.WriteLine(str);
+
+			str = "Press ESC now to quit.  Quitting later causes your progress to be saved.";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 20);
+			Console.WriteLine(str);
+
+			str = "Press any other key to pursue your Liberal Agenda!";
+			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 22);
+			Console.WriteLine(str);
+
+			if (Console.ReadKey().Key == ConsoleKey.Escape)
+			{
+				return;
+			}
+
+			CharacterCreation();
+		}
 
 		static void CharacterCreation()
 		{
@@ -872,7 +940,7 @@ namespace LCSRemake
 
 			string nameinput = Console.ReadLine();
 
-			if (nameinput == null)
+			if (nameinput == "")
             {
 				newcharacter.Handle = newcharacter.Fullname;
             }
@@ -1047,94 +1115,123 @@ namespace LCSRemake
 			liberals.Squads.Add(newsquad);
 			liberals.Activesquad = newsquad;
 
-			Mode_base();
+			Mainscreen();
 		}
 
-		static void Border()
-		{
-			for (int x = 2; x < Console.BufferWidth; x++)
-			{
-				Console.SetCursorPosition(x, 0);
-				Console.Write("\u2588");
-			}
-
-			for (int x = 2; x < Console.BufferWidth; x++)
-			{
-				Console.SetCursorPosition(x, Console.BufferHeight - 2);
-				Console.Write("\u2588");
-			}
-
-			for (int y = 1; y < Console.BufferHeight - 2; y++)
-			{
-				Console.SetCursorPosition(2, y);
-				Console.Write("\u2588");
-			}
-
-			for (int y = 1; y < Console.BufferHeight - 2; y++)
-			{
-				Console.SetCursorPosition(Console.BufferWidth - 1, y);
-				Console.Write("\u2588");
-			}
-		}
-
-		static void Mode_title()
-		{
-			Console.Clear();
-			Border();
-
-			string str = "Liberal Crime Squad";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 4);
-			Console.WriteLine(str);
-
-			str = "Inspired by the 1983 version of Oubliette";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 6);
-			Console.WriteLine(str);
-
-			str = "v3.06 Copyright (C) 2002-4, Tarn Adams";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 13);
-			Console.WriteLine(str);
-
-			str = "A Bay 12 Games Production";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 14);
-			Console.WriteLine(str);
-
-			str = "www.bay12games.com";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 15);
-			Console.WriteLine(str);
-
-			str = "Press ESC now to quit.  Quitting later causes your progress to be saved.";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 20);
-			Console.WriteLine(str);
-
-			str = "Press any other key to pursue your Liberal Agenda!";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 22);
-			Console.WriteLine(str);
-
-			if (Console.ReadKey().Key == ConsoleKey.Escape)
-			{
-				return;
-			}
-
-			CharacterCreation();
-		}
-
-		static void Mode_base()
+		static void Mainscreen()
         {
-			Console.Clear();
-			Border();
-			Console.SetCursorPosition(4, 2);
-			Console.Write(liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
+			while (true)
+			{
+				Console.Clear();
+				Border();
+				Console.SetCursorPosition(4, 2);
+				Console.Write(liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
 
-			string activity = "Hanging Out";
-			Console.SetCursorPosition((Console.BufferWidth / 2) - (activity.Length / 2), 2);
-			Console.Write(activity);
+				string activity = "Hanging Out";
+				Console.SetCursorPosition((Console.BufferWidth / 2) - (activity.Length / 2), 2);
+				Console.Write(activity);
 
-			Console.SetCursorPosition(Console.BufferWidth - 10, 2);
-			Console.Write("$" + liberals.Funds);
+				Console.SetCursorPosition(Console.BufferWidth - 10, 2);
+				Console.Write("$" + liberals.Funds);
 
-			Console.SetCursorPosition(4 ,3);
-			Console.Write("#-CODE NAME------------SKILL------------WEAPON------------ARMOUR------------HEALTH------------TRANSPORT----------#");
-			Console.ReadKey();
+				Console.SetCursorPosition(4, 4);
+				Console.Write("#-CODE NAME------------SKILL------------WEAPON------------ARMOUR------------HEALTH------------TRANSPORT----------#");
+
+				Console.SetCursorPosition(4, 5);
+				Console.Write('1');
+				Console.SetCursorPosition(4, 6);
+				Console.Write('2');
+				Console.SetCursorPosition(4, 7);
+				Console.Write('3');
+				Console.SetCursorPosition(4, 8);
+				Console.Write('4');
+				Console.SetCursorPosition(4, 9);
+				Console.Write('5');
+				Console.SetCursorPosition(4, 10);
+				Console.Write('6');
+
+				for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
+				{
+					Console.SetCursorPosition(6, 5 + member);
+					Console.Write(liberals.Activesquad.Entities[member].Handle);
+
+					Console.SetCursorPosition(27, 5 + member);
+					Console.Write("21/0");
+
+					Console.SetCursorPosition(44, 5 + member);
+					Console.Write("None");
+
+					Console.SetCursorPosition(62, 5 + member);
+					Console.Write("Uniform");
+
+					Console.SetCursorPosition(80, 5 + member);
+					Console.Write("Liberal");
+
+					Console.SetCursorPosition(98, 5 + member);
+					Console.Write("On Foot");
+				}
+
+				Console.SetCursorPosition(4, 11);
+				Console.Write("#----------------------------------------------------------------------------------------------------------------#");
+
+				Console.SetCursorPosition(6, 14);
+				Console.Write("F - Go forth to stop EVIL");
+
+				Console.SetCursorPosition(6, 15);
+				Console.Write("E - Equipment");
+
+				Console.SetCursorPosition(6, 16);
+				Console.Write("V - Vehicles");
+
+				Console.SetCursorPosition(6, 17);
+				Console.Write("R - Review and reorganize liberals ");
+
+				Console.SetCursorPosition(6, 18);
+				Console.Write("A - Activate the uninvolved");
+
+				Console.SetCursorPosition(6, 19);
+				Console.Write("C - Cancel this squads departure");
+
+				Console.SetCursorPosition(6, 20);
+				Console.Write("X - Live to fight EVIL another day");
+
+				Console.SetCursorPosition(6, 21);
+				Console.Write("W - Wait a day");
+
+				Console.SetCursorPosition(77, 14);
+				Console.Write("0 - Show the squad's liberal status");
+
+				Console.SetCursorPosition(77, 15);
+				Console.Write("# - Check the status of a squad liberal");
+
+				Console.SetCursorPosition(77, 16);
+				Console.Write("O - Change the squad's liberal order");
+
+				Console.SetCursorPosition(77, 17);
+				Console.Write("Tab - Next squad");
+
+				Console.SetCursorPosition(77, 18);
+				Console.Write("Z - Next location");
+
+				Console.SetCursorPosition(77, 19);
+				Console.Write("L - The status of the liberal agenda");
+
+				Console.SetCursorPosition(77, 20);
+				Console.Write("P - PATRIOTISM: Fly a flag here ($20)");
+
+				Console.SetCursorPosition(77, 21);
+				Console.Write("S - FREE SPEECH: The liberal slogan");
+
+				Console.SetCursorPosition((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24);
+				Console.Write(liberals.Slogan);
+
+				char keyinput = Console.ReadKey(true).KeyChar;
+
+				if(keyinput == 'x')
+                {
+					break;
+                }
+			}
 		}
 
 		static void Main(string[] args)
@@ -1143,7 +1240,8 @@ namespace LCSRemake
 			Console.SetBufferSize(120, 30);
 			Console.CursorVisible = false;
 
-			Mode_title();
+			Titlescreen();
+			//Save();
 		}
 	}
 }

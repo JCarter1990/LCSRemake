@@ -129,6 +129,7 @@ namespace LCSRemake
 		public int Intelligence { get; set; }
 		public int Wisdom { get; set; }
 		public int Agility { get; set; }
+		public int MaxHealth { get; set; }
 		public int Health { get; set; }
 		public int Charisma { get; set; }
 		public int Heart { get; set; }
@@ -159,6 +160,7 @@ namespace LCSRemake
 		public Location Location { get; set; }
 		public Location Worklocation { get; set; }
 		public Entity Prisoner { get; set; }
+		public Vehicle Vehicle { get; set; }
 
 		public Entity()
 		{
@@ -173,6 +175,7 @@ namespace LCSRemake
 			this.Intelligence = 1;
 			this.Wisdom = 1;
 			this.Agility = 4;
+			this.MaxHealth = 4;
 			this.Health = 4;
 			this.Charisma = 0;
 			this.Heart = 5;
@@ -197,18 +200,177 @@ namespace LCSRemake
 
 			this.Juice = 0;
 		}
+
+		public int GetTotalSkillLevel()
+        {
+			return this.Handtohand + this.Knife + this.Club + this.Sword + this.Axe +
+				   this.Spear + this.Pistol + this.Rifle + this.Assaultrifle + this.Persuasion +
+				   this.Law + this.Security + this.Disguise + this.Computers + this.Garmentmaking +
+				   this.Driving + this.Writing;
+		}
+
+		public string GetWeaponName()
+        {
+			if(this.Weapon == null)
+            {
+				return "None";
+            }
+			else
+            {
+				return this.Weapon.Name + " (" + this.Weapon.Ammo.Amount + ")";
+            }
+        }
+
+		public int GetWeaponSkill()
+        {
+			if(this.Weapon == null)
+            {
+				return this.Handtohand;
+            }
+			else
+            {
+				switch (this.Weapon.Skill)
+				{
+					case "handtohand":
+						return this.Handtohand;
+					case "knife":
+						return this.Knife;
+					case "club":
+						return this.Club;
+					case "sword":
+						return this.Sword;
+					case "axe":
+						return this.Axe;
+					case "spear":
+						return this.Spear;
+					case "pistol":
+						return this.Pistol;
+					case "rifle":
+						return this.Rifle;
+					case "assaultrifle":
+						return this.Assaultrifle;
+				}
+			}
+			return 0;
+        }
+
+		public string GetArmourName()
+		{
+			if (this.Armour == null)
+			{
+				return "Naked";
+			}
+			else
+			{
+				return this.Armour.Name;
+			}
+		}
+
+		public string GetVehicleType()
+        {
+			if(this.Vehicle == null)
+            {
+				return "On foot";
+            }
+			else
+            {
+				return this.Vehicle.VehicleType;
+            }
+        }
+	}
+
+	public class Vehicle
+    {
+		static int idcounter = 0;
+		public int ID { get; set; }
+		public string VehicleType { get; set; }
+		public string Colour { get; set; }
+		public Location Location { get; set; }
+		public int Year { get; set; }
+
+		public Vehicle(string vehicletype, string colour, Location location, Date thedate)
+        {
+			Random random = new Random();
+
+			this.ID = idcounter; idcounter++;
+			this.VehicleType = vehicletype;
+			this.Colour = colour;
+			this.Location = location;
+
+			switch (vehicletype)
+			{
+				case "Jeep":
+					this.Year = thedate.Year + 1 - random.Next(41);
+					break;
+				case "Van":
+					this.Year = 1969 + random.Next(6);
+					break;
+				case "Stationwagon":
+					this.Year = thedate.Year + 1 - random.Next(41);
+					break;
+				case "Sportscar":
+					this.Year = thedate.Year + 1 - random.Next(21);
+					break;
+				case "Bug":
+					this.Year = 1969 + random.Next(6);
+					break;
+				case "Pickup":
+					this.Year = thedate.Year + 1 - random.Next(41);
+					break;
+				case "Policecar":
+					this.Year = thedate.Year + 1 - random.Next(21);
+					break;
+				case "Taxicab":
+					this.Year = thedate.Year + 1 - random.Next(41);
+					break;
+				case "SUV":
+					this.Year = 1995 + random.Next(thedate.Year - 1995 + 1);
+					break;
+			}
+
+			switch (vehicletype)
+			{
+				case "Policecar":
+					this.Colour = "Police-Marked";
+					break;
+				case "Agentcar":
+					this.Colour = "Black";
+					break;
+				case "Taxicab":
+					this.Colour = "Taxi-Striped";
+					break;
+				case "Jeep":
+				case "Van":
+				case "Stationwagon":
+				case "Sportscar":
+				case "Bug":
+				case "Pickup":
+				case "SUV":
+					switch (random.Next(5))
+					{
+						case 0: this.Colour = "Red"; break;
+						case 1: this.Colour = "White"; break;
+						case 2: this.Colour = "Blue"; break;
+						case 3: this.Colour = "BEIGE"; break;
+						case 4: this.Colour = "Black"; break;
+					}
+					break;
+			}
+		}
 	}
 
 	public class Weapon
 	{
-		public string Type { get; }
+		public string Name { get; }
+		public string Skill { get; }
 		public string Cliptype { get; }
 		public Clip Ammo { get; set; }
 		public bool Ranged { get; }
 
-		public Weapon(string type, string cliptype, Clip ammo, bool ranged)
+		public Weapon(string name, string skill, string cliptype, Clip ammo, bool ranged)
 		{
-			this.Type = type;
+			this.Name = name;
+			this.Skill = skill;
 			this.Cliptype = cliptype;
 			this.Ammo = ammo;
 			this.Ranged = ranged;
@@ -229,13 +391,13 @@ namespace LCSRemake
 
 	public class Armour
 	{
-		public string Type { get; }
+		public string Name { get; }
 		public int Quality { get; }
 		public bool Damaged { get; set; }
 
-		public Armour(string type, int quality)
+		public Armour(string name, int quality)
 		{
-			this.Type = type;
+			this.Name = name;
 			this.Quality = quality;
 			this.Damaged = false;
 		}
@@ -739,7 +901,7 @@ namespace LCSRemake
 						{
 							newcharacter.Strength += 1;
 							newcharacter.Agility += 1;
-							newcharacter.Health += 1;
+							newcharacter.MaxHealth += 1;
 							newcharacter.Pistol += 2;
 						}
 						if (keyinput == 'c')
@@ -757,7 +919,7 @@ namespace LCSRemake
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.Health += 1;
+							newcharacter.MaxHealth += 1;
 							newcharacter.Strength += 1;
 							newcharacter.Handtohand += 1;
 						}
@@ -875,7 +1037,7 @@ namespace LCSRemake
 						if (keyinput == 'b')
 						{
 							newcharacter.Strength += 1;
-							newcharacter.Health += 1;
+							newcharacter.MaxHealth += 1;
 							newcharacter.Handtohand += 1;
 						}
 						if (keyinput == 'c')
@@ -889,11 +1051,11 @@ namespace LCSRemake
 					case 8:
 						if (keyinput == 'a')
 						{
-							newcharacter.Armour = new Armour("securityuniform", 1);
+							newcharacter.Armour = new Armour("Security Uniform", 1);
 						}
 						if (keyinput == 'b')
 						{
-							newcharacter.Weapon = new Weapon("semirifleak47", "assault", new Clip("assault", 9), true);
+							newcharacter.Weapon = new Weapon("AK47", "assaultrifle", "assault", new Clip("assault", 9), true);
 						}
 						if (keyinput == 'c')
 						{
@@ -906,7 +1068,7 @@ namespace LCSRemake
 						{
 							newcharacter.Intelligence += 2;
 							newcharacter.Agility += 2;
-							newcharacter.Health += 1;
+							newcharacter.MaxHealth += 1;
 							newcharacter.Disguise += 2;
 							newcharacter.Security += 2;
 							newcharacter.Driving += 1;
@@ -915,7 +1077,7 @@ namespace LCSRemake
 						{
 							newcharacter.Agility += 2;
 							newcharacter.Strength += 1;
-							newcharacter.Health += 2;
+							newcharacter.MaxHealth += 2;
 							newcharacter.Rifle += 1;
 							newcharacter.Assaultrifle += 1;
 							newcharacter.Pistol += 1;
@@ -926,7 +1088,7 @@ namespace LCSRemake
 						{
 							newcharacter.Intelligence += 2;
 							newcharacter.Heart += 2;
-							newcharacter.Health += 1;
+							newcharacter.MaxHealth += 1;
 							newcharacter.Law += 2;
 							newcharacter.Writing += 2;
 							newcharacter.Persuasion += 1;
@@ -934,6 +1096,8 @@ namespace LCSRemake
 						break;
 				}
 			}
+
+			newcharacter.Health = newcharacter.MaxHealth;
 
 			Console.Clear();
 			Border();
@@ -1155,23 +1319,36 @@ namespace LCSRemake
 
 				for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
 				{
+					Entity selectedmember = liberals.Activesquad.Entities[member];
+
 					Console.SetCursorPosition(6, 5 + member);
-					Console.Write(liberals.Activesquad.Entities[member].Handle);
+					Console.Write(selectedmember.Handle);
 
 					Console.SetCursorPosition(27, 5 + member);
-					Console.Write("21/0");
+					Console.Write(selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
 
 					Console.SetCursorPosition(44, 5 + member);
-					Console.Write("None");
+					Console.Write(selectedmember.GetWeaponName());
 
 					Console.SetCursorPosition(62, 5 + member);
-					Console.Write("Uniform");
+					Console.Write(selectedmember.GetArmourName());
 
 					Console.SetCursorPosition(80, 5 + member);
-					Console.Write("Liberal");
+					if(selectedmember.Health >= selectedmember.MaxHealth - 1)
+                    {
+						Console.Write("Liberal");
+					}
+					else if(selectedmember.Health < selectedmember.MaxHealth - 1 && selectedmember.Health > (int)selectedmember.MaxHealth / 2)
+                    {
+						Console.Write("Moderate");
+					}
+					else
+                    {
+						Console.Write("Conservative");
+					}
 
 					Console.SetCursorPosition(98, 5 + member);
-					Console.Write("On Foot");
+					Console.Write(selectedmember.GetVehicleType());
 				}
 
 				Console.SetCursorPosition(4, 11);

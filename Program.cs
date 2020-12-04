@@ -51,7 +51,9 @@ namespace LCSRemake
 		public string Shortname { get; set; }
 		public string Type { get; set; }
 		public bool Needs_car { get; set; }
+		public bool HasFlag { get; set; }
 		public Faction Owner { get; set; }
+
 
 		public Location(string name, string shortname, string type, bool needcar, Faction owner)
 		{
@@ -60,6 +62,7 @@ namespace LCSRemake
 			this.Type = type;
 			this.Needs_car = needcar;
 			this.Owner = owner;
+			this.HasFlag = false;
 		}
 
 		public string RandomName(List<string> list)
@@ -1217,20 +1220,78 @@ namespace LCSRemake
 				Console.Write("L - The status of the liberal agenda");
 
 				Console.SetCursorPosition(77, 20);
-				Console.Write("P - PATRIOTISM: Fly a flag here ($20)");
-
+				if(liberals.Activesquad.Location.HasFlag)
+                {
+					Console.Write("P - PROTEST: burn the flag");
+				}
+				else
+                {
+					Console.Write("P - PATRIOTISM: Fly a flag here ($20)");
+				}
+				
 				Console.SetCursorPosition(77, 21);
 				Console.Write("S - FREE SPEECH: The liberal slogan");
 
 				Console.SetCursorPosition((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24);
 				Console.Write(liberals.Slogan);
 
+				if(liberals.Activesquad.Location.HasFlag)
+                {
+					Console.SetCursorPosition(51, 14);
+					Console.Write("::::::\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
+					Console.SetCursorPosition(51, 15);
+					Console.Write("::::::\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
+					Console.SetCursorPosition(51, 16);
+					Console.Write("::::::\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
+					Console.SetCursorPosition(51, 17);
+					Console.Write("\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
+					Console.SetCursorPosition(51, 18);
+					Console.Write("\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
+					Console.SetCursorPosition(51, 19);
+					Console.Write("\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
+					Console.SetCursorPosition(51, 20);
+					Console.Write("\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
+				}
+
 				char keyinput = Console.ReadKey(true).KeyChar;
+
+				if(keyinput == 'w')
+                {
+					theDate.Advancetime();
+                }
 
 				if(keyinput == 'x')
                 {
 					break;
                 }
+
+				if (keyinput == 'p')
+                {
+					if(liberals.Activesquad.Location.HasFlag)
+                    {
+						liberals.Activesquad.Location.HasFlag = false;
+					}
+					else
+                    {
+						if (liberals.Funds >= 20)
+						{
+							liberals.Funds -= 20;
+							liberals.Activesquad.Location.HasFlag = true;
+						}
+					}
+				}
+
+				if(keyinput == 's')
+                {
+					Console.SetCursorPosition(6, 25);
+					Console.Write("What is your new slogan?");
+					Console.SetCursorPosition(6, 26);
+					string newslogan = Console.ReadLine();
+					if(newslogan.Length <= 50)
+                    {
+						liberals.Slogan = newslogan;
+					}
+				}
 			}
 		}
 

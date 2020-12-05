@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace LCSRemake
 {
@@ -753,6 +754,54 @@ namespace LCSRemake
 			return null;
         }
 
+		static void burnflag()
+        {
+			int x = 70;
+			int y = 20;
+
+			while(x + 12 > 50)
+            {
+				if (x > 50)
+				{
+					Console.SetCursorPosition(x, y);
+					Console.Write('\u2591');
+				}
+				if (x + 2 > 50 && x + 2 < 71)
+				{
+					Console.SetCursorPosition(x + 2 , y - 1);
+					Console.Write('\u2591');
+				}
+				if (x + 4 > 50 && x + 4 < 71)
+				{
+					Console.SetCursorPosition(x + 4, y - 2);
+					Console.Write('\u2591');
+				}
+				if (x + 6 > 50 && x + 6 < 71)
+				{
+					Console.SetCursorPosition(x + 6, y - 3);
+					Console.Write('\u2591');
+				}
+				if (x + 8 > 50 && x + 8 < 71)
+				{
+					Console.SetCursorPosition(x + 8, y - 4);
+					Console.Write('\u2591');
+				}
+				if (x + 10 > 50 && x + 10 < 71)
+				{
+					Console.SetCursorPosition(x + 10, y - 5);
+					Console.Write('\u2591');
+				}
+				if (x + 12 > 50 && x + 12 < 71)
+				{
+					Console.SetCursorPosition(x + 12, y - 6);
+					Console.Write('\u2591');
+				}
+
+				Thread.Sleep(10);
+				x--;
+			}
+		}
+
 		static void Titlescreen()
 		{
 			Console.Clear();
@@ -1451,7 +1500,7 @@ namespace LCSRemake
                                 }
                                 else
                                 {
-                                    Console.Write("\u2591");
+                                    Console.Write("\u2592");
                                 }
                             }
                         }
@@ -1474,6 +1523,7 @@ namespace LCSRemake
                 {
 					if(liberals.Activesquad.Location.HasFlag)
                     {
+						burnflag();
 						liberals.Activesquad.Location.HasFlag = false;
 					}
 					else

@@ -503,6 +503,12 @@ namespace LCSRemake
 		static Date theDate = new Date();
 		static City maincity = new City();
 		static Faction liberals = new Faction();
+		static string str_codename = "CODE NAME";
+		static string str_skill = "SKILL";
+		static string str_weapon = "WEAPON";
+		static string str_armour = "ARMOUR";
+		static string str_health = "HEALTH";
+		static string str_transport = "TRANSPORT";
 
 		static void Border()
 		{
@@ -1302,7 +1308,20 @@ namespace LCSRemake
 				Console.Write("$" + liberals.Funds);
 
 				Console.SetCursorPosition(4, 4);
-				Console.Write("#-CODE NAME------------SKILL------------WEAPON------------ARMOUR------------HEALTH------------TRANSPORT----------#");
+				Console.Write("#----------------------------------------------------------------------------------------------------------------#");
+
+				Console.SetCursorPosition(6, 4);
+				Console.Write(str_codename);
+				Console.SetCursorPosition(27, 4);
+				Console.Write(str_skill);
+				Console.SetCursorPosition(44, 4);
+				Console.Write(str_weapon);
+				Console.SetCursorPosition(62, 4);
+				Console.Write(str_armour);
+				Console.SetCursorPosition(80, 4);
+				Console.Write(str_health);
+				Console.SetCursorPosition(98, 4);
+				Console.Write(str_transport);
 
 				Console.SetCursorPosition(4, 5);
 				Console.Write('1');
@@ -1414,21 +1433,30 @@ namespace LCSRemake
 
 				if(liberals.Activesquad.Location.HasFlag)
                 {
-					Console.SetCursorPosition(51, 14);
-					Console.Write("::::::\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
-					Console.SetCursorPosition(51, 15);
-					Console.Write("::::::\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
-					Console.SetCursorPosition(51, 16);
-					Console.Write("::::::\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
-					Console.SetCursorPosition(51, 17);
-					Console.Write("\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
-					Console.SetCursorPosition(51, 18);
-					Console.Write("\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
-					Console.SetCursorPosition(51, 19);
-					Console.Write("\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591");
-					Console.SetCursorPosition(51, 20);
-					Console.Write("\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588");
-				}
+                    for (int y = 0; y < 7; y++)
+                    {
+                        for (int x = 0; x < 20; x++)
+                        {
+                            Console.SetCursorPosition(51 + x, 14 + y);
+
+                            if (x < 6 && y < 3)
+                            {
+                                Console.Write(':');
+                            }
+                            else
+                            {
+                                if (y % 2 == 0)
+                                {
+                                    Console.Write("\u2588");
+                                }
+                                else
+                                {
+                                    Console.Write("\u2591");
+                                }
+                            }
+                        }
+                    }
+                }
 
 				char keyinput = Console.ReadKey(true).KeyChar;
 

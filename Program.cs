@@ -556,32 +556,41 @@ namespace LCSRemake
         static string str_armour = "ARMOUR";
         static string str_health = "HEALTH";
         static string str_transport = "TRANSPORT";
+        static string str_squadname = "SQUAD NAME";
+        static string str_location = "LOCATION";
+        static string str_squad_activity = "SQUAD / ACTIVITY";
+        static string str_activity = "ACTIVITY";
 
         static void Border()
         {
             for (int x = 2; x < Console.BufferWidth; x++)
             {
-                Console.SetCursorPosition(x, 0);
-                Console.Write("\u2588");
+                Print(x, 0, "\u2588");
             }
 
             for (int x = 2; x < Console.BufferWidth; x++)
             {
-                Console.SetCursorPosition(x, Console.BufferHeight - 2);
-                Console.Write("\u2588");
+                Print(x, Console.BufferHeight - 2, "\u2588");
             }
 
             for (int y = 1; y < Console.BufferHeight - 2; y++)
             {
-                Console.SetCursorPosition(2, y);
-                Console.Write("\u2588");
+                Print(2, y, "\u2588");
             }
 
             for (int y = 1; y < Console.BufferHeight - 2; y++)
             {
-                Console.SetCursorPosition(Console.BufferWidth - 1, y);
-                Console.Write("\u2588");
+                Print(Console.BufferWidth - 1, y, "\u2588");
             }
+        }
+
+        static void Print(int x, int y, string write, ConsoleColor foregroundcolour = ConsoleColor.Gray, ConsoleColor backgroundcolour = ConsoleColor.Black)
+        {
+            Console.ForegroundColor = foregroundcolour;
+            Console.BackgroundColor = backgroundcolour;
+            Console.SetCursorPosition(x, y);
+            Console.Write(write);
+            Console.ResetColor();
         }
 
         static public string RandomFirstName()
@@ -800,46 +809,299 @@ namespace LCSRemake
             return null;
         }
 
+        static void Fullstatus(Entity entity)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Profile of a liberal");
+                Print(4, 4, "Name:");
+                Print(10, 4, entity.Handle);
+                Print(10 + entity.Handle.Length, 4, ", " + entity.Title);
+                Print(80, 4, entity.Profession);
+
+                Print(4, 6, "Heart:        " + entity.Heart);
+                Print(4, 7, "Intelligence: " + entity.Intelligence);
+                Print(4, 8, "Wisdom:       " + entity.Wisdom);
+                Print(4, 9, "Health:       " + entity.MaxHealth + "/" + entity.Health);
+                Print(4, 10, "Agility:      " + entity.Agility);
+                Print(4, 11, "Strength:     " + entity.Strength);
+                Print(4, 12, "Charisma:     " + entity.Charisma);
+                Print(42, 6, "Juice: " + entity.Juice);
+                Print(42, 7, "Next:  ");
+
+                if (entity.Juice < 500)
+                {
+                    if (entity.Juice < 0)
+                    {
+                        Print(49, 7, "0");
+                    }
+                    else if (entity.Juice < 10)
+                    {
+                        Print(49, 7, "10");
+                    }
+                    else if (entity.Juice < 50)
+                    {
+                        Print(49, 7, "50");
+                    }
+                    else if (entity.Juice < 100)
+                    {
+                        Print(49, 7, "100");
+                    }
+                    else if (entity.Juice < 200)
+                    {
+                        Print(49, 7, "200");
+                    }
+                    else
+                    {
+                        Print(49, 7, "500");
+                    }
+                }
+
+                Print(80, 6, "Handtohand:    " + entity.Handtohand);
+                Print(80, 7, "Knife:         " + entity.Knife);
+                Print(80, 8, "Club:          " + entity.Club);
+                Print(80, 9, "Sword:         " + entity.Sword);
+                Print(80, 10, "Axe:           " + entity.Axe);
+                Print(80, 11, "Spear:         " + entity.Spear);
+                Print(80, 12, "Pistol:        " + entity.Pistol);
+                Print(80, 13, "Rifle:         " + entity.Rifle);
+                Print(80, 14, "Assaultrifle:  " + entity.Assaultrifle);
+                Print(100, 6, "Persuasion:    " + entity.Persuasion);
+                Print(100, 7, "Law:           " + entity.Law);
+                Print(100, 8, "Security:      " + entity.Security);
+                Print(100, 9, "Disguise:      " + entity.Disguise);
+                Print(100, 10, "Computers:     " + entity.Computers);
+                Print(100, 11, "Garmentmaking: " + entity.Garmentmaking);
+                Print(100, 12, "Driving:       " + entity.Driving);
+                Print(100, 13, "Writing:       " + entity.Writing);
+
+                Print(4, 16, "Weapon: " + entity.GetWeaponName());
+                Print(42, 16, "Armour: " + entity.GetArmourName());
+                Print(80, 16, "Transport: " + entity.GetVehicleType());
+
+                Print(4, 25, "Press N to change this Liberal's Code Name");
+                Print(4, 26, "Press any other key to continue the Struggle");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 'n')
+                {
+                    Print(42, 20, "What is the new code name?");
+
+                    Console.SetCursorPosition(42, 21);
+
+                    string newname = Console.ReadLine();
+
+                    if (newname == "")
+                    {
+                        entity.Handle = entity.Fullname;
+                    }
+                    else
+                    {
+                        entity.Handle = newname;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        static void Review()
+        {
+            int currenty;
+            int letter;
+            int position;
+            int count;
+            int page = 0;
+
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Review your Liberals and Assemble Squads");
+                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(8, 4, str_squadname);
+                Print(56, 4, str_location);
+                Print(92, 4, str_activity);
+
+                if (page == 2)
+                {
+                    currenty = 5;
+                    letter = 89;
+                    position = 24;
+                    count = 2;
+                }
+                else if (page == 1)
+                {
+                    currenty = 5;
+                    letter = 77;
+                    position = 12;
+                    count = 12;
+                }
+                else
+                {
+                    currenty = 5;
+                    letter = 65;
+                    position = 0;
+
+                    if (liberals.Squads.Count < 12)
+                    {
+                        count = liberals.Squads.Count;
+                    }
+                    else
+                    {
+                        count = 12;
+                    }
+                }
+
+                foreach (Squad squad in liberals.Squads.GetRange(position, count))
+                {
+                    if (squad == liberals.Activesquad)
+                    {
+                        Print(4, currenty, (char)letter + " - " + squad.Name, ConsoleColor.White);
+                        Print(56, currenty, squad.Location.Shortname, ConsoleColor.White);
+                        Print(92, currenty, "Gathering Opinion Info", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(4, currenty, (char)letter + " - " + squad.Name);
+                        Print(56, currenty, squad.Location.Shortname);
+                        Print(92, currenty, "Gathering Opinion Info");
+                    }
+                    currenty++;
+                    letter++;
+                }
+
+                Print(4, 17, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(28, 19, "1 - Active Liberals", ConsoleColor.Green);
+                Print(54, 19, "2 - Hostages", ConsoleColor.Red);
+                Print(80, 19, "3 - CLINIC", ConsoleColor.White);
+                Print(28, 20, "4 - Justice System", ConsoleColor.Yellow);
+                Print(54, 20, "5 - Sleepers", ConsoleColor.Magenta);
+                Print(80, 20, "6 - The Dead", ConsoleColor.DarkGray);
+                Print(28, 21, "7 - Away", ConsoleColor.Blue);
+
+                Print(4, 24, "Press a letter to select a squad. 1-7 to view liberal groups.");
+                Print(4, 25, "[] to view other liberal pages.   Press 8 to promote liberals.");
+                Print(4, 26, "Press 9 to assemble a new squad.  Press 0 to assign new bases to the squadless.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= '1' && keyinput <= '7')
+                {
+                    switch (keyinput)
+                    {
+                        case '1':
+                            ActiveLiberals();
+                            break;
+
+                        case '2':
+                            //Hostages();
+                            break;
+
+                        case '3':
+                            //Clinic();
+                            break;
+
+                        case '4':
+                            //JusticeSystem();
+                            break;
+
+                        case '5':
+                            //Sleepers();
+                            break;
+
+                        case '6':
+                            //TheDead();
+                            break;
+
+                        case '7':
+                            //Away();
+                            break;
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (liberals.Squads.Count > 12 && page == 0 || liberals.Squads.Count > 24 && page == 1)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (liberals.Squads.Count > 12 && page == 1 || liberals.Squads.Count > 24 && page == 2)
+                    {
+                        page--;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        static void ActiveLiberals()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Active Liberals");
+                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(8, 4, str_codename);
+                Print(24, 4, str_skill);
+                Print(57, 4, str_health);
+                Print(74, 4, str_location);
+                Print(92, 4, str_squad_activity);
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 'x')
+                {
+                    break;
+                }
+            }
+        }
+
         static void Titlescreen()
         {
             Console.Clear();
             Border();
 
             string str = "Liberal Crime Squad (Remake)";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 4);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 4, str);
 
             str = "Inspired by the 1983 version of Oubliette";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 6);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 6, str);
 
             str = "v1 Copyright (C) 2020, Josh Carter";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 8);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 8, str);
 
             str = "A remake of the original game by";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 14);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 14, str);
 
             str = "Tarn Adams, v3.06 Copyright (C) 2002-4";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 15);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 15, str);
 
             str = "A Bay 12 Games Production";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 16);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 16, str);
 
             str = "www.bay12games.com";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 17);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 17, str);
 
             str = "Press ESC now to quit.  Quitting later causes your progress to be saved.";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 20);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 20, str);
 
             str = "Press any other key to pursue your Liberal Agenda!";
-            Console.SetCursorPosition((Console.BufferWidth / 2) - (str.Length / 2), 22);
-            Console.WriteLine(str);
+            Print((Console.BufferWidth / 2) - (str.Length / 2), 22, str);
 
             if (Console.ReadKey().Key == ConsoleKey.Escape)
             {
@@ -860,84 +1122,80 @@ namespace LCSRemake
                 Console.Clear();
                 Border();
 
-                Console.SetCursorPosition(4, 2);
-                Console.WriteLine("Insight into a Revolution:  My Traumatic Childhood");
+                Print(4, 2, "Insight into a Revolution:  My Traumatic Childhood");
 
                 switch (q)
                 {
                     case 0:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("The day I was born in 1984...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - was the day the Sandinista Front won the elections in Nicaragua.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - was the 3rd anniversary of the assassination attempt on Ronald Reagan.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - was the day the Macintosh was introduced.");
-
-                        Console.SetCursorPosition(4, 14);
-                        Console.WriteLine("My parents named me " + newcharacter.Fullname + ".");
+                        Print(4, 4, "The day I was born in 1984...");
+                        Print(4, 6, "A - was the day the Sandinista Front won the elections in Nicaragua.");
+                        Print(4, 8, "B - was the 3rd anniversary of the assassination attempt on Ronald Reagan.");
+                        Print(4, 10, "C - was the day the Macintosh was introduced.");
+                        Print(4, 14, "My parents named me " + newcharacter.Fullname + ".");
                         break;
 
                     case 1:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("When I was bad...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - my parents argued with each other about me, but I was never punished.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - my father beat me.  I learned to take a punch earlier than most.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - I was sent to my room, where I studied quietly by myself, alone.");
+                        Print(4, 4, "When I was bad...");
+                        Print(4, 6, "A - my parents argued with each other about me, but I was never punished.");
+                        Print(4, 8, "B - my father beat me.  I learned to take a punch earlier than most.");
+                        Print(4, 10, "C - I was sent to my room, where I studied quietly by myself, alone.");
                         break;
 
                     case 2:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("In elementary school...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - I was the class clown.  I even had some friends.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - I was unruly and often fought with the other children.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - I was at the head of the class, and I worked very hard.");
+                        Print(4, 4, "In elementary school...");
+                        Print(4, 6, "A - I was the class clown.  I even had some friends.");
+                        Print(4, 8, "B - I was unruly and often fought with the other children.");
+                        Print(4, 10, "C - I was at the head of the class, and I worked very hard.");
                         break;
 
                     case 3:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("When I turned 10...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - my parents divorced.  Acrimoniously.  I once tripped over the paperwork!");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - my parents divorced.  Violently.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - my parents divorced.  My studies suffered but I continued working.");
+                        Print(4, 4, "When I turned 10...");
+                        Print(4, 6, "A - my parents divorced.  Acrimoniously.  I once tripped over the paperwork!");
+                        Print(4, 8, "B - my parents divorced.  Violently.");
+                        Print(4, 10, "C - my parents divorced.  My studies suffered but I continued working.");
                         break;
 
                     case 4:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("When I hit junior high school...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - I broke into lockers and was into punk rock.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - I was into knives and broke things with bats.  My anger was unmanaged.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - I got into chess and go.  I was a total outcast.");
+                        Print(4, 4, "When I hit junior high school...");
+                        Print(4, 6, "A - I broke into lockers and was into punk rock.");
+                        Print(4, 8, "B - I was into knives and broke things with bats.  My anger was unmanaged.");
+                        Print(4, 10, "C - I got into chess and go.  I was a total outcast.");
                         break;
 
                     case 5:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("Things were getting really bad...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - when I stole my first car.  I got a few blocks before I totalled it.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - and I went to live with my dad.  He had been in Nam and he still drank.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - and I went completely goth.  I had no friends and made costumes by myself.");
+                        Print(4, 4, "Things were getting really bad...");
+                        Print(4, 6, "A - when I stole my first car.  I got a few blocks before I totalled it.");
+                        Print(4, 8, "B - and I went to live with my dad.  He had been in Nam and he still drank.");
+                        Print(4, 10, "C - and I went completely goth.  I had no friends and made costumes by myself.");
                         break;
 
                     case 6:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("Well, you know it has reached a crescendo when...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - you steal a cop car and you're only 14.  I went to juvie for 6 months.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - your mom shoots her ex-husband, your dad, with a shotgun.  She got off.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - you try sports for a quarter, desperate to fit in.");
+                        Print(4, 4, "Well, you know it has reached a crescendo when...");
+                        Print(4, 6, "A - you steal a cop car and you're only 14.  I went to juvie for 6 months.");
+                        Print(4, 8, "B - your mom shoots her ex-husband, your dad, with a shotgun.  She got off.");
+                        Print(4, 10, "C - you try sports for a quarter, desperate to fit in.");
                         break;
 
                     case 7:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("I was only 15 when I ran away, and...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - I started robbing houses:  rich people only.  I was fed up with their crap.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - Hung out with thugs and beat the shit out of people.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - volunteered for a left-wing candidate.  It wasn't *real*, though, you know?");
+                        Print(4, 4, "I was only 15 when I ran away, and...");
+                        Print(4, 6, "A - I started robbing houses:  rich people only.  I was fed up with their crap.");
+                        Print(4, 8, "B - Hung out with thugs and beat the shit out of people.");
+                        Print(4, 10, "C - volunteered for a left-wing candidate.  It wasn't *real*, though, you know?");
                         break;
 
                     case 8:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("Life went on.  For my 18th birthday...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - I stole a security uniform.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - I bought myself an assault rifle.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - I celebrated.  I'd saved a thousand bucks!");
+                        Print(4, 4, "Life went on.  For my 18th birthday...");
+                        Print(4, 6, "A - I stole a security uniform.");
+                        Print(4, 8, "B - I bought myself an assault rifle.");
+                        Print(4, 10, "C - I celebrated.  I'd saved a thousand bucks!");
                         break;
 
                     case 9:
-                        Console.SetCursorPosition(4, 4); Console.WriteLine("For the past few years, I've been...");
-                        Console.SetCursorPosition(4, 6); Console.WriteLine("A - stealing from Corporations, but I want to do more.");
-                        Console.SetCursorPosition(4, 8); Console.WriteLine("B - a violent criminal.  Nothing can change that.");
-                        Console.SetCursorPosition(4, 10); Console.WriteLine("C - volunteering for prominent liberals, but I know there's a better way.");
-
-                        Console.SetCursorPosition(4, 14); Console.WriteLine("I live in " + maincity.Cityname + ", and it's about to experience real change.");
+                        Print(4, 4, "For the past few years, I've been...");
+                        Print(4, 6, "A - stealing from Corporations, but I want to do more.");
+                        Print(4, 8, "B - a violent criminal.  Nothing can change that.");
+                        Print(4, 10, "C - volunteering for prominent liberals, but I know there's a better way.");
+                        Print(4, 14, "I live in " + maincity.Cityname + ", and it's about to experience real change.");
                         break;
                 }
 
@@ -1162,8 +1420,8 @@ namespace LCSRemake
 
             Console.Clear();
             Border();
-            Console.SetCursorPosition(4, 2);
-            Console.Write("What is your name to the People?");
+
+            Print(4, 2, "What is your name to the People?");
             Console.SetCursorPosition(4, 3);
 
             string nameinput = Console.ReadLine();
@@ -1340,321 +1598,96 @@ namespace LCSRemake
                 }
             }
 
+            liberals.Pool.Add(newcharacter);
             liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
 
             Mainscreen();
         }
 
-        static void Fullstatus(Entity entity)
-        {
-            while (true)
-            {
-                Console.Clear();
-                Border();
-                Console.SetCursorPosition(4, 2);
-                Console.Write("Profile of a liberal");
 
-                Console.SetCursorPosition(4, 4);
-                Console.Write("Name:");
-
-                Console.SetCursorPosition(10, 4);
-                Console.Write(entity.Handle);
-
-                Console.SetCursorPosition(10 + entity.Handle.Length, 4);
-                Console.Write(", " + entity.Title);
-
-                Console.SetCursorPosition(80, 4);
-                Console.Write(entity.Profession);
-
-                Console.SetCursorPosition(4, 6);
-                Console.Write("Heart:        " + entity.Heart);
-
-                Console.SetCursorPosition(4, 7);
-                Console.Write("Intelligence: " + entity.Intelligence);
-
-                Console.SetCursorPosition(4, 8);
-                Console.Write("Wisdom:       " + entity.Wisdom);
-
-                Console.SetCursorPosition(4, 9);
-                Console.Write("Health:       " + entity.MaxHealth + "/" + entity.Health);
-
-                Console.SetCursorPosition(4, 10);
-                Console.Write("Agility:      " + entity.Agility);
-
-                Console.SetCursorPosition(4, 11);
-                Console.Write("Strength:     " + entity.Strength);
-
-                Console.SetCursorPosition(4, 12);
-                Console.Write("Charisma:     " + entity.Charisma);
-
-                Console.SetCursorPosition(42, 6);
-                Console.Write("Juice: " + entity.Juice);
-
-                Console.SetCursorPosition(42, 7);
-                Console.Write("Next:  ");
-
-                Console.SetCursorPosition(49, 7);
-                if (entity.Juice < 500)
-                {
-                    if (entity.Juice < 0)
-                    {
-                        Console.Write("0");
-                    }
-                    else if (entity.Juice < 10)
-                    {
-                        Console.Write("10");
-                    }
-                    else if (entity.Juice < 50)
-                    {
-                        Console.Write("50");
-                    }
-                    else if (entity.Juice < 100)
-                    {
-                        Console.Write("100");
-                    }
-                    else if (entity.Juice < 200)
-                    {
-                        Console.Write("200");
-                    }
-                    else
-                    {
-                        Console.Write("500");
-                    }
-                }
-
-                Console.SetCursorPosition(80, 6);
-                Console.Write("Handtohand:    " + entity.Handtohand);
-
-                Console.SetCursorPosition(80, 7);
-                Console.Write("Knife:         " + entity.Knife);
-
-                Console.SetCursorPosition(80, 8);
-                Console.Write("Club:          " + entity.Club);
-
-                Console.SetCursorPosition(80, 9);
-                Console.Write("Sword:         " + entity.Sword);
-
-                Console.SetCursorPosition(80, 10);
-                Console.Write("Axe:           " + entity.Axe);
-
-                Console.SetCursorPosition(80, 11);
-                Console.Write("Spear:         " + entity.Spear);
-
-                Console.SetCursorPosition(80, 12);
-                Console.Write("Pistol:        " + entity.Pistol);
-
-                Console.SetCursorPosition(80, 13);
-                Console.Write("Rifle:         " + entity.Rifle);
-
-                Console.SetCursorPosition(80, 14);
-                Console.Write("Assaultrifle:  " + entity.Assaultrifle);
-
-                Console.SetCursorPosition(100, 6);
-                Console.Write("Persuasion:    " + entity.Persuasion);
-
-                Console.SetCursorPosition(100, 7);
-                Console.Write("Law:           " + entity.Law);
-
-                Console.SetCursorPosition(100, 8);
-                Console.Write("Security:      " + entity.Security);
-
-                Console.SetCursorPosition(100, 9);
-                Console.Write("Disguise:      " + entity.Disguise);
-
-                Console.SetCursorPosition(100, 10);
-                Console.Write("Computers:     " + entity.Computers);
-
-                Console.SetCursorPosition(100, 11);
-                Console.Write("Garmentmaking: " + entity.Garmentmaking);
-
-                Console.SetCursorPosition(100, 12);
-                Console.Write("Driving:       " + entity.Driving);
-
-                Console.SetCursorPosition(100, 13);
-                Console.Write("Writing:       " + entity.Writing);
-
-                Console.SetCursorPosition(4, 16);
-                Console.Write("Weapon: " + entity.GetWeaponName());
-
-                Console.SetCursorPosition(42, 16);
-                Console.Write("Armour: " + entity.GetArmourName());
-
-                Console.SetCursorPosition(80, 16);
-                Console.Write("Transport: " + entity.GetVehicleType());
-
-                Console.SetCursorPosition(4, 25);
-                Console.Write("Press N to change this Liberal's Code Name");
-
-                Console.SetCursorPosition(4, 26);
-                Console.Write("Press any other key to continue the Struggle");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if(keyinput == 'n')
-                {
-                    Console.SetCursorPosition(42, 20);
-                    Console.Write("What is the new code name?");
-
-                    Console.SetCursorPosition(42, 21);
-
-                    string newname = Console.ReadLine();
-
-                    if (newname == "")
-                    {
-                        entity.Handle = entity.Fullname;
-                    }
-                    else
-                    {
-                        entity.Handle = newname;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
 
         static void Mainscreen()
         {
+            string activity = "Hanging Out";
+
             while (true)
             {
                 Console.Clear();
                 Border();
-                Console.SetCursorPosition(4, 2);
-                Console.Write(liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
 
-                string activity = "Hanging Out";
-                Console.SetCursorPosition((Console.BufferWidth / 2) - (activity.Length / 2), 2);
-                Console.Write(activity);
+                Print(4, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
+                Print((Console.BufferWidth / 2) - (activity.Length / 2), 2, activity, ConsoleColor.White);
+                Print(Console.BufferWidth - 10, 2, "$" + liberals.Funds, ConsoleColor.Green);
 
-                Console.SetCursorPosition(Console.BufferWidth - 10, 2);
-                Console.Write("$" + liberals.Funds);
-
-                Console.SetCursorPosition(4, 4);
-                Console.Write("#----------------------------------------------------------------------------------------------------------------#");
-
-                Console.SetCursorPosition(6, 4);
-                Console.Write(str_codename);
-                Console.SetCursorPosition(27, 4);
-                Console.Write(str_skill);
-                Console.SetCursorPosition(44, 4);
-                Console.Write(str_weapon);
-                Console.SetCursorPosition(62, 4);
-                Console.Write(str_armour);
-                Console.SetCursorPosition(80, 4);
-                Console.Write(str_health);
-                Console.SetCursorPosition(98, 4);
-                Console.Write(str_transport);
-
-                Console.SetCursorPosition(4, 5);
-                Console.Write('1');
-                Console.SetCursorPosition(4, 6);
-                Console.Write('2');
-                Console.SetCursorPosition(4, 7);
-                Console.Write('3');
-                Console.SetCursorPosition(4, 8);
-                Console.Write('4');
-                Console.SetCursorPosition(4, 9);
-                Console.Write('5');
-                Console.SetCursorPosition(4, 10);
-                Console.Write('6');
+                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(6, 4, str_codename);
+                Print(27, 4, str_skill);
+                Print(44, 4, str_weapon);
+                Print(62, 4, str_armour);
+                Print(80, 4, str_health);
+                Print(98, 4, str_transport);
+                Print(4, 5, "1");
+                Print(4, 6, "2");
+                Print(4, 7, "3");
+                Print(4, 8, "4");
+                Print(4, 9, "5");
+                Print(4, 10, "6");
 
                 for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
                 {
                     Entity selectedmember = liberals.Activesquad.Entities[member];
 
-                    Console.SetCursorPosition(6, 5 + member);
-                    Console.Write(selectedmember.Handle);
+                    Print(6, 5 + member, selectedmember.Handle);
+                    Print(27, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
+                    Print(44, 5 + member, selectedmember.GetWeaponName());
+                    Print(62, 5 + member, selectedmember.GetArmourName());
 
-                    Console.SetCursorPosition(27, 5 + member);
-                    Console.Write(selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
-
-                    Console.SetCursorPosition(44, 5 + member);
-                    Console.Write(selectedmember.GetWeaponName());
-
-                    Console.SetCursorPosition(62, 5 + member);
-                    Console.Write(selectedmember.GetArmourName());
-
-                    Console.SetCursorPosition(80, 5 + member);
                     if (selectedmember.Health >= selectedmember.MaxHealth - 1)
                     {
-                        Console.Write("Liberal");
+                        Print(80, 5 + member, "Liberal", ConsoleColor.Green);
                     }
                     else if (selectedmember.Health < selectedmember.MaxHealth - 1 && selectedmember.Health > (int)selectedmember.MaxHealth / 2)
                     {
-                        Console.Write("Moderate");
+                        Print(80, 5 + member, "Moderate", ConsoleColor.Green);
                     }
                     else
                     {
-                        Console.Write("Conservative");
+                        Print(80, 5 + member, "Conservative", ConsoleColor.Green);
                     }
 
-                    Console.SetCursorPosition(98, 5 + member);
-                    Console.Write(selectedmember.GetVehicleType());
+                    Print(98, 5 + member, selectedmember.GetVehicleType());
                 }
 
-                Console.SetCursorPosition(4, 11);
-                Console.Write("#----------------------------------------------------------------------------------------------------------------#");
+                Print(4, 11, "#----------------------------------------------------------------------------------------------------------------#");
 
-                Console.SetCursorPosition(6, 14);
-                Console.Write("F - Go forth to stop EVIL");
+                Print(6, 14, "F - Go forth to stop EVIL");
+                Print(6, 15, "E - Equipment");
+                Print(6, 16, "V - Vehicles", ConsoleColor.DarkGray);
+                Print(6, 17, "R - Review and reorganize liberals");
+                Print(6, 18, "A - Activate the uninvolved");
+                Print(6, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
+                Print(6, 20, "X - Live to fight EVIL another day");
+                Print(6, 21, "W - Wait a day");
+                Print(77, 14, "0 - Show the squad's liberal status", ConsoleColor.DarkGray);
+                Print(77, 15, "# - Check the status of a squad liberal");
+                Print(77, 16, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
+                Print(77, 17, "Tab - Next squad", ConsoleColor.DarkGray);
+                Print(77, 18, "Z - Next location");
+                Print(77, 19, "L - The status of the liberal agenda");
 
-                Console.SetCursorPosition(6, 15);
-                Console.Write("E - Equipment");
-
-                Console.SetCursorPosition(6, 16);
-                Console.Write("V - Vehicles");
-
-                Console.SetCursorPosition(6, 17);
-                Console.Write("R - Review and reorganize liberals ");
-
-                Console.SetCursorPosition(6, 18);
-                Console.Write("A - Activate the uninvolved");
-
-                Console.SetCursorPosition(6, 19);
-                Console.Write("C - Cancel this squads departure");
-
-                Console.SetCursorPosition(6, 20);
-                Console.Write("X - Live to fight EVIL another day");
-
-                Console.SetCursorPosition(6, 21);
-                Console.Write("W - Wait a day");
-
-                Console.SetCursorPosition(77, 14);
-                Console.Write("0 - Show the squad's liberal status");
-
-                Console.SetCursorPosition(77, 15);
-                Console.Write("# - Check the status of a squad liberal");
-
-                Console.SetCursorPosition(77, 16);
-                Console.Write("O - Change the squad's liberal order");
-
-                Console.SetCursorPosition(77, 17);
-                Console.Write("Tab - Next squad");
-
-                Console.SetCursorPosition(77, 18);
-                Console.Write("Z - Next location");
-
-                Console.SetCursorPosition(77, 19);
-                Console.Write("L - The status of the liberal agenda");
-
-                Console.SetCursorPosition(77, 20);
                 if (liberals.Activesquad.Location.HasFlag)
                 {
-                    Console.Write("P - PROTEST: burn the flag");
+                    Print(77, 20, "P - PROTEST: burn the flag");
                 }
                 else
                 {
-                    Console.Write("P - PATRIOTISM: Fly a flag here ($20)");
+                    Print(77, 20, "P - PATRIOTISM: Fly a flag here ($20)");
                 }
 
-                Console.SetCursorPosition(77, 21);
-                Console.Write("S - FREE SPEECH: The liberal slogan");
+                Print(77, 21, "S - FREE SPEECH: The liberal slogan");
 
-                Console.SetCursorPosition((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24);
-                Console.Write(liberals.Slogan);
+                Print((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24, liberals.Slogan, ConsoleColor.White);
 
                 if (liberals.Activesquad.Location.HasFlag)
                 {
@@ -1662,21 +1695,19 @@ namespace LCSRemake
                     {
                         for (int x = 0; x < 20; x++)
                         {
-                            Console.SetCursorPosition(51 + x, 14 + y);
-
                             if (x < 6 && y < 3)
                             {
-                                Console.Write(':');
+                                Print(51 + x, 14 + y, ":", ConsoleColor.White, ConsoleColor.DarkBlue);
                             }
                             else
                             {
                                 if (y % 2 == 0)
                                 {
-                                    Console.Write("\u2588");
+                                    Print(51 + x, 14 + y, "\u2588", ConsoleColor.DarkRed);
                                 }
                                 else
                                 {
-                                    Console.Write("\u2592");
+                                    Print(51 + x, 14 + y, "\u2588", ConsoleColor.White);
                                 }
                             }
                         }
@@ -1685,9 +1716,9 @@ namespace LCSRemake
 
                 char keyinput = Console.ReadKey(true).KeyChar;
 
-                if (keyinput == 'w')
+                if (keyinput == 'r')
                 {
-                    theDate.Advancetime();
+                    Review();
                 }
 
                 if (keyinput == 'x')
@@ -1695,7 +1726,12 @@ namespace LCSRemake
                     break;
                 }
 
-                if (keyinput >= '1' || keyinput <= '6')
+                if (keyinput == 'w')
+                {
+                    theDate.Advancetime();
+                }
+
+                if (keyinput >= '1' && keyinput <= '6')
                 {
                     try
                     {
@@ -1717,38 +1753,31 @@ namespace LCSRemake
                         {
                             if (x > 50)
                             {
-                                Console.SetCursorPosition(x, y);
-                                Console.Write('\u2591');
+                                Print(x, y, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 2 > 50 && x + 2 < 71)
                             {
-                                Console.SetCursorPosition(x + 2, y - 1);
-                                Console.Write('\u2591');
+                                Print(x + 2, y - 1, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 4 > 50 && x + 4 < 71)
                             {
-                                Console.SetCursorPosition(x + 4, y - 2);
-                                Console.Write('\u2591');
+                                Print(x + 4, y - 2, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 6 > 50 && x + 6 < 71)
                             {
-                                Console.SetCursorPosition(x + 6, y - 3);
-                                Console.Write('\u2591');
+                                Print(x + 6, y - 3, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 8 > 50 && x + 8 < 71)
                             {
-                                Console.SetCursorPosition(x + 8, y - 4);
-                                Console.Write('\u2591');
+                                Print(x + 8, y - 4, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 10 > 50 && x + 10 < 71)
                             {
-                                Console.SetCursorPosition(x + 10, y - 5);
-                                Console.Write('\u2591');
+                                Print(x + 10, y - 5, "\u2591", ConsoleColor.DarkYellow);
                             }
                             if (x + 12 > 50 && x + 12 < 71)
                             {
-                                Console.SetCursorPosition(x + 12, y - 6);
-                                Console.Write('\u2591');
+                                Print(x + 12, y - 6, "\u2591", ConsoleColor.DarkYellow);
                             }
 
                             Thread.Sleep(10);
@@ -1768,8 +1797,7 @@ namespace LCSRemake
 
                 if (keyinput == 's')
                 {
-                    Console.SetCursorPosition(6, 25);
-                    Console.Write("What is your new slogan?");
+                    Print(6, 25, "What is your new slogan?");
                     Console.SetCursorPosition(6, 26);
                     string newslogan = Console.ReadLine();
                     if (newslogan.Length <= 50)

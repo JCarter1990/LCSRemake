@@ -88,15 +88,27 @@ namespace LCSRemake
         public List<Squad> Squads { get; }
         public Squad Activesquad { get; set; }
         public bool Disbanding { get; set; }
-        public List<Entity> Pool { get; }
+        public List<Entity> Active { get; }
+        public List<Entity> Hostages { get; }
+        public List<Entity> Clinic { get; }
+        public List<Entity> JusticeSystem { get; }
+        public List<Entity> Sleepers { get; }
+        public List<Entity> TheDead { get; }
+        public List<Entity> Away { get; }
 
         public Faction()
         {
             this.Funds = 0;
             this.Slogan = "We need a slogan!";
             this.Squads = new List<Squad>();
-            this.Pool = new List<Entity>();
             this.Disbanding = false;
+            this.Active = new List<Entity>();
+            this.Hostages = new List<Entity>();
+            this.Clinic = new List<Entity>();
+            this.JusticeSystem = new List<Entity>();
+            this.Sleepers = new List<Entity>();
+            this.TheDead = new List<Entity>();
+            this.Away = new List<Entity>();
         }
     };
 
@@ -157,6 +169,7 @@ namespace LCSRemake
 
         public int Juice { get; set; }
 
+        public Squad AssignedSquad { get; set; }
         public Weapon Weapon { get; set; }
         public Armour Armour { get; set; }
         public Location Mybase { get; set; }
@@ -214,6 +227,22 @@ namespace LCSRemake
                    this.Spear + this.Pistol + this.Rifle + this.Assaultrifle + this.Persuasion +
                    this.Law + this.Security + this.Disguise + this.Computers + this.Garmentmaking +
                    this.Driving + this.Writing;
+        }
+
+        public string GetHealthLabel()
+        {
+            if (this.Health >= this.MaxHealth - 1)
+            {
+                return "Liberal";
+            }
+            else if (this.Health < this.MaxHealth - 1 && this.Health > (int)this.MaxHealth / 2)
+            {
+                return "Moderate";
+            }
+            else
+            {
+                return "Conservative";
+            }
         }
 
         public string UpdateTitle()
@@ -563,12 +592,12 @@ namespace LCSRemake
 
         static void Border()
         {
-            for (int x = 2; x < Console.BufferWidth; x++)
+            for (int x = 2; x < Console.BufferWidth - 2; x++)
             {
                 Print(x, 0, "\u2588");
             }
 
-            for (int x = 2; x < Console.BufferWidth; x++)
+            for (int x = 2; x < Console.BufferWidth - 2; x++)
             {
                 Print(x, Console.BufferHeight - 2, "\u2588");
             }
@@ -580,7 +609,7 @@ namespace LCSRemake
 
             for (int y = 1; y < Console.BufferHeight - 2; y++)
             {
-                Print(Console.BufferWidth - 1, y, "\u2588");
+                Print(Console.BufferWidth - 3, y, "\u2588");
             }
         }
 
@@ -915,70 +944,55 @@ namespace LCSRemake
         {
             int currenty;
             int letter;
-            int position;
             int count;
+            int position;
             int page = 0;
+            int maxpage = liberals.Squads.Count / 12;
 
             while (true)
             {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if(liberals.Squads.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else 
+                {
+                    count = liberals.Squads.Count - page * 12;
+                }
+                
                 Console.Clear();
                 Border();
 
                 Print(4, 2, "Review your Liberals and Assemble Squads");
-                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(8, 4, str_squadname);
-                Print(56, 4, str_location);
-                Print(92, 4, str_activity);
-
-                if (page == 2)
-                {
-                    currenty = 5;
-                    letter = 89;
-                    position = 24;
-                    count = 2;
-                }
-                else if (page == 1)
-                {
-                    currenty = 5;
-                    letter = 77;
-                    position = 12;
-                    count = 12;
-                }
-                else
-                {
-                    currenty = 5;
-                    letter = 65;
-                    position = 0;
-
-                    if (liberals.Squads.Count < 12)
-                    {
-                        count = liberals.Squads.Count;
-                    }
-                    else
-                    {
-                        count = 12;
-                    }
-                }
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_squadname);
+                Print(55, 4, str_location);
+                Print(91, 4, str_activity);
 
                 foreach (Squad squad in liberals.Squads.GetRange(position, count))
                 {
                     if (squad == liberals.Activesquad)
                     {
-                        Print(4, currenty, (char)letter + " - " + squad.Name, ConsoleColor.White);
-                        Print(56, currenty, squad.Location.Shortname, ConsoleColor.White);
-                        Print(92, currenty, "Gathering Opinion Info", ConsoleColor.White);
+                        Print(3, currenty, (char)letter + " - " + squad.Name, ConsoleColor.White);
+                        Print(55, currenty, squad.Location.Shortname, ConsoleColor.White);
+                        Print(91, currenty, "Gathering Opinion Info", ConsoleColor.White);
                     }
                     else
                     {
-                        Print(4, currenty, (char)letter + " - " + squad.Name);
-                        Print(56, currenty, squad.Location.Shortname);
-                        Print(92, currenty, "Gathering Opinion Info");
+                        Print(3, currenty, (char)letter + " - " + squad.Name);
+                        Print(55, currenty, squad.Location.Shortname);
+                        Print(91, currenty, "Gathering Opinion Info");
                     }
                     currenty++;
                     letter++;
                 }
 
-                Print(4, 17, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
                 Print(28, 19, "1 - Active Liberals", ConsoleColor.Green);
                 Print(54, 19, "2 - Hostages", ConsoleColor.Red);
                 Print(80, 19, "3 - CLINIC", ConsoleColor.White);
@@ -1028,14 +1042,14 @@ namespace LCSRemake
                 }
                 else if (keyinput == ']')
                 {
-                    if (liberals.Squads.Count > 12 && page == 0 || liberals.Squads.Count > 24 && page == 1)
+                    if (page < maxpage)
                     {
                         page++;
                     }
                 }
                 else if (keyinput == '[')
                 {
-                    if (liberals.Squads.Count > 12 && page == 1 || liberals.Squads.Count > 24 && page == 2)
+                    if (page > 0)
                     {
                         page--;
                     }
@@ -1049,22 +1063,105 @@ namespace LCSRemake
 
         static void ActiveLiberals()
         {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 6;
+
             while (true)
             {
+                currenty = 5;
+                letter = 65;
+                position = page * 6;
+
+                if (liberals.Active.Count - page * 6 > 6)
+                {
+                    count = 6;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 6;
+                }
+
                 Console.Clear();
                 Border();
 
                 Print(4, 2, "Active Liberals");
-                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(8, 4, str_codename);
-                Print(24, 4, str_skill);
-                Print(57, 4, str_health);
-                Print(74, 4, str_location);
-                Print(92, 4, str_squad_activity);
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(29, 4, str_skill);
+                Print(47, 4, str_health);
+                Print(66, 4, str_location);
+                Print(87, 4, str_squad_activity);
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + entity.Handle);
+                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
+                    Print(47, currenty, entity.GetHealthLabel(), ConsoleColor.Green);
+                    Print(66, currenty, entity.Location.Name);
+                    Print(87, currenty, entity.AssignedSquad.Name + " / ", ConsoleColor.White);
+                    Print(87, currenty + 1, "Gathering Opinion Info", ConsoleColor.White);
+
+                    currenty += 2;
+                    letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to View Status.");
+                Print(4, 25, "[] to view other liberal pages.");
 
                 char keyinput = Console.ReadKey(true).KeyChar;
 
-                if (keyinput == 'x')
+                if(keyinput >= 'a' && keyinput <= 'f')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                Fullstatus(liberals.Active[0 + page * 6]);
+                                break;
+                            case 'b':
+                                Fullstatus(liberals.Active[1 + page * 6]);
+                                break;
+                            case 'c':
+                                Fullstatus(liberals.Active[2 + page * 6]);
+                                break;
+                            case 'd':
+                                Fullstatus(liberals.Active[3 + page * 6]);
+                                break;
+                            case 'e':
+                                Fullstatus(liberals.Active[4 + page * 6]);
+                                break;
+                            case 'f':
+                                Fullstatus(liberals.Active[5 + page * 6]);
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else
                 {
                     break;
                 }
@@ -1435,6 +1532,8 @@ namespace LCSRemake
                 newcharacter.Handle = nameinput;
             }
 
+            newcharacter.AssignedSquad = newsquad;
+
             newlocation = new Location("Downtown", "Downtown", "downtown", false, null);
             maincity.Locations.Add(newlocation);
 
@@ -1598,14 +1697,12 @@ namespace LCSRemake
                 }
             }
 
-            liberals.Pool.Add(newcharacter);
+            liberals.Active.Add(newcharacter);
             liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
 
             Mainscreen();
         }
-
-
 
         static void Mainscreen()
         {
@@ -1616,76 +1713,63 @@ namespace LCSRemake
                 Console.Clear();
                 Border();
 
-                Print(4, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
+                Print(5, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
                 Print((Console.BufferWidth / 2) - (activity.Length / 2), 2, activity, ConsoleColor.White);
-                Print(Console.BufferWidth - 10, 2, "$" + liberals.Funds, ConsoleColor.Green);
+                Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
 
-                Print(4, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(6, 4, str_codename);
-                Print(27, 4, str_skill);
-                Print(44, 4, str_weapon);
-                Print(62, 4, str_armour);
-                Print(80, 4, str_health);
-                Print(98, 4, str_transport);
-                Print(4, 5, "1");
-                Print(4, 6, "2");
-                Print(4, 7, "3");
-                Print(4, 8, "4");
-                Print(4, 9, "5");
-                Print(4, 10, "6");
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(5, 4, str_codename);
+                Print(26, 4, str_skill);
+                Print(43, 4, str_weapon);
+                Print(61, 4, str_armour);
+                Print(79, 4, str_health);
+                Print(97, 4, str_transport);
+                Print(3, 5, "1");
+                Print(3, 6, "2");
+                Print(3, 7, "3");
+                Print(3, 8, "4");
+                Print(3, 9, "5");
+                Print(3, 10, "6");
 
                 for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
                 {
                     Entity selectedmember = liberals.Activesquad.Entities[member];
 
-                    Print(6, 5 + member, selectedmember.Handle);
-                    Print(27, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
-                    Print(44, 5 + member, selectedmember.GetWeaponName());
-                    Print(62, 5 + member, selectedmember.GetArmourName());
-
-                    if (selectedmember.Health >= selectedmember.MaxHealth - 1)
-                    {
-                        Print(80, 5 + member, "Liberal", ConsoleColor.Green);
-                    }
-                    else if (selectedmember.Health < selectedmember.MaxHealth - 1 && selectedmember.Health > (int)selectedmember.MaxHealth / 2)
-                    {
-                        Print(80, 5 + member, "Moderate", ConsoleColor.Green);
-                    }
-                    else
-                    {
-                        Print(80, 5 + member, "Conservative", ConsoleColor.Green);
-                    }
-
-                    Print(98, 5 + member, selectedmember.GetVehicleType());
+                    Print(5, 5 + member, selectedmember.Handle);
+                    Print(26, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
+                    Print(43, 5 + member, selectedmember.GetWeaponName());
+                    Print(61, 5 + member, selectedmember.GetArmourName());
+                    Print(79, 5 + member, selectedmember.GetHealthLabel(), ConsoleColor.Green);
+                    Print(97, 5 + member, selectedmember.GetVehicleType());
                 }
 
-                Print(4, 11, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
 
-                Print(6, 14, "F - Go forth to stop EVIL");
-                Print(6, 15, "E - Equipment");
-                Print(6, 16, "V - Vehicles", ConsoleColor.DarkGray);
-                Print(6, 17, "R - Review and reorganize liberals");
-                Print(6, 18, "A - Activate the uninvolved");
-                Print(6, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
-                Print(6, 20, "X - Live to fight EVIL another day");
-                Print(6, 21, "W - Wait a day");
-                Print(77, 14, "0 - Show the squad's liberal status", ConsoleColor.DarkGray);
-                Print(77, 15, "# - Check the status of a squad liberal");
-                Print(77, 16, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
-                Print(77, 17, "Tab - Next squad", ConsoleColor.DarkGray);
-                Print(77, 18, "Z - Next location");
-                Print(77, 19, "L - The status of the liberal agenda");
+                Print(5, 14, "F - Go forth to stop EVIL");
+                Print(5, 15, "E - Equipment");
+                Print(5, 16, "V - Vehicles", ConsoleColor.DarkGray);
+                Print(5, 17, "R - Review and reorganize liberals");
+                Print(5, 18, "A - Activate the uninvolved");
+                Print(5, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
+                Print(5, 20, "X - Live to fight EVIL another day");
+                Print(5, 21, "W - Wait a day");
+                Print(76, 14, "0 - Show the squad's liberal status", ConsoleColor.DarkGray);
+                Print(76, 15, "# - Check the status of a squad liberal");
+                Print(76, 16, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
+                Print(76, 17, "Tab - Next squad", ConsoleColor.DarkGray);
+                Print(76, 18, "Z - Next location");
+                Print(76, 19, "L - The status of the liberal agenda");
 
                 if (liberals.Activesquad.Location.HasFlag)
                 {
-                    Print(77, 20, "P - PROTEST: burn the flag");
+                    Print(76, 20, "P - PROTEST: burn the flag");
                 }
                 else
                 {
-                    Print(77, 20, "P - PATRIOTISM: Fly a flag here ($20)");
+                    Print(76, 20, "P - PATRIOTISM: Fly a flag here ($20)");
                 }
 
-                Print(77, 21, "S - FREE SPEECH: The liberal slogan");
+                Print(76, 21, "S - FREE SPEECH: The liberal slogan");
 
                 Print((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24, liberals.Slogan, ConsoleColor.White);
 
@@ -1693,21 +1777,21 @@ namespace LCSRemake
                 {
                     for (int y = 0; y < 7; y++)
                     {
-                        for (int x = 0; x < 20; x++)
+                        for (int x = 0; x < 21; x++)
                         {
                             if (x < 6 && y < 3)
                             {
-                                Print(51 + x, 14 + y, ":", ConsoleColor.White, ConsoleColor.DarkBlue);
+                                Print(50 + x, 14 + y, ":", ConsoleColor.White, ConsoleColor.DarkBlue);
                             }
                             else
                             {
                                 if (y % 2 == 0)
                                 {
-                                    Print(51 + x, 14 + y, "\u2588", ConsoleColor.DarkRed);
+                                    Print(50 + x, 14 + y, "\u2588", ConsoleColor.DarkRed);
                                 }
                                 else
                                 {
-                                    Print(51 + x, 14 + y, "\u2588", ConsoleColor.White);
+                                    Print(50 + x, 14 + y, "\u2588", ConsoleColor.White);
                                 }
                             }
                         }
@@ -1751,31 +1835,31 @@ namespace LCSRemake
 
                         while (x + 12 > 50)
                         {
-                            if (x > 50)
+                            if (x > 49)
                             {
                                 Print(x, y, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 2 > 50 && x + 2 < 71)
+                            if (x + 2 > 49 && x + 2 < 71)
                             {
                                 Print(x + 2, y - 1, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 4 > 50 && x + 4 < 71)
+                            if (x + 4 > 49 && x + 4 < 71)
                             {
                                 Print(x + 4, y - 2, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 6 > 50 && x + 6 < 71)
+                            if (x + 6 > 49 && x + 6 < 71)
                             {
                                 Print(x + 6, y - 3, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 8 > 50 && x + 8 < 71)
+                            if (x + 8 > 49 && x + 8 < 71)
                             {
                                 Print(x + 8, y - 4, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 10 > 50 && x + 10 < 71)
+                            if (x + 10 > 49 && x + 10 < 71)
                             {
                                 Print(x + 10, y - 5, "\u2591", ConsoleColor.DarkYellow);
                             }
-                            if (x + 12 > 50 && x + 12 < 71)
+                            if (x + 12 > 49 && x + 12 < 71)
                             {
                                 Print(x + 12, y - 6, "\u2591", ConsoleColor.DarkYellow);
                             }
@@ -1797,8 +1881,8 @@ namespace LCSRemake
 
                 if (keyinput == 's')
                 {
-                    Print(6, 25, "What is your new slogan?");
-                    Console.SetCursorPosition(6, 26);
+                    Print(5, 25, "What is your new slogan?");
+                    Console.SetCursorPosition(5, 26);
                     string newslogan = Console.ReadLine();
                     if (newslogan.Length <= 50)
                     {

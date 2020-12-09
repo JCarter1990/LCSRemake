@@ -1026,31 +1026,31 @@ namespace LCSRemake
                     switch (keyinput)
                     {
                         case '1':
-                            ActiveLiberals();
+                            ReviewSubScreen(liberals.Active, 6, "Active Liberals", str_squad_activity, 1);
                             break;
 
                         case '2':
-                            Hostages();
+                            ReviewSubScreen(liberals.Hostages, 12, "Conservative Automatons in Captivity", str_days_captive, 2);
                             break;
 
                         case '3':
-                            Clinic();
+                            ReviewSubScreen(liberals.Clinic, 12, "Liberals in CLINICS", str_prognosis, 3);
                             break;
 
                         case '4':
-                            JusticeSystem();
+                            ReviewSubScreen(liberals.JusticeSystem, 12, "Liberals and the Justice System", str_months_left, 4);
                             break;
 
                         case '5':
-                            Sleepers();
+                            ReviewSubScreen(liberals.Sleepers, 12, "Sleepers", str_profession, 5);
                             break;
 
                         case '6':
-                            TheDead();
+                            ReviewSubScreen(liberals.TheDead, 12, "Liberal Martyrs and Dead Bodies", str_days_dead, 6);
                             break;
 
                         case '7':
-                            Away();
+                            ReviewSubScreen(liberals.Away, 12, "Liberals that are Away", str_days_return, 7);
                             break;
                     }
                 }
@@ -1075,52 +1075,88 @@ namespace LCSRemake
             }
         }
 
-        static void ActiveLiberals()
+        static void ReviewSubScreen(List<Entity> members, int people_per_page, string title, string related_string, int screen_number)
         {
             int currenty;
             int letter;
             int count;
             int position;
             int page = 0;
-            int maxpage = liberals.Active.Count / 6;
+            int maxpage = members.Count / people_per_page;
 
             while (true)
             {
                 currenty = 5;
                 letter = 65;
-                position = page * 6;
+                position = page * people_per_page;
 
-                if (liberals.Active.Count - page * 6 > 6)
+                if (members.Count - page * people_per_page > people_per_page)
                 {
-                    count = 6;
+                    count = people_per_page;
                 }
                 else
                 {
-                    count = liberals.Active.Count - page * 6;
+                    count = members.Count - page * people_per_page;
                 }
 
                 Console.Clear();
                 Border();
 
-                Print(4, 2, "Active Liberals");
+                Print(4, 2, title);
                 Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
                 Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
                 Print(7, 4, str_codename);
                 Print(29, 4, str_skill);
                 Print(47, 4, str_health);
                 Print(66, 4, str_location);
-                Print(87, 4, str_squad_activity);
+                Print(87, 4, related_string);
 
-                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                foreach (Entity entity in members.GetRange(position, count))
                 {
                     Print(3, currenty, (char)letter + " - " + entity.Handle);
                     Print(29, currenty, entity.GetTotalSkillLevel().ToString());
                     GetHealthLabel(47, currenty, entity);
                     Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, entity.AssignedSquad.Name + " / ", ConsoleColor.White);
-                    Print(87, currenty + 1, "Gathering Opinion Info", ConsoleColor.White);
 
-                    currenty += 2;
+                    switch(screen_number)
+                    {
+                        case 1:
+                            Print(87, currenty, entity.AssignedSquad.Name + " / ", ConsoleColor.White);
+                            Print(87, currenty + 1, "Gathering Opinion Info", ConsoleColor.White);
+                            currenty += 2;
+                            break;
+
+                        case 2:
+                            Print(87, currenty, entity.DaysCaptive.ToString() + " Days", ConsoleColor.Magenta);
+                            currenty++;
+                            break;
+
+                        case 3:
+                            Print(87, currenty, "Out in " + entity.HealTime.ToString() + " Month", ConsoleColor.Cyan);
+                            currenty++;
+                            break;
+
+                        case 4:
+                            Print(87, currenty, "-------", ConsoleColor.DarkGray);
+                            currenty++;
+                            break;
+
+                        case 5:
+                            Print(87, currenty, entity.Profession, ConsoleColor.Green);
+                            currenty++;
+                            break;
+
+                        case 6:
+                            Print(87, currenty, entity.DaysDead.ToString() + " Days", ConsoleColor.Magenta);
+                            currenty++;
+                            break;
+
+                        case 7:
+                            Print(87, currenty, entity.DaysAway.ToString() + " Days", ConsoleColor.Blue);
+                            currenty++;
+                            break;
+                    }
+                    
                     letter++;
                 }
 
@@ -1138,658 +1174,22 @@ namespace LCSRemake
                         switch (keyinput)
                         {
                             case 'a':
-                                Fullstatus(liberals.Active[0 + page * 6]);
+                                Fullstatus(members[0 + page * people_per_page]);
                                 break;
                             case 'b':
-                                Fullstatus(liberals.Active[1 + page * 6]);
+                                Fullstatus(members[1 + page * people_per_page]);
                                 break;
                             case 'c':
-                                Fullstatus(liberals.Active[2 + page * 6]);
+                                Fullstatus(members[2 + page * people_per_page]);
                                 break;
                             case 'd':
-                                Fullstatus(liberals.Active[3 + page * 6]);
+                                Fullstatus(members[3 + page * people_per_page]);
                                 break;
                             case 'e':
-                                Fullstatus(liberals.Active[4 + page * 6]);
+                                Fullstatus(members[4 + page * people_per_page]);
                                 break;
                             case 'f':
-                                Fullstatus(liberals.Active[5 + page * 6]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void Hostages()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.Hostages.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.Hostages.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.Hostages.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Conservative Automatons in Captivity");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_days_captive);
-
-                foreach (Entity entity in liberals.Hostages.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    Print(47, currenty, "Conservative", ConsoleColor.Red);
-                    Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, entity.DaysCaptive.ToString() + " Days", ConsoleColor.Magenta);
-
-                    currenty ++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.Hostages[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.Hostages[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.Hostages[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.Hostages[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.Hostages[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.Hostages[5 + page * 12]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void Clinic()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.Clinic.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.Clinic.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.Clinic.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Liberals in CLINICS");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_prognosis);
-
-                foreach (Entity entity in liberals.Clinic.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    GetHealthLabel(47, currenty, entity);
-                    Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, "Out in " + entity.HealTime.ToString() + " Month", ConsoleColor.Cyan);
-
-                    currenty++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.Clinic[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.Clinic[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.Clinic[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.Clinic[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.Clinic[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.Clinic[5 + page * 12]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void JusticeSystem()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.JusticeSystem.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.JusticeSystem.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.JusticeSystem.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Liberals and the Justice System");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_months_left);
-
-                foreach (Entity entity in liberals.JusticeSystem.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    GetHealthLabel(47, currenty, entity);
-                    Print(66, currenty, entity.Location.Name, ConsoleColor.Yellow);
-                    Print(87, currenty, "-------", ConsoleColor.DarkGray);
-
-                    currenty++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.JusticeSystem[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.JusticeSystem[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.JusticeSystem[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.JusticeSystem[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.JusticeSystem[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.JusticeSystem[5 + page * 12]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void Sleepers()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.Sleepers.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.Sleepers.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.Sleepers.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Sleepers");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_profession);
-
-                foreach (Entity entity in liberals.Sleepers.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    GetHealthLabel(47, currenty, entity);
-                    Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, entity.Profession, ConsoleColor.Green);
-
-                    currenty++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.Sleepers[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.Sleepers[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.Sleepers[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.Sleepers[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.Sleepers[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.Sleepers[5 + page * 12]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void TheDead()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.TheDead.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.TheDead.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.TheDead.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Liberal Martyrs and Dead Bodies");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_days_dead);
-
-                foreach (Entity entity in liberals.TheDead.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    Print(47, currenty, "Dead", ConsoleColor.DarkGray);
-                    Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, entity.DaysDead.ToString() + " Days", ConsoleColor.Magenta);
-
-                    currenty++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.TheDead[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.TheDead[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.TheDead[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.TheDead[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.TheDead[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.TheDead[5 + page * 12]);
-                                break;
-                        }
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-                else if (keyinput == ']')
-                {
-                    if (page < maxpage)
-                    {
-                        page++;
-                    }
-                }
-                else if (keyinput == '[')
-                {
-                    if (page > 0)
-                    {
-                        page--;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        static void Away()
-        {
-            int currenty;
-            int letter;
-            int count;
-            int position;
-            int page = 0;
-            int maxpage = liberals.Away.Count / 12;
-
-            while (true)
-            {
-                currenty = 5;
-                letter = 65;
-                position = page * 12;
-
-                if (liberals.Away.Count - page * 12 > 12)
-                {
-                    count = 12;
-                }
-                else
-                {
-                    count = liberals.Away.Count - page * 12;
-                }
-
-                Console.Clear();
-                Border();
-
-                Print(4, 2, "Liberals that are Away");
-                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(7, 4, str_codename);
-                Print(29, 4, str_skill);
-                Print(47, 4, str_health);
-                Print(66, 4, str_location);
-                Print(87, 4, str_days_return);
-
-                foreach (Entity entity in liberals.Away.GetRange(position, count))
-                {
-                    Print(3, currenty, (char)letter + " - " + entity.Handle);
-                    Print(29, currenty, entity.GetTotalSkillLevel().ToString());
-                    GetHealthLabel(47, currenty, entity);
-                    Print(66, currenty, entity.Location.Name);
-                    Print(87, currenty, entity.DaysAway.ToString() + " Days", ConsoleColor.Blue);
-
-                    currenty++;
-                    letter++;
-                }
-
-                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(4, 24, "Press a Letter to View Status.");
-                Print(4, 25, "[] to view other liberal pages.");
-
-                char keyinput = Console.ReadKey(true).KeyChar;
-
-                if (keyinput >= 'a' && keyinput <= 'f')
-                {
-                    try
-                    {
-                        switch (keyinput)
-                        {
-                            case 'a':
-                                Fullstatus(liberals.Away[0 + page * 12]);
-                                break;
-                            case 'b':
-                                Fullstatus(liberals.Away[1 + page * 12]);
-                                break;
-                            case 'c':
-                                Fullstatus(liberals.Away[2 + page * 12]);
-                                break;
-                            case 'd':
-                                Fullstatus(liberals.Away[3 + page * 12]);
-                                break;
-                            case 'e':
-                                Fullstatus(liberals.Away[4 + page * 12]);
-                                break;
-                            case 'f':
-                                Fullstatus(liberals.Away[5 + page * 12]);
+                                Fullstatus(members[5 + page * people_per_page]);
                                 break;
                         }
                     }
@@ -2348,6 +1748,7 @@ namespace LCSRemake
             }
 
             liberals.Active.Add(newcharacter);
+            liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
 
             Mainscreen();

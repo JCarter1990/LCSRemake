@@ -205,6 +205,7 @@ namespace LCSRemake
         public Location Location { get; set; }
         public Location Worklocation { get; set; }
         public Entity Prisoner { get; set; }
+        public Entity AssignedTo { get; set; }
         public Vehicle Vehicle { get; set; }
 
         public Entity()
@@ -250,6 +251,8 @@ namespace LCSRemake
             this.HealTime = 0;
             this.DaysAway = 0;
             this.DaysDead = 0;
+
+            this.AssignedTo = null;
 
             this.Title = UpdateTitle();
         }
@@ -614,6 +617,8 @@ namespace LCSRemake
         static string str_months_left = "MONTHS LEFT";
         static string str_current_base = "CURRENT BASE";
         static string str_new_base = "NEW BASE";
+        static string str_current_contact = "CURRENT CONTACT";
+        static string str_contact_after_promotion = "CONTACT AFTER PROMOTION";
 
         static void Border()
         {
@@ -1145,7 +1150,7 @@ namespace LCSRemake
                 }
                 else if (keyinput == 'u')
                 {
-                    break;
+                    PromoteLiberal();
                 }
                 else if (keyinput == 'z')
                 {
@@ -1720,6 +1725,172 @@ namespace LCSRemake
             }
         }
 
+        static void PromoteLiberal()
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 12;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Active.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Promote the Elite Liberals");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(52, 4, str_current_contact);
+                Print(90, 4, str_contact_after_promotion);
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + entity.Handle);
+                    if (entity.AssignedTo != null && entity.AssignedTo.AssignedTo != null)
+                    {
+                        Print(52, currenty, entity.AssignedTo.Handle);
+                        Print(90, currenty, entity.AssignedTo.AssignedTo.Handle);
+                    }
+                    else 
+                    {
+                        if (entity.AssignedTo != null)
+                        {
+                            Print(52, currenty, entity.AssignedTo.Handle);
+                        }
+                    }
+                    
+                    currenty++;
+                    letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to Promote a Liberal");
+                Print(4, 25, "[] to view other liberal pages.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                if (liberals.Active[0 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[0 + page * 12].AssignedTo = liberals.Active[0 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'b':
+                                if (liberals.Active[1 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[1 + page * 12].AssignedTo = liberals.Active[1 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'c':
+                                if (liberals.Active[2 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[2 + page * 12].AssignedTo = liberals.Active[2 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'd':
+                                if (liberals.Active[3 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[3 + page * 12].AssignedTo = liberals.Active[3 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'e':
+                                if (liberals.Active[4 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[4 + page * 12].AssignedTo = liberals.Active[4 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'f':
+                                if (liberals.Active[5 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[5 + page * 12].AssignedTo = liberals.Active[5 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'g':
+                                if (liberals.Active[6 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[6 + page * 12].AssignedTo = liberals.Active[6 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'h':
+                                if (liberals.Active[7 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[7 + page * 12].AssignedTo = liberals.Active[7 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'i':
+                                if (liberals.Active[8 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[8 + page * 12].AssignedTo = liberals.Active[8 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'j':
+                                if (liberals.Active[9 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[9 + page * 12].AssignedTo = liberals.Active[9 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'k':
+                                if (liberals.Active[10 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[10 + page * 12].AssignedTo = liberals.Active[10 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                            case 'l':
+                                if (liberals.Active[11 + page * 12].AssignedTo.AssignedTo != null)
+                                {
+                                    liberals.Active[11 + page * 12].AssignedTo = liberals.Active[11 + page * 12].AssignedTo.AssignedTo;
+                                }
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
         static void Titlescreen()
         {
             Console.Clear();
@@ -2279,6 +2450,12 @@ namespace LCSRemake
             liberals.Active.Add(test3);
             liberals.Active.Add(test4);
             liberals.Active.Add(test5);
+
+            test.AssignedTo = newcharacter;
+            test2.AssignedTo = newcharacter;
+            test3.AssignedTo = test2;
+            test4.AssignedTo = test3;
+            test5.AssignedTo = test3;
             //-----------
 
             liberals.Squads.Add(newsquad);

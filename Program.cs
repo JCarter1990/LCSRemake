@@ -66,18 +66,42 @@ namespace LCSRemake
             this.HasFlag = false;
         }
 
-        public string RandomName(List<string> list)
+        public void RandomName(List<string> list)
         {
             Random random = new Random();
             string name = list[random.Next(0, list.Count)];
-            return name;
+            if (this.Name == null)
+            {
+                this.Name = name;
+            }
+            else
+            {
+                this.Name += name;
+            }
+
+            if (this.Shortname == null)
+            {
+                this.Shortname = name;
+            }
         }
 
-        public string RandomName(List<string> firstlist, List<string> secondlist)
+        public void RandomName(List<string> firstlist, List<string> secondlist)
         {
             Random random = new Random();
             string name = firstlist[random.Next(0, firstlist.Count)] + " " + secondlist[random.Next(0, secondlist.Count)];
-            return name;
+            if (this.Name == null)
+            {
+                this.Name = name;
+            }
+            else
+            {
+                this.Name += name;
+            }
+
+            if (this.Shortname == null)
+            {
+                this.Shortname = name;
+            }
         }
     }
 
@@ -588,6 +612,8 @@ namespace LCSRemake
         static string str_days_dead = "DAYS SINCE PASSING";
         static string str_profession = "PROFESSION";
         static string str_months_left = "MONTHS LEFT";
+        static string str_current_base = "CURRENT BASE";
+        static string str_new_base = "NEW BASE";
 
         static void Border()
         {
@@ -1127,7 +1153,7 @@ namespace LCSRemake
                 }
                 else if (keyinput == 't')
                 {
-                    break;
+                    AssignBase();
                 }
                 else
                 {
@@ -1514,6 +1540,182 @@ namespace LCSRemake
                             i--;
                         }
                     }
+                }
+            }
+        }
+
+        static void AssignBase()
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 12;
+            Location selectedlocation = maincity.Locations[11];
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Active.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "New Bases for Squadless Liberals");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(49, 4, str_current_base);
+                Print(94, 4, str_new_base);
+
+                if (maincity.Locations[11] == selectedlocation)
+                {
+                    Print(94, 5, "1 - " + maincity.Locations[11].Shortname, ConsoleColor.White);
+                }
+                else
+                {
+                    Print(94, 5, "1 - " + maincity.Locations[11].Shortname);
+                }
+
+                if (maincity.Locations[12] == selectedlocation)
+                {
+                    Print(94, 6, "2 - " + maincity.Locations[12].Shortname, ConsoleColor.White);
+                }
+                else
+                {
+                    Print(94, 6, "2 - " + maincity.Locations[12].Shortname);
+                }
+
+                if (maincity.Locations[13] == selectedlocation)
+                {
+                    Print(94, 7, "3 - " + maincity.Locations[13].Shortname, ConsoleColor.White);
+                }
+                else
+                {
+                    Print(94, 7, "3 - " + maincity.Locations[13].Shortname);
+                }
+
+                if (maincity.Locations[14] == selectedlocation)
+                {
+                    Print(94, 8, "4 - " + maincity.Locations[14].Shortname, ConsoleColor.White);
+                }
+                else
+                {
+                    Print(94, 8, "4 - " + maincity.Locations[14].Shortname);
+                }
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                    if (entity.AssignedSquad == null)
+                    {
+                        Print(3, currenty, (char)letter + " - " + entity.Handle);
+                        Print(49, currenty, entity.Mybase.Shortname);
+                        currenty++;
+                        letter++;
+                    }
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to assign a Base. Press a Number to select a Base.");
+                Print(4, 25, "[] to view other liberal pages.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                liberals.Active[0 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'b':
+                                liberals.Active[1 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'c':
+                                liberals.Active[2 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'd':
+                                liberals.Active[3 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'e':
+                                liberals.Active[4 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'f':
+                                liberals.Active[5 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'g':
+                                liberals.Active[6 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'h':
+                                liberals.Active[7 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'i':
+                                liberals.Active[8 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'j':
+                                liberals.Active[9 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'k':
+                                liberals.Active[10 + page * 12].Mybase = selectedlocation;
+                                break;
+                            case 'l':
+                                liberals.Active[11 + page * 12].Mybase = selectedlocation;
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else if (keyinput >= '1' && keyinput <= '4')
+                {
+                    switch(keyinput)
+                    {
+                        case '1':
+                            selectedlocation = maincity.Locations[11];
+                            break;
+                        case '2':
+                            selectedlocation = maincity.Locations[12];
+                            break;
+                        case '3':
+                            selectedlocation = maincity.Locations[13];
+                            break;
+                        case '4':
+                            selectedlocation = maincity.Locations[14];
+                            break;
+                    }
+                }
+                else
+                {
+                    break;
                 }
             }
         }
@@ -1920,15 +2122,15 @@ namespace LCSRemake
             newlocation = new Location("Homeless Shelter", "Shelter", "shelter", false, null);
             maincity.Locations.Add(newlocation);
 
-            newlocation = new Location(null, null, "warehouse", false, null);
+            newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
             maincity.Locations.Add(newlocation);
 
-            newlocation = new Location(null, null, "warehouse", false, null);
+            newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
             maincity.Locations.Add(newlocation);
 
-            newlocation = new Location(null, null, "warehouse", false, null);
+            newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
             maincity.Locations.Add(newlocation);
 
@@ -2052,6 +2254,11 @@ namespace LCSRemake
                     newcharacter.Location = maincity.Locations[i];
 
                     //TESTING
+                    test.Mybase = maincity.Locations[i];
+                    test2.Mybase = maincity.Locations[i];
+                    test3.Mybase = maincity.Locations[i];
+                    test4.Mybase = maincity.Locations[i];
+                    test5.Mybase = maincity.Locations[i];
                     test.Location = maincity.Locations[i];
                     test2.Location = maincity.Locations[i];
                     test3.Location = maincity.Locations[i];

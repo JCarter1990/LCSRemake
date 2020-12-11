@@ -124,6 +124,7 @@ namespace LCSRemake
         {
             this.ID = idcounter;
             idcounter++;
+            this.Name = "";
             this.Entities = new List<Entity>();
         }
     }
@@ -1016,12 +1017,60 @@ namespace LCSRemake
                 Print(28, 21, "7 - Away", ConsoleColor.Blue);
 
                 Print(4, 24, "Press a letter to select a squad. 1-7 to view liberal groups.");
-                Print(4, 25, "[] to view other liberal pages.   Press 8 to promote liberals.");
-                Print(4, 26, "Press 9 to assemble a new squad.  Press 0 to assign new bases to the squadless.");
+                Print(4, 25, "[] to view other liberal pages.   Press U to promote liberals.");
+                Print(4, 26, "Press Z to assemble a new squad.  Press T to assign new bases to the squadless.");
 
                 char keyinput = Console.ReadKey(true).KeyChar;
 
-                if (keyinput >= '1' && keyinput <= '7')
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                AssembleSquad(liberals.Squads[0 + page]);
+                                break;
+                            case 'b':
+                                AssembleSquad(liberals.Squads[1 + page]);
+                                break;
+                            case 'c':
+                                AssembleSquad(liberals.Squads[2 + page]);
+                                break;
+                            case 'd':
+                                AssembleSquad(liberals.Squads[3 + page]);
+                                break;
+                            case 'e':
+                                AssembleSquad(liberals.Squads[4 + page]);
+                                break;
+                            case 'f':
+                                AssembleSquad(liberals.Squads[5 + page]);
+                                break;
+                            case 'g':
+                                AssembleSquad(liberals.Squads[6 + page]);
+                                break;
+                            case 'h':
+                                AssembleSquad(liberals.Squads[7 + page]);
+                                break;
+                            case 'i':
+                                AssembleSquad(liberals.Squads[8 + page]);
+                                break;
+                            case 'j':
+                                AssembleSquad(liberals.Squads[9 + page]);
+                                break;
+                            case 'k':
+                                AssembleSquad(liberals.Squads[10 + page]);
+                                break;
+                            case 'l':
+                                AssembleSquad(liberals.Squads[11 + page]);
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput >= '1' && keyinput <= '7')
                 {
                     switch (keyinput)
                     {
@@ -1067,6 +1116,18 @@ namespace LCSRemake
                     {
                         page--;
                     }
+                }
+                else if (keyinput == 'u')
+                {
+                    break;
+                }
+                else if (keyinput == 'z')
+                {
+                    AssembleSquad(new Squad());
+                }
+                else if (keyinput == 't')
+                {
+                    break;
                 }
                 else
                 {
@@ -1167,7 +1228,7 @@ namespace LCSRemake
 
                 char keyinput = Console.ReadKey(true).KeyChar;
 
-                if(keyinput >= 'a' && keyinput <= 'f')
+                if(keyinput >= 'a' && keyinput <= 'l')
                 {
                     try
                     {
@@ -1190,6 +1251,24 @@ namespace LCSRemake
                                 break;
                             case 'f':
                                 Fullstatus(members[5 + page * people_per_page]);
+                                break;
+                            case 'g':
+                                Fullstatus(members[6 + page * people_per_page]);
+                                break;
+                            case 'h':
+                                Fullstatus(members[7 + page * people_per_page]);
+                                break;
+                            case 'i':
+                                Fullstatus(members[8 + page * people_per_page]);
+                                break;
+                            case 'j':
+                                Fullstatus(members[9 + page * people_per_page]);
+                                break;
+                            case 'k':
+                                Fullstatus(members[10 + page * people_per_page]);
+                                break;
+                            case 'l':
+                                Fullstatus(members[11 + page * people_per_page]);
                                 break;
                         }
                     }
@@ -1214,6 +1293,227 @@ namespace LCSRemake
                 else
                 {
                     break;
+                }
+            }
+        }
+
+        static void SquadEdit(int position, Squad squad)
+        {
+            if (liberals.Active[position].AssignedSquad == squad)
+            {
+                squad.Entities.Remove(liberals.Active[position]);
+                liberals.Active[position].AssignedSquad = null;
+            }
+            else if (liberals.Active[position].AssignedSquad != squad && liberals.Active[position].AssignedSquad != null)
+            {
+                liberals.Active[position].AssignedSquad.Entities.Remove(liberals.Active[position]);
+
+                if (liberals.Active[position].AssignedSquad.Entities.Count == 0)
+                {
+                    liberals.Squads.Remove(liberals.Active[position].AssignedSquad);
+                }
+
+                liberals.Active[position].AssignedSquad = squad;
+                squad.Entities.Add(liberals.Active[position]);
+            }
+            else
+            {
+                squad.Entities.Add(liberals.Active[position]);
+                liberals.Active[position].AssignedSquad = squad;
+            }
+        }
+
+        static void AssembleSquad(Squad squad)
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 12;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Active.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Assemble the squad!");
+                if (squad.Name == "")
+                {
+                    Print(48, 2, "Squad: New Squad");
+                }
+                else
+                {
+                    Print(48, 2, "Squad: " + squad.Name);
+                }
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(33, 4, str_skill);
+                Print(55, 4, str_health);
+                Print(78, 4, str_profession);
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + entity.Handle);
+                    Print(33, currenty, entity.GetTotalSkillLevel().ToString());
+                    GetHealthLabel(55, currenty, entity);
+                    Print(78, currenty, entity.Profession);
+                    if (entity.AssignedSquad == squad)
+                    {
+                        Print(105, currenty, "SQUAD", ConsoleColor.Green);
+                    }
+                    else if (entity.AssignedSquad == null)
+                    {
+                    }
+                    else
+                    {
+                        Print(105, currenty, "SQUAD", ConsoleColor.DarkYellow);
+                    }
+                    currenty++;
+                    letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to add or remove a Liberal from the squad.");
+                Print(4, 25, "[] to view other liberal pages.");
+                Print(4, 26, "1 - The squad is ready.");
+                if(squad.Entities.Count > 0)
+                {
+                    Print(29, 26, "9 - Dissolve the squad.");
+                }
+                else
+                {
+                    Print(29, 26, "9 - Dissolve the squad.", ConsoleColor.DarkGray);
+                }
+                
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                SquadEdit(0 + page * 12, squad);
+                                break;
+                            case 'b':
+                                SquadEdit(1 + page * 12, squad);
+                                break;
+                            case 'c':
+                                SquadEdit(2 + page * 12, squad);
+                                break;
+                            case 'd':
+                                SquadEdit(3 + page * 12, squad);
+                                break;
+                            case 'e':
+                                SquadEdit(4 + page * 12, squad);
+                                break;
+                            case 'f':
+                                SquadEdit(5 + page * 12, squad);
+                                break;
+                            case 'g':
+                                SquadEdit(6 + page * 12, squad);
+                                break;
+                            case 'h':
+                                SquadEdit(7 + page * 12, squad);
+                                break;
+                            case 'i':
+                                SquadEdit(8 + page * 12, squad);
+                                break;
+                            case 'j':
+                                SquadEdit(9 + page * 12, squad);
+                                break;
+                            case 'k':
+                                SquadEdit(10 + page * 12, squad);
+                                break;
+                            case 'l':
+                                SquadEdit(11 + page * 12, squad);
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else if (keyinput == '1')
+                {
+                    if (squad.Entities.Count == 0)
+                    {
+                        liberals.Squads.Remove(squad);
+                        break;
+                    }
+                    else
+                    {
+                        if (squad.Name == "")
+                        {
+                            Print(4, 24, "                                                         ");
+                            Print(4, 25, "                               ");
+                            Print(4, 26, "                       ");
+                            Print(29, 26, "                       ");
+                            Print(4, 24, "What shall we designate this Liberal squad?");
+
+                            while (true)
+                            {
+                                Console.SetCursorPosition(4, 25);
+                                string newname = Console.ReadLine();
+
+                                if (newname != "")
+                                {
+                                    squad.Name = newname;
+                                    break;
+                                }
+                            }
+                            
+                            if (!liberals.Squads.Contains(squad))
+                            {
+                                squad.Location = squad.Entities[0].Location;
+                                liberals.Squads.Add(squad);
+                            }
+                        }
+                        break;
+                    }
+                }
+                else if (keyinput == '9')
+                {
+                    if(squad.Entities.Count > 0)
+                    {
+                        for (int i = 0; i < squad.Entities.Count; i++)
+                        {
+                            squad.Entities[i].AssignedSquad = null;
+                            squad.Entities.Remove(squad.Entities[i]);
+                            i--;
+                        }
+                    }
                 }
             }
         }
@@ -1736,18 +2036,44 @@ namespace LCSRemake
             newsquad.Entities.Add(newcharacter);
             newsquad.Name = "The Liberal Crime Squad";
 
+            // TESTING
+            Entity test = new Entity();
+            Entity test2 = new Entity();
+            Entity test3 = new Entity();
+            Entity test4 = new Entity();
+            Entity test5 = new Entity();
+            //------------
+
             for (int i = 0; i < maincity.Locations.Count; i++)
             {
                 if (maincity.Locations[i].Type == "shelter")
                 {
                     newcharacter.Mybase = maincity.Locations[i];
                     newcharacter.Location = maincity.Locations[i];
+
+                    //TESTING
+                    test.Location = maincity.Locations[i];
+                    test2.Location = maincity.Locations[i];
+                    test3.Location = maincity.Locations[i];
+                    test4.Location = maincity.Locations[i];
+                    test5.Location = maincity.Locations[i];
+                    //----------
+
                     newsquad.Location = maincity.Locations[i];
                     break;
                 }
             }
 
             liberals.Active.Add(newcharacter);
+
+            //TESTING
+            liberals.Active.Add(test);
+            liberals.Active.Add(test2);
+            liberals.Active.Add(test3);
+            liberals.Active.Add(test4);
+            liberals.Active.Add(test5);
+            //-----------
+
             liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
 

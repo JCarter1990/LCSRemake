@@ -4,6 +4,48 @@ using System.Threading;
 
 namespace LCSRemake
 {
+    public enum ArmourTypes
+    {
+        ARMOUR_CLOTHES,
+        ARMOUR_TRENCHCOAT,
+        ARMOUR_WORKCLOTHES,
+        ARMOUR_SECURITYUNIFORM,
+        ARMOUR_POLICEUNIFORM,
+        ARMOUR_CHEAPSUIT,
+        ARMOUR_EXPENSIVESUIT,
+        ARMOUR_BLACKSUIT,
+        ARMOUR_CHEAPDRESS,
+        ARMOUR_EXPENSIVEDRESS,
+        ARMOUR_BLACKDRESS,
+        ARMOUR_LABCOAT,
+        ARMOUR_BLACKROBE,
+        ARMOUR_CLOWNSUIT,
+        ARMOUR_BONDAGEGEAR,
+        ARMOUR_MASK,
+        ARMOUR_MILITARY,
+        ARMOUR_PRISONGUARD,
+        ARMOUR_PRISONER,
+        ARMOUR_TOGA,
+        ARMOUR_MITHRIL,
+        ARMOUR_OVERALLS,
+        ARMOUR_WIFEBEATER
+    }
+    public enum ActivityTypes
+    {
+        ACTIVITY_NONE,
+        ACTIVITY_VISIT,
+        ACTIVITY_HOSTAGETENDING,
+        ACTIVITY_TROUBLE,
+        ACTIVITY_FUNDS_LEGAL,
+        ACTIVITY_FUNDS_ILLEGAL,
+        ACTIVITY_REPAIR_ARMOUR,
+        ACTIVITY_MAKE_ARMOUR,
+        ACTIVITY_POLLS,
+        ACTIVITY_STEALCARS,
+        ACTIVITY_WHEELCHAIR,
+        ACTIVITY_BURY
+    };
+
     class City
     {
         public string Cityname { get; }
@@ -119,6 +161,7 @@ namespace LCSRemake
         public List<Entity> Sleepers { get; }
         public List<Entity> TheDead { get; }
         public List<Entity> Away { get; }
+        public List<Armour> CraftableArmours { get; }
 
         public Faction()
         {
@@ -133,6 +176,29 @@ namespace LCSRemake
             this.Sleepers = new List<Entity>();
             this.TheDead = new List<Entity>();
             this.Away = new List<Entity>();
+            this.CraftableArmours = new List<Armour> { 
+                new Armour("Clothes", ArmourTypes.ARMOUR_CLOTHES, 0, 10),
+                new Armour("Trenchcoat", ArmourTypes.ARMOUR_TRENCHCOAT, 0, 20),
+                new Armour("Work Clothes", ArmourTypes.ARMOUR_WORKCLOTHES, 0, 10),
+                new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40),
+                new Armour("Police Uniform", ArmourTypes.ARMOUR_POLICEUNIFORM, 0, 40),
+                new Armour("Cheap Suit", ArmourTypes.ARMOUR_CHEAPSUIT, 0, 50),
+                new Armour("Expensive Suit", ArmourTypes.ARMOUR_EXPENSIVESUIT, 0, 300),
+                new Armour("Black Suit", ArmourTypes.ARMOUR_BLACKSUIT, 0, 60),
+                new Armour("Cheap Dress", ArmourTypes.ARMOUR_CHEAPDRESS, 0, 20),
+                new Armour("Expensve Dress", ArmourTypes.ARMOUR_EXPENSIVEDRESS, 0, 300),
+                new Armour("Black Dress", ArmourTypes.ARMOUR_BLACKDRESS, 0, 60),
+                new Armour("Lab Coat", ArmourTypes.ARMOUR_LABCOAT, 0, 20),
+                new Armour("Black Robe", ArmourTypes.ARMOUR_BLACKROBE, 0, 20),
+                new Armour("Clown Suit", ArmourTypes.ARMOUR_CLOWNSUIT, 0, 20),
+                new Armour("Bondage Gear", ArmourTypes.ARMOUR_BONDAGEGEAR, 0, 30),
+                new Armour("Army Uniform", ArmourTypes.ARMOUR_MILITARY, 0, 40),
+                new Armour("Guard Uniform", ArmourTypes.ARMOUR_PRISONGUARD, 0, 40),
+                new Armour("Orange Jumpsuit", ArmourTypes.ARMOUR_PRISONER, 0, 20),
+                new Armour("Toga", ArmourTypes.ARMOUR_TOGA, 0, 5),
+                new Armour("Overalls", ArmourTypes.ARMOUR_OVERALLS, 0, 10),
+                new Armour("Wife Beater", ArmourTypes.ARMOUR_WIFEBEATER, 0, 5)
+            };
         }
     };
 
@@ -406,12 +472,18 @@ namespace LCSRemake
     public class Activity
     {
         public string Name { get; set; }
-        public string ActivityType { get; set; }
+        public ActivityTypes ActivityType { get; set; }
+        public int Funding { get; set; }
+        public Entity Hostage { get; set; }
+        public Armour Armour { get; set; }
 
-        public Activity(string name, string activitytype)
+        public Activity(string name, ActivityTypes activitytype)
         {
             this.Name = name;
             this.ActivityType = activitytype;
+            this.Funding = 0;
+            this.Hostage = null;
+            this.Armour = null;
         }
     }
 
@@ -528,14 +600,70 @@ namespace LCSRemake
     public class Armour
     {
         public string Name { get; }
+        public ArmourTypes Armourtype { get; }
         public int Quality { get; }
+        public int Cost { get; }
         public bool Damaged { get; set; }
 
-        public Armour(string name, int quality)
+        public Armour(string name, ArmourTypes armourtype, int quality, int cost)
         {
             this.Name = name;
+            this.Armourtype = armourtype;
             this.Quality = quality;
+            this.Cost = cost;
             this.Damaged = false;
+        }
+
+        public int MakeDifficulty(Entity entity)
+        {
+            int basedifficulty;
+
+            switch (this.Armourtype)
+            {
+                case ArmourTypes.ARMOUR_TOGA:
+                case ArmourTypes.ARMOUR_WIFEBEATER:
+                    basedifficulty = 2;
+                    break;
+                case ArmourTypes.ARMOUR_CLOTHES:
+                case ArmourTypes.ARMOUR_OVERALLS:
+                case ArmourTypes.ARMOUR_WORKCLOTHES:
+                    basedifficulty = 3;
+                    break;
+                case ArmourTypes.ARMOUR_CLOWNSUIT:
+                case ArmourTypes.ARMOUR_PRISONER:
+                case ArmourTypes.ARMOUR_CHEAPDRESS:
+                case ArmourTypes.ARMOUR_TRENCHCOAT:
+                case ArmourTypes.ARMOUR_LABCOAT:
+                case ArmourTypes.ARMOUR_BLACKROBE:
+                case ArmourTypes.ARMOUR_BONDAGEGEAR:
+                    basedifficulty = 4;
+                    break;
+                case ArmourTypes.ARMOUR_SECURITYUNIFORM:
+                case ArmourTypes.ARMOUR_PRISONGUARD:
+                case ArmourTypes.ARMOUR_MILITARY:
+                case ArmourTypes.ARMOUR_POLICEUNIFORM:
+                    basedifficulty = 5;
+                    break;
+                case ArmourTypes.ARMOUR_CHEAPSUIT:
+                    basedifficulty = 6;
+                    break;
+                case ArmourTypes.ARMOUR_BLACKSUIT:
+                case ArmourTypes.ARMOUR_BLACKDRESS:
+                    basedifficulty = 7;
+                    break;
+                case ArmourTypes.ARMOUR_EXPENSIVESUIT:
+                case ArmourTypes.ARMOUR_EXPENSIVEDRESS:
+                    basedifficulty = 9;
+                    break;
+                default:
+                    basedifficulty = 10;
+                    break;
+            }
+
+            basedifficulty -= entity.Garmentmaking - 3;
+            if (basedifficulty < 0) basedifficulty = 0;
+
+            return basedifficulty;
         }
     };
 
@@ -639,19 +767,6 @@ namespace LCSRemake
         static Date theDate = new Date();
         static City maincity = new City();
         static Faction liberals = new Faction();
-
-        static List<Activity> activities = new List<Activity> { 
-            new Activity("Causing Trouble", "trouble"), 
-            new Activity("Soliciting Donations", "donations"),
-            new Activity("Making ", "makeclothes"),
-            new Activity("Tending to ", "hostage"),
-            new Activity("Stealing a Car", "stealing"),
-            new Activity("Disposing of Bodies", "disposing"),
-            new Activity("Selling Brownies", "selling"),
-            new Activity("Repairing Clothing", "repairing"),
-            new Activity("Gathering Opinion Info", "opinion"),
-            new Activity("Hanging Out", "nothing")};
-
         static string str_codename = "CODE NAME";
         static string str_skill = "SKILL";
         static string str_weapon = "WEAPON";
@@ -672,6 +787,11 @@ namespace LCSRemake
         static string str_new_base = "NEW BASE";
         static string str_current_contact = "CURRENT CONTACT";
         static string str_contact_after_promotion = "CONTACT AFTER PROMOTION";
+        static string str_name = "NAME";
+        static string str_difficulty = "DIFFICULTY";
+        static string str_cost = "COST";
+        static string str_current_activity = "CURRENT ACTIVITY";
+        static string str_bulk_activity = "BULK ACTIVITY";
 
         static void Border()
         {
@@ -1462,7 +1582,7 @@ namespace LCSRemake
                     Print(3, currenty, (char)letter + " - " + entity.Handle);
                     Print(33, currenty, entity.GetTotalSkillLevel().ToString());
                     GetHealthLabel(55, currenty, entity);
-                    Print(78, currenty, entity.Profession);
+                    Print(78, currenty, entity.Profession, ConsoleColor.Green);
                     if (entity.AssignedSquad == squad)
                     {
                         Print(105, currenty, "SQUAD", ConsoleColor.Green);
@@ -1996,7 +2116,7 @@ namespace LCSRemake
                         Print(29, currenty, entity.GetTotalSkillLevel().ToString());
                         GetHealthLabel(47, currenty, entity);
                         Print(66, currenty, entity.Location.Shortname);
-                        Print(87, currenty, entity.Activity.Name);
+                        Print(87, currenty, entity.Activity.Name, ConsoleColor.White);
                         currenty++;
                         letter++;
                 }
@@ -2073,7 +2193,7 @@ namespace LCSRemake
                 }
                 else if (keyinput == 'z')
                 {
-                    break;
+                    AssignActivityBulk();
                 }
                 else
                 {
@@ -2092,7 +2212,7 @@ namespace LCSRemake
                 Print(4, 2, $"Taking Action: What will {entity.Handle} be doing today?");
                 Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
                 Print(5, 4, entity.Handle + ", " + entity.Title);
-                Print(80, 4, entity.Profession);
+                GetHealthLabel(80, 4, entity);
 
                 Print(4, 6, "Heart:        " + entity.Heart);
                 Print(4, 7, "Intelligence: " + entity.Intelligence);
@@ -2171,52 +2291,739 @@ namespace LCSRemake
 
                 if (keyinput == 'a')
                 {
-                    entity.Activity = activities[0];
+                    CausingTrouble(entity);
                     break;
                 }
                 else if (keyinput == 'd')
                 {
-                    entity.Activity = activities[1];
+                    entity.Activity = new Activity("Soliciting Donations", ActivityTypes.ACTIVITY_FUNDS_LEGAL);
                     break;
                 }
                 else if (keyinput == 'c')
                 {
-                    entity.Activity = activities[2];
+                    MakeClothes(entity);
                     break;
                 }
                 else if (keyinput == 'h')
                 {
-                    entity.Activity = activities[3];
+                    TendingHostage(entity);
                     break;
                 }
                 else if (keyinput == 's')
                 {
-                    entity.Activity = activities[4];
+                    entity.Activity = new Activity("Stealing a Car", ActivityTypes.ACTIVITY_STEALCARS);
                     break;
                 }
                 else if (keyinput == 'z')
                 {
-                    entity.Activity = activities[5];
+                    entity.Activity = new Activity("Disposing of Bodies", ActivityTypes.ACTIVITY_BURY);
                     break;
                 }
                 else if (keyinput == 'b')
                 {
-                    entity.Activity = activities[6];
+                    entity.Activity = new Activity("Selling Brownies", ActivityTypes.ACTIVITY_FUNDS_ILLEGAL);
                     break;
                 }
                 else if (keyinput == 'r')
                 {
-                    entity.Activity = activities[7];
+                    entity.Activity = new Activity("Repairing Clothing", ActivityTypes.ACTIVITY_REPAIR_ARMOUR);
                     break;
                 }
                 else if (keyinput == 'p')
                 {
-                    entity.Activity = activities[8];
+                    entity.Activity = new Activity("Gathering Opinion Info", ActivityTypes.ACTIVITY_POLLS);
                     break;
                 }
                 else
                 {
-                    entity.Activity = activities[9];
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    break;
+                }
+            }
+        }
+
+        static void AssignActivityBulk()
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 12;
+            Activity selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+            selectedactivity.Funding = 0;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Active.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Activate Uninvolved Liberals");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(49, 4, str_current_activity, ConsoleColor.White);
+                Print(89, 4, str_bulk_activity);
+
+                if (selectedactivity.Name == "Causing Trouble" && selectedactivity.Funding == 0)
+                {
+                    Print(89, 5, "1 - Causing Trouble ($0).", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 5, "1 - Causing Trouble ($0).");
+                }
+
+                if (selectedactivity.Name == "Causing Trouble" && selectedactivity.Funding == 20)
+                {
+                    Print(89, 6, "2 - Causing Trouble ($20).", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 6, "2 - Causing Trouble ($20).");
+                }
+
+                if (selectedactivity.Name == "Causing Trouble" && selectedactivity.Funding == 50)
+                {
+                    Print(89, 7, "3 - Causing Trouble ($50).", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 7, "3 - Causing Trouble ($50).");
+                }
+
+                if (selectedactivity.Name == "Causing Trouble" && selectedactivity.Funding == 100)
+                {
+                    Print(89, 8, "4 - Causing Trouble ($100).", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 8, "4 - Causing Trouble ($100).");
+                }
+
+                if (selectedactivity.Name == "Causing Trouble" && selectedactivity.Funding == 500)
+                {
+                    Print(89, 9, "5 - Causing Trouble ($500).", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 9, "5 - Causing Trouble ($500).");
+                }
+
+                if (selectedactivity.Name == "Soliciting Donations")
+                {
+                    Print(89, 10, "6 - Soliciting Donations.", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 10, "6 - Soliciting Donations.");
+                }
+
+                if (selectedactivity.Name == "Selling Brownies")
+                {
+                    Print(89, 11, "7 - Selling Brownies.", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 11, "7 - Selling Brownies.");
+                }
+
+                if (selectedactivity.Name == "Stealing a Car")
+                {
+                    Print(89, 12, "8 - Stealing a Car.", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(89, 12, "8 - Stealing a Car.");
+                }
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + entity.Handle);
+                    Print(49, currenty, entity.Activity.Name);
+                    currenty++;
+                    letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to Assign an Activity. Press a Number to select an Activity.");
+                Print(4, 25, "[] to view other liberal pages.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                liberals.Active[0 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[0 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'b':
+                                liberals.Active[1 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[1 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'c':
+                                liberals.Active[2 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[2 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'd':
+                                liberals.Active[3 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[3 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'e':
+                                liberals.Active[4 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[4 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'f':
+                                liberals.Active[5 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[5 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'g':
+                                liberals.Active[6 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[6 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'h':
+                                liberals.Active[7 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[7 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'i':
+                                liberals.Active[8 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[8 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'j':
+                                liberals.Active[9 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[9 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'k':
+                                liberals.Active[10 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[10 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                            case 'l':
+                                liberals.Active[11 + page * 12].Activity = new Activity(selectedactivity.Name, selectedactivity.ActivityType);
+                                liberals.Active[11 + page * 12].Activity.Funding = selectedactivity.Funding;
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else if (keyinput >= '1' && keyinput <= '8')
+                {
+                    switch (keyinput)
+                    {
+                        case '1':
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity.Funding = 0;
+                            break;
+                        case '2':
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity.Funding = 20;
+                            break;
+                        case '3':
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity.Funding = 50;
+                            break;
+                        case '4':
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity.Funding = 100;
+                            break;
+                        case '5':
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity.Funding = 500;
+                            break;
+                        case '6':
+                            selectedactivity = new Activity("Soliciting Donations", ActivityTypes.ACTIVITY_FUNDS_LEGAL);
+                            break;
+                        case '7':
+                            selectedactivity = new Activity("Selling Brownies", ActivityTypes.ACTIVITY_FUNDS_ILLEGAL);
+                            break;
+                        case '8':
+                            selectedactivity = new Activity("Stealing a Car", ActivityTypes.ACTIVITY_STEALCARS);
+                            break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        static void CausingTrouble(Entity entity)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Select a Funding Level for this Operation:");
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(3, 5, $"A - Don't spend anything. {entity.Handle} just needs something constructive to do.");
+                Print(3, 6, "B - $20 per day. Some minor purchases are needed.");
+                Print(3, 7, "C - $50 per day. Disobedience costs money.");
+                Print(3, 8, "D - $100 per day. Enough to be really disobedient.");
+                Print(3, 9, $"E - $500 per day. The Machine will buckle under the weight of {entity.Handle}'s Numerous and Varied Liberal Acts.");
+                Print(3, 11, $"X - On second thought, this isn't a job for {entity.Handle}.");
+                Print(3, 12, "#----------------------------------------------------------------------------------------------------------------#");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 'a')
+                {
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity.Funding = 0;
+                    break;
+                }
+                else if (keyinput == 'b')
+                {
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity.Funding = 20;
+                    break;
+                }
+                else if (keyinput == 'c')
+                {
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity.Funding = 50;
+                    break;
+                }
+                else if (keyinput == 'd')
+                {
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity.Funding = 100;
+                    break;
+                }
+                else if (keyinput == 'e')
+                {
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity.Funding = 500;
+                    break;
+                }
+                else if (keyinput == 'x')
+                {
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    break;
+                }
+            }
+        }
+
+        static void TendingHostage(Entity entity)
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Hostages.Count / 12;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Hostages.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Hostages.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, $"Which hostage will {entity.Handle} be watching over?");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(29, 4, str_skill);
+                Print(47, 4, str_health);
+                Print(66, 4, str_location);
+                Print(87, 4, str_days_captive);
+
+                foreach (Entity captive in liberals.Hostages.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + captive.Handle);
+                    Print(29, currenty, captive.GetTotalSkillLevel().ToString());
+                    GetHealthLabel(47, currenty, captive);
+                    Print(66, currenty, captive.Location.Name);
+                    Print(87, currenty, captive.DaysCaptive.ToString() + " Days", ConsoleColor.Magenta);
+                    currenty++;
+                    letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to select a Conservative.");
+                Print(4, 25, "[] to view other liberal pages.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                HostageFunding(entity, liberals.Hostages[0 + page * 12]);
+                                break;
+                            case 'b':
+                                HostageFunding(entity, liberals.Hostages[1 + page * 12]);
+                                break;
+                            case 'c':
+                                HostageFunding(entity, liberals.Hostages[2 + page * 12]);
+                                break;
+                            case 'd':
+                                HostageFunding(entity, liberals.Hostages[3 + page * 12]);
+                                break;
+                            case 'e':
+                                HostageFunding(entity, liberals.Hostages[4 + page * 12]);
+                                break;
+                            case 'f':
+                                HostageFunding(entity, liberals.Hostages[5 + page * 12]);
+                                break;
+                            case 'g':
+                                HostageFunding(entity, liberals.Hostages[6 + page * 12]);
+                                break;
+                            case 'h':
+                                HostageFunding(entity, liberals.Hostages[7 + page * 12]);
+                                break;
+                            case 'i':
+                                HostageFunding(entity, liberals.Hostages[8 + page * 12]);
+                                break;
+                            case 'j':
+                                HostageFunding(entity, liberals.Hostages[9 + page * 12]);
+                                break;
+                            case 'k':
+                                HostageFunding(entity, liberals.Hostages[10 + page * 12]);
+                                break;
+                            case 'l':
+                                HostageFunding(entity, liberals.Hostages[11 + page * 12]);
+                                break;
+                        }
+                        break;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        static void HostageFunding(Entity entity, Entity hostage)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Select a Funding Level for this Operation:");
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(3, 5, $"A - Don't spend anything. {entity.Handle} is just on watch duty.");
+                Print(3, 6, $"B - Don't spend anything. {entity.Handle} will turn the prisoner over time.");
+                Print(3, 7, "C - $20 per day. Enough for some props.");
+                Print(3, 8, $"D - $50 per day. {entity.Handle} will go for a thrifty indoctrination.");
+                Print(3, 9, $"E - $100 per day. {entity.Handle} needs enough freedom to be creative.");
+                Print(3, 10, "F - $500 per day. It is imperative that the Conservative be turned quickly.");
+                Print(3, 11, "K - This Conservative has become a liability and needs to be terminated.");
+                Print(3, 13, $"X - On second thought, this isn't a job for {entity.Handle}.");
+                Print(3, 14, "#----------------------------------------------------------------------------------------------------------------#");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 'a')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 0;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'b')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 1;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'c')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 20;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'd')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 50;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'e')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 100;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'f')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 500;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'k')
+                {
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity.Funding = 666;
+                    entity.Activity.Hostage = hostage;
+                    break;
+                }
+                else if (keyinput == 'x')
+                {
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    break;
+                }
+            }
+        }
+
+        static void MakeClothes(Entity entity)
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.CraftableArmours.Count / 17;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 17;
+
+                if (liberals.CraftableArmours.Count - page * 17 > 17)
+                {
+                    count = 17;
+                }
+                else
+                {
+                    count = liberals.CraftableArmours.Count - page * 17;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, $"Which will {entity.Handle} try to make? (Note: Half Cost if you have cloth)");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_name);
+                Print(55, 4, str_difficulty);
+                Print(91, 4, str_cost);
+
+                foreach (Armour armour in liberals.CraftableArmours.GetRange(position, count))
+                {
+                    Print(3, currenty, (char)letter + " - " + armour.Name);
+
+                    switch (armour.MakeDifficulty(entity))
+                    {
+                        case 0:
+                            Print(55, currenty, "Simple", ConsoleColor.Green);
+                            break;
+                        case 1:
+                            Print(55, currenty, "Very Easy", ConsoleColor.Cyan);
+                            break;
+                        case 2:
+                            Print(55, currenty, "Easy", ConsoleColor.Cyan);
+                            break;
+                        case 3:
+                            Print(55, currenty, "Below Average", ConsoleColor.Blue);
+                            break;
+                        case 4:
+                            Print(55, currenty, "Average", ConsoleColor.White);
+                            break;
+                        case 5:
+                            Print(55, currenty, "Above Average", ConsoleColor.White);
+                            break;
+                        case 6:
+                            Print(55, currenty, "Hard", ConsoleColor.Yellow);
+                            break;
+                        case 7:
+                            Print(55, currenty, "Very Hard", ConsoleColor.DarkMagenta);
+                            break;
+                        case 8:
+                            Print(55, currenty, "Extremely Difficult", ConsoleColor.Magenta);
+                            break;
+                        case 9:
+                            Print(55, currenty, "Nearly Impossible", ConsoleColor.DarkRed);
+                            break;
+                        default:
+                            Print(55, currenty, "Impossible", ConsoleColor.Red);
+                            break;
+                    }
+
+                    Print(91, currenty, "$" + armour.Cost.ToString(), ConsoleColor.Green);
+                    currenty++;
+                    letter++;
+                }
+
+                Print(3, 22, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to select a Type of Clothing");
+                Print(4, 25, "[] to view other liberal pages.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[0 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[0 + page * 17];
+                                break;
+                            case 'b':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[1 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[1 + page * 17];
+                                break;
+                            case 'c':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[2 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[2 + page * 17];
+                                break;
+                            case 'd':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[3 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[3 + page * 17];
+                                break;
+                            case 'e':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[4 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[4 + page * 17];
+                                break;
+                            case 'f':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[5 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[5 + page * 17];
+                                break;
+                            case 'g':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[6 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[6 + page * 17];
+                                break;
+                            case 'h':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[7 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[7 + page * 17];
+                                break;
+                            case 'i':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[8 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[8 + page * 17];
+                                break;
+                            case 'j':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[9 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[9 + page * 17];
+                                break;
+                            case 'k':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[10 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[10 + page * 17];
+                                break;
+                            case 'l':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[11 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[11 + page * 17];
+                                break;
+                            case 'm':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[12 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[12 + page * 17];
+                                break;
+                            case 'n':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[13 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[13 + page * 17];
+                                break;
+                            case 'o':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[14 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[14 + page * 17];
+                                break;
+                            case 'p':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[15 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[15 + page * 17];
+                                break;
+                            case 'q':
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[16 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity.Armour = liberals.CraftableArmours[16 + page * 17];
+                                break;
+                        }
+                        break;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else
+                {
                     break;
                 }
             }
@@ -2521,7 +3328,7 @@ namespace LCSRemake
                     case 8:
                         if (keyinput == 'a')
                         {
-                            newcharacter.Armour = new Armour("Security Uniform", 1);
+                            newcharacter.Armour = new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40);
                         }
                         if (keyinput == 'b')
                         {
@@ -2587,7 +3394,7 @@ namespace LCSRemake
             }
 
             newcharacter.AssignedSquad = newsquad;
-            newcharacter.Activity = activities[9];
+            newcharacter.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
 
             newlocation = new Location("Downtown", "Downtown", "downtown", false, null);
             maincity.Locations.Add(newlocation);
@@ -2781,7 +3588,7 @@ namespace LCSRemake
             liberals.Active.Add(test2);
             liberals.Active.Add(test3);
             liberals.Active.Add(test4);
-            liberals.Active.Add(test5);
+            liberals.Hostages.Add(test5);
 
             test.AssignedTo = newcharacter;
             test2.AssignedTo = newcharacter;
@@ -2789,11 +3596,11 @@ namespace LCSRemake
             test4.AssignedTo = test3;
             test5.AssignedTo = test3;
 
-            test.Activity = activities[9];
-            test2.Activity = activities[9];
-            test3.Activity = activities[9];
-            test4.Activity = activities[9];
-            test5.Activity = activities[9];
+            test.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            test2.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            test3.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            test4.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            test5.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
             //-----------
 
             liberals.Squads.Add(newsquad);

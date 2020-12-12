@@ -151,6 +151,33 @@ namespace LCSRemake
             this.Name = "";
             this.Entities = new List<Entity>();
         }
+
+        public string GetActivityInfo()
+        {
+            string activityname = this.Entities[0].Activity.Name;
+            bool allsame = true;
+
+            foreach (Entity entity in this.Entities)
+            {
+                if (entity.Activity.Name == activityname)
+                {
+                    allsame = true;
+                }
+                else
+                {
+                    allsame = false;
+                }
+            }
+
+            if (allsame)
+            {
+                return this.Entities[0].Activity.Name;
+            }
+            else
+            {
+                return "Acting Individually";
+            }
+        }
     }
 
     public class Entity
@@ -207,6 +234,7 @@ namespace LCSRemake
         public Entity Prisoner { get; set; }
         public Entity AssignedTo { get; set; }
         public Vehicle Vehicle { get; set; }
+        public Activity Activity { get; set; }
 
         public Entity()
         {
@@ -372,6 +400,18 @@ namespace LCSRemake
             {
                 return this.Vehicle.VehicleType;
             }
+        }
+    }
+
+    public class Activity
+    {
+        public string Name { get; set; }
+        public string ActivityType { get; set; }
+
+        public Activity(string name, string activitytype)
+        {
+            this.Name = name;
+            this.ActivityType = activitytype;
         }
     }
 
@@ -599,6 +639,19 @@ namespace LCSRemake
         static Date theDate = new Date();
         static City maincity = new City();
         static Faction liberals = new Faction();
+
+        static List<Activity> activities = new List<Activity> { 
+            new Activity("Causing Trouble", "trouble"), 
+            new Activity("Soliciting Donations", "donations"),
+            new Activity("Making ", "makeclothes"),
+            new Activity("Tending to ", "hostage"),
+            new Activity("Stealing a Car", "stealing"),
+            new Activity("Disposing of Bodies", "disposing"),
+            new Activity("Selling Brownies", "selling"),
+            new Activity("Repairing Clothing", "repairing"),
+            new Activity("Gathering Opinion Info", "opinion"),
+            new Activity("Hanging Out", "nothing")};
+
         static string str_codename = "CODE NAME";
         static string str_skill = "SKILL";
         static string str_weapon = "WEAPON";
@@ -892,9 +945,8 @@ namespace LCSRemake
                 Border();
 
                 Print(4, 2, "Profile of a liberal");
-                Print(4, 4, "Name:");
-                Print(10, 4, entity.Handle);
-                Print(10 + entity.Handle.Length, 4, ", " + entity.Title);
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(5, 4, entity.Handle + ", " + entity.Title);
                 Print(80, 4, entity.Profession);
 
                 Print(4, 6, "Heart:        " + entity.Heart);
@@ -956,6 +1008,7 @@ namespace LCSRemake
                 Print(4, 16, "Weapon: " + entity.GetWeaponName());
                 Print(42, 16, "Armour: " + entity.GetArmourName());
                 Print(80, 16, "Transport: " + entity.GetVehicleType());
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
 
                 Print(4, 25, "Press N to change this Liberal's Code Name");
                 Print(4, 26, "Press any other key to continue the Struggle");
@@ -1026,13 +1079,13 @@ namespace LCSRemake
                     {
                         Print(3, currenty, (char)letter + " - " + squad.Name, ConsoleColor.White);
                         Print(55, currenty, squad.Location.Shortname, ConsoleColor.White);
-                        Print(91, currenty, "Gathering Opinion Info", ConsoleColor.White);
+                        Print(91, currenty, squad.GetActivityInfo(), ConsoleColor.White);
                     }
                     else
                     {
                         Print(3, currenty, (char)letter + " - " + squad.Name);
                         Print(55, currenty, squad.Location.Shortname);
-                        Print(91, currenty, "Gathering Opinion Info");
+                        Print(91, currenty, squad.GetActivityInfo());
                     }
                     currenty++;
                     letter++;
@@ -1106,31 +1159,31 @@ namespace LCSRemake
                     switch (keyinput)
                     {
                         case '1':
-                            ReviewSubScreen(liberals.Active, 6, "Active Liberals", str_squad_activity, 1);
+                            ReviewSubscreen(liberals.Active, 6, "Active Liberals", str_squad_activity, 1);
                             break;
 
                         case '2':
-                            ReviewSubScreen(liberals.Hostages, 12, "Conservative Automatons in Captivity", str_days_captive, 2);
+                            ReviewSubscreen(liberals.Hostages, 12, "Conservative Automatons in Captivity", str_days_captive, 2);
                             break;
 
                         case '3':
-                            ReviewSubScreen(liberals.Clinic, 12, "Liberals in CLINICS", str_prognosis, 3);
+                            ReviewSubscreen(liberals.Clinic, 12, "Liberals in CLINICS", str_prognosis, 3);
                             break;
 
                         case '4':
-                            ReviewSubScreen(liberals.JusticeSystem, 12, "Liberals and the Justice System", str_months_left, 4);
+                            ReviewSubscreen(liberals.JusticeSystem, 12, "Liberals and the Justice System", str_months_left, 4);
                             break;
 
                         case '5':
-                            ReviewSubScreen(liberals.Sleepers, 12, "Sleepers", str_profession, 5);
+                            ReviewSubscreen(liberals.Sleepers, 12, "Sleepers", str_profession, 5);
                             break;
 
                         case '6':
-                            ReviewSubScreen(liberals.TheDead, 12, "Liberal Martyrs and Dead Bodies", str_days_dead, 6);
+                            ReviewSubscreen(liberals.TheDead, 12, "Liberal Martyrs and Dead Bodies", str_days_dead, 6);
                             break;
 
                         case '7':
-                            ReviewSubScreen(liberals.Away, 12, "Liberals that are Away", str_days_return, 7);
+                            ReviewSubscreen(liberals.Away, 12, "Liberals that are Away", str_days_return, 7);
                             break;
                     }
                 }
@@ -1167,7 +1220,7 @@ namespace LCSRemake
             }
         }
 
-        static void ReviewSubScreen(List<Entity> members, int people_per_page, string title, string related_string, int screen_number)
+        static void ReviewSubscreen(List<Entity> members, int people_per_page, string title, string related_string, int screen_number)
         {
             int currenty;
             int letter;
@@ -1213,8 +1266,15 @@ namespace LCSRemake
                     switch(screen_number)
                     {
                         case 1:
-                            Print(87, currenty, entity.AssignedSquad.Name + " / ", ConsoleColor.White);
-                            Print(87, currenty + 1, "Gathering Opinion Info", ConsoleColor.White);
+                            if (entity.AssignedSquad != null)
+                            {
+                                Print(87, currenty, entity.AssignedSquad.Name + " / ", ConsoleColor.White);
+                            }
+                            else
+                            {
+                                Print(87, currenty, "None" + " / ", ConsoleColor.White);
+                            }
+                            Print(87, currenty + 1, entity.Activity.Name, ConsoleColor.White);
                             currenty += 2;
                             break;
 
@@ -1558,12 +1618,14 @@ namespace LCSRemake
             int page = 0;
             int maxpage = liberals.Active.Count / 12;
             Location selectedlocation = maincity.Locations[11];
+            List<Entity> templist = new List<Entity>();
 
             while (true)
             {
                 currenty = 5;
                 letter = 65;
                 position = page * 12;
+                templist.Clear();
 
                 if (liberals.Active.Count - page * 12 > 12)
                 {
@@ -1626,6 +1688,7 @@ namespace LCSRemake
                     {
                         Print(3, currenty, (char)letter + " - " + entity.Handle);
                         Print(49, currenty, entity.Mybase.Shortname);
+                        templist.Add(entity);
                         currenty++;
                         letter++;
                     }
@@ -1645,40 +1708,40 @@ namespace LCSRemake
                         switch (keyinput)
                         {
                             case 'a':
-                                liberals.Active[0 + page * 12].Mybase = selectedlocation;
+                                templist[0 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'b':
-                                liberals.Active[1 + page * 12].Mybase = selectedlocation;
+                                templist[1 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'c':
-                                liberals.Active[2 + page * 12].Mybase = selectedlocation;
+                                templist[2 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'd':
-                                liberals.Active[3 + page * 12].Mybase = selectedlocation;
+                                templist[3 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'e':
-                                liberals.Active[4 + page * 12].Mybase = selectedlocation;
+                                templist[4 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'f':
-                                liberals.Active[5 + page * 12].Mybase = selectedlocation;
+                                templist[5 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'g':
-                                liberals.Active[6 + page * 12].Mybase = selectedlocation;
+                                templist[6 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'h':
-                                liberals.Active[7 + page * 12].Mybase = selectedlocation;
+                                templist[7 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'i':
-                                liberals.Active[8 + page * 12].Mybase = selectedlocation;
+                                templist[8 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'j':
-                                liberals.Active[9 + page * 12].Mybase = selectedlocation;
+                                templist[9 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'k':
-                                liberals.Active[10 + page * 12].Mybase = selectedlocation;
+                                templist[10 + page * 12].Mybase = selectedlocation;
                                 break;
                             case 'l':
-                                liberals.Active[11 + page * 12].Mybase = selectedlocation;
+                                templist[11 + page * 12].Mybase = selectedlocation;
                                 break;
                         }
                     }
@@ -1886,6 +1949,274 @@ namespace LCSRemake
                 }
                 else
                 {
+                    break;
+                }
+            }
+        }
+
+        static void AssignActivity()
+        {
+            int currenty;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Active.Count / 12;
+
+            while (true)
+            {
+                currenty = 5;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Active.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Active.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(4, 2, "Activate Uninvolved Liberals");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(7, 4, str_codename);
+                Print(29, 4, str_skill);
+                Print(47, 4, str_health);
+                Print(66, 4, str_location);
+                Print(87, 4, str_activity);
+
+                foreach (Entity entity in liberals.Active.GetRange(position, count))
+                {
+                        Print(3, currenty, (char)letter + " - " + entity.Handle);
+                        Print(29, currenty, entity.GetTotalSkillLevel().ToString());
+                        GetHealthLabel(47, currenty, entity);
+                        Print(66, currenty, entity.Location.Shortname);
+                        Print(87, currenty, entity.Activity.Name);
+                        currenty++;
+                        letter++;
+                }
+
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 24, "Press a Letter to Assign an Activity.");
+                Print(4, 25, "[] to view other liberal pages.");
+                Print(4, 26, "Press Z to assign simple tasks in bulk.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        switch (keyinput)
+                        {
+                            case 'a':
+                                AssignActivitySubscreen(liberals.Active[0 + page * 12]);
+                                break;
+                            case 'b':
+                                AssignActivitySubscreen(liberals.Active[1 + page * 12]);
+                                break;
+                            case 'c':
+                                AssignActivitySubscreen(liberals.Active[2 + page * 12]);
+                                break;
+                            case 'd':
+                                AssignActivitySubscreen(liberals.Active[3 + page * 12]);
+                                break;
+                            case 'e':
+                                AssignActivitySubscreen(liberals.Active[4 + page * 12]);
+                                break;
+                            case 'f':
+                                AssignActivitySubscreen(liberals.Active[5 + page * 12]);
+                                break;
+                            case 'g':
+                                AssignActivitySubscreen(liberals.Active[6 + page * 12]);
+                                break;
+                            case 'h':
+                                AssignActivitySubscreen(liberals.Active[7 + page * 12]);
+                                break;
+                            case 'i':
+                                AssignActivitySubscreen(liberals.Active[8 + page * 12]);
+                                break;
+                            case 'j':
+                                AssignActivitySubscreen(liberals.Active[9 + page * 12]);
+                                break;
+                            case 'k':
+                                AssignActivitySubscreen(liberals.Active[10 + page * 12]);
+                                break;
+                            case 'l':
+                                AssignActivitySubscreen(liberals.Active[11 + page * 12]);
+                                break;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+                else if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+                else if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+                else if (keyinput == 'z')
+                {
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        static void AssignActivitySubscreen(Entity entity)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(4, 2, $"Taking Action: What will {entity.Handle} be doing today?");
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(5, 4, entity.Handle + ", " + entity.Title);
+                Print(80, 4, entity.Profession);
+
+                Print(4, 6, "Heart:        " + entity.Heart);
+                Print(4, 7, "Intelligence: " + entity.Intelligence);
+                Print(4, 8, "Wisdom:       " + entity.Wisdom);
+                Print(4, 9, "Health:       " + entity.MaxHealth + "/" + entity.Health);
+                Print(4, 10, "Agility:      " + entity.Agility);
+                Print(4, 11, "Strength:     " + entity.Strength);
+                Print(4, 12, "Charisma:     " + entity.Charisma);
+                Print(42, 6, "Juice: " + entity.Juice);
+                Print(42, 7, "Next:  ");
+
+                if (entity.Juice < 500)
+                {
+                    if (entity.Juice < 0)
+                    {
+                        Print(49, 7, "0");
+                    }
+                    else if (entity.Juice < 10)
+                    {
+                        Print(49, 7, "10");
+                    }
+                    else if (entity.Juice < 50)
+                    {
+                        Print(49, 7, "50");
+                    }
+                    else if (entity.Juice < 100)
+                    {
+                        Print(49, 7, "100");
+                    }
+                    else if (entity.Juice < 200)
+                    {
+                        Print(49, 7, "200");
+                    }
+                    else
+                    {
+                        Print(49, 7, "500");
+                    }
+                }
+
+                Print(80, 6, "Handtohand:    " + entity.Handtohand);
+                Print(80, 7, "Knife:         " + entity.Knife);
+                Print(80, 8, "Club:          " + entity.Club);
+                Print(80, 9, "Sword:         " + entity.Sword);
+                Print(80, 10, "Axe:           " + entity.Axe);
+                Print(80, 11, "Spear:         " + entity.Spear);
+                Print(80, 12, "Pistol:        " + entity.Pistol);
+                Print(80, 13, "Rifle:         " + entity.Rifle);
+                Print(80, 14, "Assaultrifle:  " + entity.Assaultrifle);
+                Print(100, 6, "Persuasion:    " + entity.Persuasion);
+                Print(100, 7, "Law:           " + entity.Law);
+                Print(100, 8, "Security:      " + entity.Security);
+                Print(100, 9, "Disguise:      " + entity.Disguise);
+                Print(100, 10, "Computers:     " + entity.Computers);
+                Print(100, 11, "Garmentmaking: " + entity.Garmentmaking);
+                Print(100, 12, "Driving:       " + entity.Driving);
+                Print(100, 13, "Writing:       " + entity.Writing);
+
+                Print(4, 16, "Weapon: " + entity.GetWeaponName());
+                Print(42, 16, "Armour: " + entity.GetArmourName());
+                Print(80, 16, "Transport: " + entity.GetVehicleType());
+                Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
+
+                Print(4, 19, "A - Perpetrating random acts of Liberal Disobedience.");
+                Print(4, 20, "D - Soliciting Donations.");
+                Print(4, 21, "C - Making Clothing.");
+                Print(4, 22, "H - Tending to a Conservative hostage.");
+                Print(4, 23, "S - Stealing a Car.");
+                Print(4, 24, "Z - Dispose of bodies.");
+                Print(67, 19, "B - Selling Brownies.");
+                Print(67, 20, "R - Repairing Clothing.");
+                Print(67, 21, "P - Surfing the Net for opinion polls.");
+
+                Print(4, 26, "Any other key - Nothing for now.");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 'a')
+                {
+                    entity.Activity = activities[0];
+                    break;
+                }
+                else if (keyinput == 'd')
+                {
+                    entity.Activity = activities[1];
+                    break;
+                }
+                else if (keyinput == 'c')
+                {
+                    entity.Activity = activities[2];
+                    break;
+                }
+                else if (keyinput == 'h')
+                {
+                    entity.Activity = activities[3];
+                    break;
+                }
+                else if (keyinput == 's')
+                {
+                    entity.Activity = activities[4];
+                    break;
+                }
+                else if (keyinput == 'z')
+                {
+                    entity.Activity = activities[5];
+                    break;
+                }
+                else if (keyinput == 'b')
+                {
+                    entity.Activity = activities[6];
+                    break;
+                }
+                else if (keyinput == 'r')
+                {
+                    entity.Activity = activities[7];
+                    break;
+                }
+                else if (keyinput == 'p')
+                {
+                    entity.Activity = activities[8];
+                    break;
+                }
+                else
+                {
+                    entity.Activity = activities[9];
                     break;
                 }
             }
@@ -2256,6 +2587,7 @@ namespace LCSRemake
             }
 
             newcharacter.AssignedSquad = newsquad;
+            newcharacter.Activity = activities[9];
 
             newlocation = new Location("Downtown", "Downtown", "downtown", false, null);
             maincity.Locations.Add(newlocation);
@@ -2456,6 +2788,12 @@ namespace LCSRemake
             test3.AssignedTo = test2;
             test4.AssignedTo = test3;
             test5.AssignedTo = test3;
+
+            test.Activity = activities[9];
+            test2.Activity = activities[9];
+            test3.Activity = activities[9];
+            test4.Activity = activities[9];
+            test5.Activity = activities[9];
             //-----------
 
             liberals.Squads.Add(newsquad);
@@ -2466,7 +2804,6 @@ namespace LCSRemake
 
         static void Mainscreen()
         {
-            string activity = "Hanging Out";
 
             while (true)
             {
@@ -2474,7 +2811,7 @@ namespace LCSRemake
                 Border();
 
                 Print(5, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
-                Print((Console.BufferWidth / 2) - (activity.Length / 2), 2, activity, ConsoleColor.White);
+                Print((Console.BufferWidth / 2) - (liberals.Activesquad.GetActivityInfo().Length / 2), 2, liberals.Activesquad.GetActivityInfo(), ConsoleColor.White);
                 Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
 
                 Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
@@ -2563,6 +2900,11 @@ namespace LCSRemake
                 if (keyinput == 'r')
                 {
                     Review();
+                }
+
+                if (keyinput == 'a')
+                {
+                    AssignActivity();
                 }
 
                 if (keyinput == 'x')

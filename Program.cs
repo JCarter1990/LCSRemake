@@ -162,6 +162,7 @@ namespace LCSRemake
         public List<Entity> TheDead { get; }
         public List<Entity> Away { get; }
         public List<Armour> CraftableArmours { get; }
+        public List<Vehicle> Vehicles { get; }
 
         public Faction()
         {
@@ -199,6 +200,7 @@ namespace LCSRemake
                 new Armour("Overalls", ArmourTypes.ARMOUR_OVERALLS, 0, 10),
                 new Armour("Wife Beater", ArmourTypes.ARMOUR_WIFEBEATER, 0, 5)
             };
+            this.Vehicles = new List<Vehicle>();
         }
     };
 
@@ -3657,23 +3659,31 @@ namespace LCSRemake
                 Print(5, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
                 Print(5, 20, "X - Live to fight EVIL another day");
                 Print(5, 21, "W - Wait a day");
-                Print(76, 14, "0 - Show the squad's liberal status", ConsoleColor.DarkGray);
-                Print(76, 15, "# - Check the status of a squad liberal");
-                Print(76, 16, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
-                Print(76, 17, "Tab - Next squad", ConsoleColor.DarkGray);
-                Print(76, 18, "Z - Next location");
-                Print(76, 19, "L - The status of the liberal agenda");
+                Print(76, 14, "# - Check the status of a squad liberal");
+                Print(76, 15, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
 
-                if (liberals.Activesquad.Location.HasFlag)
+                if (liberals.Squads.Count > 1)
                 {
-                    Print(76, 20, "P - PROTEST: burn the flag");
+                    Print(76, 16, "Tab - Next squad");
                 }
                 else
                 {
-                    Print(76, 20, "P - PATRIOTISM: Fly a flag here ($20)");
+                    Print(76, 16, "Tab - Next squad", ConsoleColor.DarkGray);
                 }
 
-                Print(76, 21, "S - FREE SPEECH: The liberal slogan");
+                Print(76, 17, "Z - Next location");
+                Print(76, 18, "L - The status of the liberal agenda");
+
+                if (liberals.Activesquad.Location.HasFlag)
+                {
+                    Print(76, 19, "P - PROTEST: burn the flag");
+                }
+                else
+                {
+                    Print(76, 19, "P - PATRIOTISM: Fly a flag here ($20)");
+                }
+
+                Print(76, 20, "S - FREE SPEECH: The liberal slogan");
 
                 Print((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24, liberals.Slogan, ConsoleColor.White);
 
@@ -3732,6 +3742,21 @@ namespace LCSRemake
                     }
                     catch (ArgumentOutOfRangeException)
                     {
+                    }
+                }
+
+                if (keyinput == 9)
+                {
+                    if (liberals.Squads.Count > 1)
+                    {
+                        try
+                        {
+                            liberals.Activesquad = liberals.Squads[liberals.Squads.IndexOf(liberals.Activesquad) + 1];
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            liberals.Activesquad = liberals.Squads[0];
+                        }
                     }
                 }
 

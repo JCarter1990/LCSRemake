@@ -4,6 +4,42 @@ using System.Threading;
 
 namespace LCSRemake
 {
+    public enum WeaponTypes
+    {
+        WEAPON_BASEBALLBAT,
+        WEAPON_CROWBAR,
+        WEAPON_KNIFE,
+        WEAPON_SHANK,
+        WEAPON_SYRINGE,
+        WEAPON_REVOLVER_22,
+        WEAPON_REVOLVER_44,
+        WEAPON_SEMIPISTOL_9MM,
+        WEAPON_SEMIPISTOL_45,
+        WEAPON_SEMIRIFLE_M16,
+        WEAPON_SEMIRIFLE_AK47,
+        WEAPON_SHOTGUN,
+        WEAPON_SWORD,
+        WEAPON_CHAIN,
+        WEAPON_NIGHTSTICK,
+        WEAPON_GAVEL,
+        WEAPON_AXE,
+        WEAPON_HAMMER,
+        WEAPON_MAUL,
+        WEAPON_CROSS,
+        WEAPON_STAFF,
+        WEAPON_PITCHFORK,
+        WEAPON_TORCH
+    }
+    public enum ClipTypes
+    {
+        CLIP_NONE,
+        CLIP_9,
+        CLIP_45,
+        CLIP_ASSAULT,
+        CLIP_22,
+        CLIP_44,
+        CLIP_BUCKSHOT
+    }
     public enum ArmourTypes
     {
         ARMOUR_CLOTHES,
@@ -45,8 +81,28 @@ namespace LCSRemake
         ACTIVITY_WHEELCHAIR,
         ACTIVITY_BURY
     };
+    public enum SkillTypes
+    {
+        SKILL_HANDTOHAND,
+        SKILL_KNIFE,
+        SKILL_CLUB,
+        SKILL_SWORD,
+        SKILL_AXE,
+        SKILL_SPEAR,
+        SKILL_PISTOL,
+        SKILL_RIFLE,
+        SKILL_ASSAULTRIFLE,
+        SKILL_PERSUASION,
+        SKILL_LAW,
+        SKILL_SECURITY,
+        SKILL_DISGUISE,
+        SKILL_COMPUTERS,
+        SKILL_GARMENTMAKING,
+        SKILL_DRIVING,
+        SKILL_WRITING
+    };
 
-    class City
+    public class City
     {
         public string Cityname { get; }
         public List<Location> Locations { get; }
@@ -96,7 +152,7 @@ namespace LCSRemake
         public bool Needs_car { get; set; }
         public bool HasFlag { get; set; }
         public Faction Owner { get; set; }
-
+        public List<Item> Stash { get; }
 
         public Location(string name, string shortname, string type, bool needcar, Faction owner)
         {
@@ -106,6 +162,7 @@ namespace LCSRemake
             this.Needs_car = needcar;
             this.Owner = owner;
             this.HasFlag = false;
+            this.Stash = new List<Item>();
         }
 
         public void RandomName(List<string> list)
@@ -409,7 +466,14 @@ namespace LCSRemake
             }
             else
             {
-                return this.Weapon.Name + " (" + this.Weapon.Ammo.Amount + ")";
+                if (this.Weapon.Ammo == null)
+                {
+                    return this.Weapon.Name + $" (0/0)";
+                }
+                else
+                {
+                    return this.Weapon.Name + $" ({this.Weapon.Ammo.Amount}/{this.Weapon.SpareClips.Count})";
+                }
             }
         }
 
@@ -421,25 +485,25 @@ namespace LCSRemake
             }
             else
             {
-                switch (this.Weapon.Skill)
+                switch (this.Weapon.Skilltype)
                 {
-                    case "handtohand":
+                    case SkillTypes.SKILL_HANDTOHAND:
                         return this.Handtohand;
-                    case "knife":
+                    case SkillTypes.SKILL_KNIFE:
                         return this.Knife;
-                    case "club":
+                    case SkillTypes.SKILL_CLUB:
                         return this.Club;
-                    case "sword":
+                    case SkillTypes.SKILL_SWORD:
                         return this.Sword;
-                    case "axe":
+                    case SkillTypes.SKILL_AXE:
                         return this.Axe;
-                    case "spear":
+                    case SkillTypes.SKILL_SPEAR:
                         return this.Spear;
-                    case "pistol":
+                    case SkillTypes.SKILL_PISTOL:
                         return this.Pistol;
-                    case "rifle":
+                    case SkillTypes.SKILL_RIFLE:
                         return this.Rifle;
-                    case "assaultrifle":
+                    case SkillTypes.SKILL_ASSAULTRIFLE:
                         return this.Assaultrifle;
                 }
             }
@@ -569,39 +633,46 @@ namespace LCSRemake
         }
     }
 
-    public class Weapon
+    public abstract class Item
     {
-        public string Name { get; }
-        public string Skill { get; }
-        public string Cliptype { get; }
+        public string Name { get; set; }
+    }
+
+
+    public class Weapon : Item
+    {
+        public SkillTypes Skilltype { get; }
+        public ClipTypes Cliptype { get; }
         public Clip Ammo { get; set; }
+        public List<Clip> SpareClips { get; set; }
         public bool Ranged { get; }
 
-        public Weapon(string name, string skill, string cliptype, Clip ammo, bool ranged)
+        public Weapon(string name, SkillTypes skilltype, ClipTypes cliptype, Clip ammo, bool ranged)
         {
             this.Name = name;
-            this.Skill = skill;
+            this.Skilltype = skilltype;
             this.Cliptype = cliptype;
             this.Ammo = ammo;
             this.Ranged = ranged;
+            this.SpareClips = new List<Clip>();
         }
     };
 
-    public class Clip
+    public class Clip : Item
     {
-        public string Type { get; }
+        public ClipTypes Cliptype { get; }
         public int Amount { get; set; }
 
-        public Clip(string type, int amount)
+        public Clip(string name, ClipTypes cliptype, int amount)
         {
-            this.Type = type;
+            this.Name = name;
+            this.Cliptype = cliptype;
             this.Amount = amount;
         }
     }
 
-    public class Armour
+    public class Armour : Item
     {
-        public string Name { get; }
         public ArmourTypes Armourtype { get; }
         public int Quality { get; }
         public int Cost { get; }
@@ -1157,6 +1228,329 @@ namespace LCSRemake
                 else
                 {
                     break;
+                }
+            }
+        }
+
+        static void Equipment()
+        {
+            int currenty;
+            int currenty2;
+            int currenty3;
+            int currenty4;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Activesquad.Location.Stash.Count / 16;
+
+            while (true)
+            {
+                currenty = 13;
+                currenty2 = 13;
+                currenty3 = 13;
+                currenty4 = 13;
+                letter = 65;
+                position = page * 16;
+
+                if (liberals.Activesquad.Location.Stash.Count - page * 16 > 16)
+                {
+                    count = 16;
+                }
+                else
+                {
+                    count = liberals.Activesquad.Location.Stash.Count - page * 16;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(5, 2, "Equip the Squad");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(5, 4, str_codename);
+                Print(26, 4, str_skill);
+                Print(43, 4, str_weapon);
+                Print(61, 4, str_armour);
+                Print(79, 4, str_health);
+                Print(97, 4, str_transport);
+                Print(3, 5, "1");
+                Print(3, 6, "2");
+                Print(3, 7, "3");
+                Print(3, 8, "4");
+                Print(3, 9, "5");
+                Print(3, 10, "6");
+
+                for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
+                {
+                    Entity selectedmember = liberals.Activesquad.Entities[member];
+
+                    Print(5, 5 + member, selectedmember.Handle);
+                    Print(26, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
+                    Print(43, 5 + member, selectedmember.GetWeaponName());
+                    Print(61, 5 + member, selectedmember.GetArmourName());
+                    GetHealthLabel(79, 5 + member, selectedmember);
+                    Print(97, 5 + member, selectedmember.GetVehicleType());
+                }
+
+                Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
+
+                foreach (Item item in liberals.Activesquad.Location.Stash.GetRange(position, count))
+                {
+                    if (letter < 69)
+                    {
+                        if (item.GetType() == typeof(Clip))
+                        {
+                            Print(3, currenty, (char)letter + " - " + item.Name + $" ({((Clip)item).Amount})");
+                            currenty++;
+                            letter++;
+                        }
+                        else
+                        {
+                            Print(3, currenty, (char)letter + " - " + item.Name);
+                            currenty++;
+                            letter++;
+                        }
+                    }
+                    else if (letter < 73)
+                    {
+                        if (item.GetType() == typeof(Clip))
+                        {
+                            Print(32, currenty2, (char)letter + " - " + item.Name + $" ({((Clip)item).Amount})");
+                            currenty2++;
+                            letter++;
+                        }
+                        else
+                        {
+                            Print(32, currenty2, (char)letter + " - " + item.Name);
+                            currenty2++;
+                            letter++;
+                        }
+                    }
+                    else if(letter < 77)
+                    {
+                        if (item.GetType() == typeof(Clip))
+                        {
+                            Print(61, currenty3, (char)letter + " - " + item.Name + $" ({((Clip)item).Amount})");
+                            currenty3++;
+                            letter++;
+                        }
+                        else
+                        {
+                            Print(61, currenty3, (char)letter + " - " + item.Name);
+                            currenty3++;
+                            letter++;
+                        }
+                    }
+                    else
+                    {
+                        if (item.GetType() == typeof(Clip))
+                        {
+                            Print(90, currenty4, (char)letter + " - " + item.Name + $" ({((Clip)item).Amount})");
+                            currenty4++;
+                            letter++;
+                        }
+                        else
+                        {
+                            Print(90, currenty4, (char)letter + " - " + item.Name);
+                            currenty4++;
+                            letter++;
+                        }
+                    }
+                }
+
+                Print(3, 18, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(4, 22, "Press a letter to equip a Liberal item");
+                Print(4, 23, "Press a number to drop that Squad member's Conservative weapon");
+                Print(4, 24, "S - Liberally Strip a Squad member");
+                Print(4, 26, "X - Done");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'r')
+                {
+                    try
+                    {
+                        Print(38, 11, "Choose a Liberal squad member to recieve it", ConsoleColor.White);
+
+                        char subkeyinput = Console.ReadKey(true).KeyChar;
+
+                        if (subkeyinput >= '1' && subkeyinput <= '6')
+                        {
+                            switch (keyinput)
+                            {
+                                case 'a':
+                                    AddRemoveEquipment(0, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'b':
+                                    AddRemoveEquipment(1, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'c':
+                                    AddRemoveEquipment(2, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'd':
+                                    AddRemoveEquipment(3, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'e':
+                                    AddRemoveEquipment(4, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'f':
+                                    AddRemoveEquipment(5, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'g':
+                                    AddRemoveEquipment(6, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'h':
+                                    AddRemoveEquipment(7, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'i':
+                                    AddRemoveEquipment(8, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'j':
+                                    AddRemoveEquipment(9, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'k':
+                                    AddRemoveEquipment(10, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'l':
+                                    AddRemoveEquipment(11, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'm':
+                                    AddRemoveEquipment(12, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'n':
+                                    AddRemoveEquipment(13, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'o':
+                                    AddRemoveEquipment(14, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                case 'p':
+                                    AddRemoveEquipment(15, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                            }
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+
+                if (keyinput >= '1' && keyinput <= '6')
+                {
+                    try
+                    {
+                        if(liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon != null)
+                        {
+                            liberals.Activesquad.Location.Stash.Add(liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon.Ammo);
+                            liberals.Activesquad.Location.Stash.Add(liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon);
+
+                            if (liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon.SpareClips.Count > 0)
+                            {
+                                foreach (Clip clip in liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon.SpareClips)
+                                {
+                                    liberals.Activesquad.Location.Stash.Add(clip);
+                                }
+                                liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon.SpareClips.Clear();
+                            }
+
+                            liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon.Ammo = null;
+                            liberals.Activesquad.Entities[(int)Char.GetNumericValue(keyinput) - 1].Weapon = null;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+
+                if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+
+                if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+
+                if (keyinput == 's')
+                {
+                    Print(38, 11, "Choose a Liberal squad member to strip down", ConsoleColor.White);
+
+                    char subkeyinput = Console.ReadKey(true).KeyChar;
+
+                    if (subkeyinput >= '1' && subkeyinput <= '6')
+                    {
+                        try
+                        {
+                            if (liberals.Activesquad.Entities[(int)Char.GetNumericValue(subkeyinput) - 1].Armour != null)
+                            {
+                                liberals.Activesquad.Location.Stash.Add(liberals.Activesquad.Entities[(int)Char.GetNumericValue(subkeyinput) - 1].Armour);
+                                liberals.Activesquad.Entities[(int)Char.GetNumericValue(subkeyinput) - 1].Armour = null;
+                            }
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                        }
+                    }
+                }
+
+                if (keyinput == 'x')
+                {
+                    break;
+                }
+            }
+        }
+
+        static void AddRemoveEquipment(int index, int page, int characterPosition)
+        {
+            if (liberals.Activesquad.Location.Stash[index + page * 16].GetType().Equals(typeof(Weapon)))
+            {
+                if (liberals.Activesquad.Entities[characterPosition].Weapon == null)
+                {
+                    liberals.Activesquad.Entities[characterPosition].Weapon = (Weapon)liberals.Activesquad.Location.Stash[index + page * 16];
+                    liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                }
+                else
+                {
+                    liberals.Activesquad.Location.Stash.Add(liberals.Activesquad.Entities[characterPosition].Weapon);
+                    liberals.Activesquad.Entities[characterPosition].Weapon = (Weapon)liberals.Activesquad.Location.Stash[index + page * 16];
+                    liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                }
+            }
+            else if (liberals.Activesquad.Location.Stash[index + page * 16].GetType().Equals(typeof(Armour)))
+            {
+                if (liberals.Activesquad.Entities[characterPosition].Armour == null)
+                {
+                    liberals.Activesquad.Entities[characterPosition].Armour = (Armour)liberals.Activesquad.Location.Stash[index + page * 16];
+                    liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                }
+                else
+                {
+                    liberals.Activesquad.Location.Stash.Add(liberals.Activesquad.Entities[characterPosition].Armour);
+                    liberals.Activesquad.Entities[characterPosition].Armour = (Armour)liberals.Activesquad.Location.Stash[index + page * 16];
+                    liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                }
+            }
+            else if (liberals.Activesquad.Location.Stash[index + page * 16].GetType().Equals(typeof(Clip)))
+            {
+                if (((Clip)liberals.Activesquad.Location.Stash[index + page * 16]).Cliptype == liberals.Activesquad.Entities[characterPosition].Weapon.Cliptype)
+                {
+                    if (liberals.Activesquad.Entities[characterPosition].Weapon.Ammo == null)
+                    {
+                        liberals.Activesquad.Entities[characterPosition].Weapon.Ammo = (Clip)liberals.Activesquad.Location.Stash[index + page * 16];
+                        liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                    }
+                    else
+                    {
+                        liberals.Activesquad.Entities[characterPosition].Weapon.SpareClips.Add((Clip)liberals.Activesquad.Location.Stash[index + page * 16]);
+                        liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
+                    }
                 }
             }
         }
@@ -3334,7 +3728,7 @@ namespace LCSRemake
                         }
                         if (keyinput == 'b')
                         {
-                            newcharacter.Weapon = new Weapon("AK47", "assaultrifle", "assault", new Clip("assault", 9), true);
+                            newcharacter.Weapon = new Weapon("AK47", SkillTypes.SKILL_ASSAULTRIFLE, ClipTypes.CLIP_ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 9), true);
                         }
                         if (keyinput == 'c')
                         {
@@ -3583,6 +3977,11 @@ namespace LCSRemake
                 }
             }
 
+            if (newcharacter.Armour == null)
+            {
+                newcharacter.Armour = new Armour("Clothes", ArmourTypes.ARMOUR_CLOTHES, 0, 10);
+            }
+
             liberals.Active.Add(newcharacter);
 
             //TESTING
@@ -3590,7 +3989,7 @@ namespace LCSRemake
             liberals.Active.Add(test2);
             liberals.Active.Add(test3);
             liberals.Active.Add(test4);
-            liberals.Hostages.Add(test5);
+            liberals.Active.Add(test5);
 
             test.AssignedTo = newcharacter;
             test2.AssignedTo = newcharacter;
@@ -3607,6 +4006,10 @@ namespace LCSRemake
 
             liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
+
+            liberals.Activesquad.Location.Stash.Add(new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40));
+            liberals.Activesquad.Location.Stash.Add(new Weapon("Carbine", SkillTypes.SKILL_ASSAULTRIFLE, ClipTypes.CLIP_ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 9), true));
+            liberals.Activesquad.Location.Stash.Add(new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 5));
 
             Mainscreen();
         }
@@ -3714,6 +4117,19 @@ namespace LCSRemake
 
                 char keyinput = Console.ReadKey(true).KeyChar;
 
+                if (keyinput == 'f')
+                {
+                }
+
+                if (keyinput == 'e')
+                {
+                    Equipment();
+                }
+
+                if (keyinput == 'v')
+                {
+                }
+
                 if (keyinput == 'r')
                 {
                     Review();
@@ -3722,6 +4138,10 @@ namespace LCSRemake
                 if (keyinput == 'a')
                 {
                     AssignActivity();
+                }
+
+                if (keyinput == 'c')
+                {
                 }
 
                 if (keyinput == 'x')
@@ -3745,6 +4165,10 @@ namespace LCSRemake
                     }
                 }
 
+                if (keyinput == 'o')
+                {
+                }
+
                 if (keyinput == 9)
                 {
                     if (liberals.Squads.Count > 1)
@@ -3758,6 +4182,14 @@ namespace LCSRemake
                             liberals.Activesquad = liberals.Squads[0];
                         }
                     }
+                }
+
+                if (keyinput == 'z')
+                {
+                }
+
+                if (keyinput == 'l')
+                {
                 }
 
                 if (keyinput == 'p')

@@ -6,100 +6,112 @@ namespace LCSRemake
 {
     public enum WeaponTypes
     {
-        WEAPON_BASEBALLBAT,
-        WEAPON_CROWBAR,
-        WEAPON_KNIFE,
-        WEAPON_SHANK,
-        WEAPON_SYRINGE,
-        WEAPON_REVOLVER_22,
-        WEAPON_REVOLVER_44,
-        WEAPON_SEMIPISTOL_9MM,
-        WEAPON_SEMIPISTOL_45,
-        WEAPON_SEMIRIFLE_M16,
-        WEAPON_SEMIRIFLE_AK47,
-        WEAPON_SHOTGUN,
-        WEAPON_SWORD,
-        WEAPON_CHAIN,
-        WEAPON_NIGHTSTICK,
-        WEAPON_GAVEL,
-        WEAPON_AXE,
-        WEAPON_HAMMER,
-        WEAPON_MAUL,
-        WEAPON_CROSS,
-        WEAPON_STAFF,
-        WEAPON_PITCHFORK,
-        WEAPON_TORCH
+        BASEBALLBAT,
+        CROWBAR,
+        KNIFE,
+        SHANK,
+        SYRINGE,
+        REVOLVER_22,
+        REVOLVER_44,
+        SEMIPISTOL_9MM,
+        SEMIPISTOL_45,
+        SEMIRIFLE_M16,
+        SEMIRIFLE_AK47,
+        SHOTGUN,
+        SWORD,
+        CHAIN,
+        NIGHTSTICK,
+        GAVEL,
+        AXE,
+        HAMMER,
+        MAUL,
+        CROSS,
+        STAFF,
+        PITCHFORK,
+        TORCH
     }
     public enum ClipTypes
     {
-        CLIP_NONE,
-        CLIP_9,
-        CLIP_45,
-        CLIP_ASSAULT,
-        CLIP_22,
-        CLIP_44,
-        CLIP_BUCKSHOT
+        NINEMM,
+        DOT45,
+        ASSAULT,
+        DOT22,
+        DOT44,
+        BUCKSHOT
     }
     public enum ArmourTypes
     {
-        ARMOUR_CLOTHES,
-        ARMOUR_TRENCHCOAT,
-        ARMOUR_WORKCLOTHES,
-        ARMOUR_SECURITYUNIFORM,
-        ARMOUR_POLICEUNIFORM,
-        ARMOUR_CHEAPSUIT,
-        ARMOUR_EXPENSIVESUIT,
-        ARMOUR_BLACKSUIT,
-        ARMOUR_CHEAPDRESS,
-        ARMOUR_EXPENSIVEDRESS,
-        ARMOUR_BLACKDRESS,
-        ARMOUR_LABCOAT,
-        ARMOUR_BLACKROBE,
-        ARMOUR_CLOWNSUIT,
-        ARMOUR_BONDAGEGEAR,
-        ARMOUR_MASK,
-        ARMOUR_MILITARY,
-        ARMOUR_PRISONGUARD,
-        ARMOUR_PRISONER,
-        ARMOUR_TOGA,
-        ARMOUR_MITHRIL,
-        ARMOUR_OVERALLS,
-        ARMOUR_WIFEBEATER
+        CLOTHES,
+        TRENCHCOAT,
+        WORKCLOTHES,
+        SECURITYUNIFORM,
+        POLICEUNIFORM,
+        CHEAPSUIT,
+        EXPENSIVESUIT,
+        BLACKSUIT,
+        CHEAPDRESS,
+        EXPENSIVEDRESS,
+        BLACKDRESS,
+        LABCOAT,
+        BLACKROBE,
+        CLOWNSUIT,
+        BONDAGEGEAR,
+        MASK,
+        MILITARY,
+        PRISONGUARD,
+        PRISONER,
+        TOGA,
+        MITHRIL,
+        OVERALLS,
+        WIFEBEATER
     }
     public enum ActivityTypes
     {
-        ACTIVITY_NONE,
-        ACTIVITY_VISIT,
-        ACTIVITY_HOSTAGETENDING,
-        ACTIVITY_TROUBLE,
-        ACTIVITY_FUNDS_LEGAL,
-        ACTIVITY_FUNDS_ILLEGAL,
-        ACTIVITY_REPAIR_ARMOUR,
-        ACTIVITY_MAKE_ARMOUR,
-        ACTIVITY_POLLS,
-        ACTIVITY_STEALCARS,
-        ACTIVITY_WHEELCHAIR,
-        ACTIVITY_BURY
+        NONE,
+        VISIT,
+        HOSTAGETENDING,
+        TROUBLE,
+        FUNDS_LEGAL,
+        FUNDS_ILLEGAL,
+        REPAIR_ARMOUR,
+        MAKE_ARMOUR,
+        POLLS,
+        STEALCARS,
+        WHEELCHAIR,
+        BURY
     };
     public enum SkillTypes
     {
-        SKILL_HANDTOHAND,
-        SKILL_KNIFE,
-        SKILL_CLUB,
-        SKILL_SWORD,
-        SKILL_AXE,
-        SKILL_SPEAR,
-        SKILL_PISTOL,
-        SKILL_RIFLE,
-        SKILL_ASSAULTRIFLE,
-        SKILL_PERSUASION,
-        SKILL_LAW,
-        SKILL_SECURITY,
-        SKILL_DISGUISE,
-        SKILL_COMPUTERS,
-        SKILL_GARMENTMAKING,
-        SKILL_DRIVING,
-        SKILL_WRITING
+        HANDTOHAND,
+        KNIFE,
+        CLUB,
+        SWORD,
+        AXE,
+        SPEAR,
+        PISTOL,
+        RIFLE,
+        ASSAULTRIFLE,
+        PERSUASION,
+        LAW,
+        SECURITY,
+        DISGUISE,
+        COMPUTERS,
+        GARMENTMAKING,
+        DRIVING,
+        WRITING
+    };
+    public enum VehicleTypes
+    {
+        VAN,
+        STATIONWAGON,
+        SPORTSCAR,
+        BUG,
+        PICKUP,
+        POLICECAR,
+        TAXICAB,
+        SUV,
+        AGENTCAR,
+        JEEP
     };
 
     public class City
@@ -235,27 +247,27 @@ namespace LCSRemake
             this.TheDead = new List<Entity>();
             this.Away = new List<Entity>();
             this.CraftableArmours = new List<Armour> { 
-                new Armour("Clothes", ArmourTypes.ARMOUR_CLOTHES, 0, 10),
-                new Armour("Trenchcoat", ArmourTypes.ARMOUR_TRENCHCOAT, 0, 20),
-                new Armour("Work Clothes", ArmourTypes.ARMOUR_WORKCLOTHES, 0, 10),
-                new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40),
-                new Armour("Police Uniform", ArmourTypes.ARMOUR_POLICEUNIFORM, 0, 40),
-                new Armour("Cheap Suit", ArmourTypes.ARMOUR_CHEAPSUIT, 0, 50),
-                new Armour("Expensive Suit", ArmourTypes.ARMOUR_EXPENSIVESUIT, 0, 300),
-                new Armour("Black Suit", ArmourTypes.ARMOUR_BLACKSUIT, 0, 60),
-                new Armour("Cheap Dress", ArmourTypes.ARMOUR_CHEAPDRESS, 0, 20),
-                new Armour("Expensve Dress", ArmourTypes.ARMOUR_EXPENSIVEDRESS, 0, 300),
-                new Armour("Black Dress", ArmourTypes.ARMOUR_BLACKDRESS, 0, 60),
-                new Armour("Lab Coat", ArmourTypes.ARMOUR_LABCOAT, 0, 20),
-                new Armour("Black Robe", ArmourTypes.ARMOUR_BLACKROBE, 0, 20),
-                new Armour("Clown Suit", ArmourTypes.ARMOUR_CLOWNSUIT, 0, 20),
-                new Armour("Bondage Gear", ArmourTypes.ARMOUR_BONDAGEGEAR, 0, 30),
-                new Armour("Army Uniform", ArmourTypes.ARMOUR_MILITARY, 0, 40),
-                new Armour("Guard Uniform", ArmourTypes.ARMOUR_PRISONGUARD, 0, 40),
-                new Armour("Orange Jumpsuit", ArmourTypes.ARMOUR_PRISONER, 0, 20),
-                new Armour("Toga", ArmourTypes.ARMOUR_TOGA, 0, 5),
-                new Armour("Overalls", ArmourTypes.ARMOUR_OVERALLS, 0, 10),
-                new Armour("Wife Beater", ArmourTypes.ARMOUR_WIFEBEATER, 0, 5)
+                new Armour("Clothes", ArmourTypes.CLOTHES, 0, 10),
+                new Armour("Trenchcoat", ArmourTypes.TRENCHCOAT, 0, 20),
+                new Armour("Work Clothes", ArmourTypes.WORKCLOTHES, 0, 10),
+                new Armour("Security Uniform", ArmourTypes.SECURITYUNIFORM, 0, 40),
+                new Armour("Police Uniform", ArmourTypes.POLICEUNIFORM, 0, 40),
+                new Armour("Cheap Suit", ArmourTypes.CHEAPSUIT, 0, 50),
+                new Armour("Expensive Suit", ArmourTypes.EXPENSIVESUIT, 0, 300),
+                new Armour("Black Suit", ArmourTypes.BLACKSUIT, 0, 60),
+                new Armour("Cheap Dress", ArmourTypes.CHEAPDRESS, 0, 20),
+                new Armour("Expensve Dress", ArmourTypes.EXPENSIVEDRESS, 0, 300),
+                new Armour("Black Dress", ArmourTypes.BLACKDRESS, 0, 60),
+                new Armour("Lab Coat", ArmourTypes.LABCOAT, 0, 20),
+                new Armour("Black Robe", ArmourTypes.BLACKROBE, 0, 20),
+                new Armour("Clown Suit", ArmourTypes.CLOWNSUIT, 0, 20),
+                new Armour("Bondage Gear", ArmourTypes.BONDAGEGEAR, 0, 30),
+                new Armour("Army Uniform", ArmourTypes.MILITARY, 0, 40),
+                new Armour("Guard Uniform", ArmourTypes.PRISONGUARD, 0, 40),
+                new Armour("Orange Jumpsuit", ArmourTypes.PRISONER, 0, 20),
+                new Armour("Toga", ArmourTypes.TOGA, 0, 5),
+                new Armour("Overalls", ArmourTypes.OVERALLS, 0, 10),
+                new Armour("Wife Beater", ArmourTypes.WIFEBEATER, 0, 5)
             };
             this.Vehicles = new List<Vehicle>();
         }
@@ -266,6 +278,8 @@ namespace LCSRemake
         static int idcounter = 0;
         public int ID { get; }
         public string Name { get; set; }
+        public Entity Driver { get; set; }
+        public Vehicle Vehicle { get; set; }
         public List<Entity> Entities { get; }
         public Location Location { get; set; }
 
@@ -279,28 +293,54 @@ namespace LCSRemake
 
         public string GetActivityInfo()
         {
-            string activityname = this.Entities[0].Activity.Name;
-            bool allsame = true;
-
-            foreach (Entity entity in this.Entities)
+            try
             {
-                if (entity.Activity.Name == activityname)
+                string activityname = this.Entities[0].Activity.Name;
+                bool allsame = true;
+
+                foreach (Entity entity in this.Entities)
                 {
-                    allsame = true;
+                    if (entity.Activity.Name == activityname)
+                    {
+                        allsame = true;
+                    }
+                    else
+                    {
+                        allsame = false;
+                    }
+                }
+
+                if (allsame)
+                {
+                    return this.Entities[0].Activity.Name;
                 }
                 else
                 {
-                    allsame = false;
+                    return "Acting Individually";
                 }
             }
-
-            if (allsame)
+            catch (ArgumentOutOfRangeException)
             {
-                return this.Entities[0].Activity.Name;
+                return "";
+            }
+        }
+
+        public string GetVehicle(Entity entity)
+        {
+            if (this.Vehicle == null)
+            {
+                return "On foot";
             }
             else
             {
-                return "Acting Individually";
+                if (entity == this.Driver)
+                {
+                    return this.Vehicle.GetName() + " - D";
+                }
+                else
+                {
+                    return this.Vehicle.GetName();
+                }
             }
         }
     }
@@ -358,7 +398,6 @@ namespace LCSRemake
         public Location Worklocation { get; set; }
         public Entity Prisoner { get; set; }
         public Entity AssignedTo { get; set; }
-        public Vehicle Vehicle { get; set; }
         public Activity Activity { get; set; }
 
         public Entity()
@@ -487,23 +526,23 @@ namespace LCSRemake
             {
                 switch (this.Weapon.Skilltype)
                 {
-                    case SkillTypes.SKILL_HANDTOHAND:
+                    case SkillTypes.HANDTOHAND:
                         return this.Handtohand;
-                    case SkillTypes.SKILL_KNIFE:
+                    case SkillTypes.KNIFE:
                         return this.Knife;
-                    case SkillTypes.SKILL_CLUB:
+                    case SkillTypes.CLUB:
                         return this.Club;
-                    case SkillTypes.SKILL_SWORD:
+                    case SkillTypes.SWORD:
                         return this.Sword;
-                    case SkillTypes.SKILL_AXE:
+                    case SkillTypes.AXE:
                         return this.Axe;
-                    case SkillTypes.SKILL_SPEAR:
+                    case SkillTypes.SPEAR:
                         return this.Spear;
-                    case SkillTypes.SKILL_PISTOL:
+                    case SkillTypes.PISTOL:
                         return this.Pistol;
-                    case SkillTypes.SKILL_RIFLE:
+                    case SkillTypes.RIFLE:
                         return this.Rifle;
-                    case SkillTypes.SKILL_ASSAULTRIFLE:
+                    case SkillTypes.ASSAULTRIFLE:
                         return this.Assaultrifle;
                 }
             }
@@ -519,18 +558,6 @@ namespace LCSRemake
             else
             {
                 return this.Armour.Name;
-            }
-        }
-
-        public string GetVehicleType()
-        {
-            if (this.Vehicle == null)
-            {
-                return "On foot";
-            }
-            else
-            {
-                return this.Vehicle.VehicleType;
             }
         }
     }
@@ -557,78 +584,108 @@ namespace LCSRemake
     {
         static int idcounter = 0;
         public int ID { get; set; }
-        public string VehicleType { get; set; }
+        public string Name { get; set; }
+        public VehicleTypes VehicleType { get; set; }
         public string Colour { get; set; }
         public Location Location { get; set; }
         public int Year { get; set; }
+        public Squad AssignedTo { get; set; }
 
-        public Vehicle(string vehicletype, string colour, Location location, Date thedate)
+        public Vehicle(VehicleTypes vehicletype, Location location, Date thedate)
         {
             Random random = new Random();
 
             this.ID = idcounter; idcounter++;
             this.VehicleType = vehicletype;
-            this.Colour = colour;
             this.Location = location;
 
             switch (vehicletype)
             {
-                case "Jeep":
+                case VehicleTypes.JEEP:
+                    this.Name = "Jeep";
                     this.Year = thedate.Year + 1 - random.Next(41);
                     break;
-                case "Van":
+                case VehicleTypes.VAN:
+                    this.Name = "Van";
                     this.Year = 1969 + random.Next(6);
                     break;
-                case "Stationwagon":
+                case VehicleTypes.STATIONWAGON:
+                    this.Name = "Station Wagon";
                     this.Year = thedate.Year + 1 - random.Next(41);
                     break;
-                case "Sportscar":
+                case VehicleTypes.SPORTSCAR:
+                    this.Name = "Sportscar";
                     this.Year = thedate.Year + 1 - random.Next(21);
                     break;
-                case "Bug":
+                case VehicleTypes.BUG:
+                    this.Name = "Bug";
                     this.Year = 1969 + random.Next(6);
                     break;
-                case "Pickup":
+                case VehicleTypes.PICKUP:
+                    this.Name = "Pickup Truck";
                     this.Year = thedate.Year + 1 - random.Next(41);
                     break;
-                case "Policecar":
+                case VehicleTypes.POLICECAR:
+                    this.Name = "Police Cruiser";
                     this.Year = thedate.Year + 1 - random.Next(21);
                     break;
-                case "Taxicab":
+                case VehicleTypes.TAXICAB:
+                    this.Name = "Taxicab";
                     this.Year = thedate.Year + 1 - random.Next(41);
                     break;
-                case "SUV":
+                case VehicleTypes.SUV:
+                    this.Name = "SUV";
                     this.Year = 1995 + random.Next(thedate.Year - 1995 + 1);
+                    break;
+                case VehicleTypes.AGENTCAR:
+                    this.Name = "Car";
                     break;
             }
 
             switch (vehicletype)
             {
-                case "Policecar":
+                case VehicleTypes.POLICECAR:
                     this.Colour = "Police-Marked";
                     break;
-                case "Agentcar":
+                case VehicleTypes.AGENTCAR:
                     this.Colour = "Black";
                     break;
-                case "Taxicab":
+                case VehicleTypes.TAXICAB:
                     this.Colour = "Taxi-Striped";
                     break;
-                case "Jeep":
-                case "Van":
-                case "Stationwagon":
-                case "Sportscar":
-                case "Bug":
-                case "Pickup":
-                case "SUV":
+                case VehicleTypes.JEEP:
+                case VehicleTypes.VAN:
+                case VehicleTypes.STATIONWAGON:
+                case VehicleTypes.SPORTSCAR:
+                case VehicleTypes.BUG:
+                case VehicleTypes.PICKUP:
+                case VehicleTypes.SUV:
                     switch (random.Next(5))
                     {
                         case 0: this.Colour = "Red"; break;
                         case 1: this.Colour = "White"; break;
                         case 2: this.Colour = "Blue"; break;
-                        case 3: this.Colour = "BEIGE"; break;
+                        case 3: this.Colour = "Beige"; break;
                         case 4: this.Colour = "Black"; break;
                     }
                     break;
+            }
+        }
+
+        public string GetName()
+        {
+            return this.Name;
+        }
+
+        public string GetFullName()
+        {
+            if (this.VehicleType == VehicleTypes.AGENTCAR)
+            {
+                return $"{this.Colour} {this.Name}";
+            }
+            else
+            {
+                return $"{this.Colour} {this.Year} {this.Name}";
             }
         }
     }
@@ -693,39 +750,39 @@ namespace LCSRemake
 
             switch (this.Armourtype)
             {
-                case ArmourTypes.ARMOUR_TOGA:
-                case ArmourTypes.ARMOUR_WIFEBEATER:
+                case ArmourTypes.TOGA:
+                case ArmourTypes.WIFEBEATER:
                     basedifficulty = 2;
                     break;
-                case ArmourTypes.ARMOUR_CLOTHES:
-                case ArmourTypes.ARMOUR_OVERALLS:
-                case ArmourTypes.ARMOUR_WORKCLOTHES:
+                case ArmourTypes.CLOTHES:
+                case ArmourTypes.OVERALLS:
+                case ArmourTypes.WORKCLOTHES:
                     basedifficulty = 3;
                     break;
-                case ArmourTypes.ARMOUR_CLOWNSUIT:
-                case ArmourTypes.ARMOUR_PRISONER:
-                case ArmourTypes.ARMOUR_CHEAPDRESS:
-                case ArmourTypes.ARMOUR_TRENCHCOAT:
-                case ArmourTypes.ARMOUR_LABCOAT:
-                case ArmourTypes.ARMOUR_BLACKROBE:
-                case ArmourTypes.ARMOUR_BONDAGEGEAR:
+                case ArmourTypes.CLOWNSUIT:
+                case ArmourTypes.PRISONER:
+                case ArmourTypes.CHEAPDRESS:
+                case ArmourTypes.TRENCHCOAT:
+                case ArmourTypes.LABCOAT:
+                case ArmourTypes.BLACKROBE:
+                case ArmourTypes.BONDAGEGEAR:
                     basedifficulty = 4;
                     break;
-                case ArmourTypes.ARMOUR_SECURITYUNIFORM:
-                case ArmourTypes.ARMOUR_PRISONGUARD:
-                case ArmourTypes.ARMOUR_MILITARY:
-                case ArmourTypes.ARMOUR_POLICEUNIFORM:
+                case ArmourTypes.SECURITYUNIFORM:
+                case ArmourTypes.PRISONGUARD:
+                case ArmourTypes.MILITARY:
+                case ArmourTypes.POLICEUNIFORM:
                     basedifficulty = 5;
                     break;
-                case ArmourTypes.ARMOUR_CHEAPSUIT:
+                case ArmourTypes.CHEAPSUIT:
                     basedifficulty = 6;
                     break;
-                case ArmourTypes.ARMOUR_BLACKSUIT:
-                case ArmourTypes.ARMOUR_BLACKDRESS:
+                case ArmourTypes.BLACKSUIT:
+                case ArmourTypes.BLACKDRESS:
                     basedifficulty = 7;
                     break;
-                case ArmourTypes.ARMOUR_EXPENSIVESUIT:
-                case ArmourTypes.ARMOUR_EXPENSIVEDRESS:
+                case ArmourTypes.EXPENSIVESUIT:
+                case ArmourTypes.EXPENSIVEDRESS:
                     basedifficulty = 9;
                     break;
                 default:
@@ -1200,7 +1257,8 @@ namespace LCSRemake
 
                 Print(4, 16, "Weapon: " + entity.GetWeaponName());
                 Print(42, 16, "Armour: " + entity.GetArmourName());
-                Print(80, 16, "Transport: " + entity.GetVehicleType());
+                Print(80, 16, $"Transport: {entity.AssignedSquad.GetVehicle(entity)}");
+
                 Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
 
                 Print(4, 25, "Press N to change this Liberal's Code Name");
@@ -1290,7 +1348,7 @@ namespace LCSRemake
                     Print(43, 5 + member, selectedmember.GetWeaponName());
                     Print(61, 5 + member, selectedmember.GetArmourName());
                     GetHealthLabel(79, 5 + member, selectedmember);
-                    Print(97, 5 + member, selectedmember.GetVehicleType());
+                    Print(97, 5 + member, selectedmember.AssignedSquad.GetVehicle(selectedmember));
                 }
 
                 Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
@@ -1551,6 +1609,257 @@ namespace LCSRemake
                         liberals.Activesquad.Entities[characterPosition].Weapon.SpareClips.Add((Clip)liberals.Activesquad.Location.Stash[index + page * 16]);
                         liberals.Activesquad.Location.Stash.Remove(liberals.Activesquad.Location.Stash[index + page * 16]);
                     }
+                }
+            }
+        }
+
+        static void Vehicles()
+        {
+            int currenty;
+            int currenty2;
+            int currenty3;
+            int letter;
+            int count;
+            int position;
+            int page = 0;
+            int maxpage = liberals.Vehicles.Count / 12;
+
+            while (true)
+            {
+                currenty = 13;
+                currenty2 = 13;
+                currenty3 = 13;
+                letter = 65;
+                position = page * 12;
+
+                if (liberals.Vehicles.Count - page * 12 > 12)
+                {
+                    count = 12;
+                }
+                else
+                {
+                    count = liberals.Vehicles.Count - page * 12;
+                }
+
+                Console.Clear();
+                Border();
+
+                Print(5, 2, "Equip the Squad");
+                Print(106, 2, "Page:" + page.ToString() + "/" + maxpage.ToString());
+                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(5, 4, str_codename);
+                Print(26, 4, str_skill);
+                Print(43, 4, str_weapon);
+                Print(61, 4, str_armour);
+                Print(79, 4, str_health);
+                Print(97, 4, str_transport);
+                Print(3, 5, "1");
+                Print(3, 6, "2");
+                Print(3, 7, "3");
+                Print(3, 8, "4");
+                Print(3, 9, "5");
+                Print(3, 10, "6");
+
+                for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
+                {
+                    Entity selectedmember = liberals.Activesquad.Entities[member];
+
+                    Print(5, 5 + member, selectedmember.Handle);
+                    Print(26, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
+                    Print(43, 5 + member, selectedmember.GetWeaponName());
+                    Print(61, 5 + member, selectedmember.GetArmourName());
+                    GetHealthLabel(79, 5 + member, selectedmember);
+                    Print(97, 5 + member, selectedmember.AssignedSquad.GetVehicle(selectedmember));
+                }
+
+                Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
+
+                foreach (Vehicle vehicle in liberals.Vehicles.GetRange(position, count))
+                {
+                    if (letter < 69)
+                    {
+                        if (liberals.Activesquad.Vehicle == vehicle)
+                        {
+                            Print(3, currenty, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.Green);
+                        }
+                        else if (liberals.Activesquad.Vehicle != vehicle && vehicle.AssignedTo != null)
+                        {
+                            Print(3, currenty, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.DarkYellow);
+                        }
+                        else
+                        {
+                            Print(3, currenty, (char)letter + " - " + vehicle.GetFullName());
+                        }
+                        currenty++;
+                        letter++;
+                    }
+                    else if (letter < 73)
+                    {
+                        if (liberals.Activesquad.Vehicle == vehicle)
+                        {
+                            Print(41, currenty2, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.Green);
+                        }
+                        else if (liberals.Activesquad.Vehicle != vehicle && vehicle.AssignedTo != null)
+                        {
+                            Print(41, currenty2, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.DarkYellow);
+                        }
+                        else
+                        {
+                            Print(41, currenty2, (char)letter + " - " + vehicle.GetFullName());
+                        }
+                        currenty2++;
+                        letter++;
+                    }
+                    else
+                    {
+                        if (liberals.Activesquad.Vehicle == vehicle)
+                        {
+                            Print(79, currenty3, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.Green);
+                        }
+                        else if (liberals.Activesquad.Vehicle != vehicle && vehicle.AssignedTo != null)
+                        {
+                            Print(79, currenty3, (char)letter + " - " + vehicle.GetFullName(), ConsoleColor.DarkYellow);
+                        }
+                        else
+                        {
+                            Print(79, currenty3, (char)letter + " - " + vehicle.GetFullName());
+                        }
+                        currenty3++;
+                        letter++;
+                    }
+                }
+
+                Print(3, 18, "#----------------------------------------------------------------------------------------------------------------#");
+                Print(4, 22, "Press a letter to specify passengers for that Liberal vehicle.");
+                Print(4, 23, "Note: Vehicles in yellow have already been selected by another squad.");
+                Print(4, 26, "X - Done");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput >= 'a' && keyinput <= 'l')
+                {
+                    try
+                    {
+                        Print(38, 11, "Choose a Liberal squad member to be the driver", ConsoleColor.White);
+
+                        char subkeyinput = Console.ReadKey(true).KeyChar;
+
+                        if (subkeyinput >= '1' && subkeyinput <= '6')
+                        {
+                            switch (keyinput)
+                            {
+                                case 'a':
+                                    AssignVehicles(0, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                                    
+                                case 'b':
+                                    AssignVehicles(1, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'c':
+                                    AssignVehicles(2, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'd':
+                                    AssignVehicles(3, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'e':
+                                    AssignVehicles(4, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'f':
+                                    AssignVehicles(5, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'g':
+                                    AssignVehicles(6, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'h':
+                                    AssignVehicles(7, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'i':
+                                    AssignVehicles(8, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'j':
+                                    AssignVehicles(9, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'k':
+                                    AssignVehicles(10, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+
+                                case 'l':
+                                    AssignVehicles(11, page, (int)Char.GetNumericValue(subkeyinput) - 1);
+                                    break;
+                            }
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
+                }
+
+                if (keyinput == ']')
+                {
+                    if (page < maxpage)
+                    {
+                        page++;
+                    }
+                }
+
+                if (keyinput == '[')
+                {
+                    if (page > 0)
+                    {
+                        page--;
+                    }
+                }
+
+                if (keyinput == 'x')
+                {
+                    break;
+                }
+            }
+        }
+
+        static void AssignVehicles(int index, int page, int characterPosition)
+        {
+            if (liberals.Activesquad.Vehicle == null)
+            {
+                if (liberals.Vehicles[index + page * 12].AssignedTo == null)
+                {
+                    liberals.Activesquad.Driver = liberals.Activesquad.Entities[characterPosition];
+                    liberals.Activesquad.Vehicle = liberals.Vehicles[index + page * 12];
+                    liberals.Vehicles[index + page * 12].AssignedTo = liberals.Activesquad;
+                }
+                else
+                {
+                    liberals.Vehicles[index + page * 12].AssignedTo.Vehicle = null;
+                    liberals.Activesquad.Driver = liberals.Activesquad.Entities[characterPosition];
+                    liberals.Activesquad.Vehicle = liberals.Vehicles[index + page * 12];
+                    liberals.Vehicles[index + page * 12].AssignedTo = liberals.Activesquad;
+                }
+            }
+            else
+            {
+                if (liberals.Vehicles[index + page * 12].AssignedTo == null)
+                {
+                    liberals.Activesquad.Vehicle.AssignedTo = null;
+                    liberals.Activesquad.Driver = liberals.Activesquad.Entities[characterPosition];
+                    liberals.Activesquad.Vehicle = liberals.Vehicles[index + page * 12];
+                    liberals.Vehicles[index + page * 12].AssignedTo = liberals.Activesquad;
+                }
+                else
+                {
+                    liberals.Activesquad.Vehicle.AssignedTo = null;
+                    liberals.Vehicles[index + page * 12].AssignedTo.Vehicle = null;
+                    liberals.Activesquad.Driver = liberals.Activesquad.Entities[characterPosition];
+                    liberals.Activesquad.Vehicle = liberals.Vehicles[index + page * 12];
+                    liberals.Vehicles[index + page * 12].AssignedTo = liberals.Activesquad;
                 }
             }
         }
@@ -2076,7 +2385,17 @@ namespace LCSRemake
                 {
                     if (squad.Entities.Count == 0)
                     {
-                        liberals.Squads.Remove(squad);
+                        if (squad == liberals.Activesquad)
+                        {
+                            squad.Vehicle.AssignedTo = null;
+                            liberals.Squads.Remove(squad);
+                            liberals.Activesquad = liberals.Squads[0];
+                        }
+                        else
+                        {
+                            squad.Vehicle.AssignedTo = null;
+                            liberals.Squads.Remove(squad);
+                        }
                         break;
                     }
                     else
@@ -2668,7 +2987,8 @@ namespace LCSRemake
 
                 Print(4, 16, "Weapon: " + entity.GetWeaponName());
                 Print(42, 16, "Armour: " + entity.GetArmourName());
-                Print(80, 16, "Transport: " + entity.GetVehicleType());
+                Print(80, 16, "Transport: " + entity.AssignedSquad.GetVehicle(entity));
+
                 Print(3, 17, "#----------------------------------------------------------------------------------------------------------------#");
 
                 Print(4, 19, "A - Perpetrating random acts of Liberal Disobedience.");
@@ -2692,7 +3012,7 @@ namespace LCSRemake
                 }
                 else if (keyinput == 'd')
                 {
-                    entity.Activity = new Activity("Soliciting Donations", ActivityTypes.ACTIVITY_FUNDS_LEGAL);
+                    entity.Activity = new Activity("Soliciting Donations", ActivityTypes.FUNDS_LEGAL);
                     break;
                 }
                 else if (keyinput == 'c')
@@ -2707,32 +3027,32 @@ namespace LCSRemake
                 }
                 else if (keyinput == 's')
                 {
-                    entity.Activity = new Activity("Stealing a Car", ActivityTypes.ACTIVITY_STEALCARS);
+                    entity.Activity = new Activity("Stealing a Car", ActivityTypes.STEALCARS);
                     break;
                 }
                 else if (keyinput == 'z')
                 {
-                    entity.Activity = new Activity("Disposing of Bodies", ActivityTypes.ACTIVITY_BURY);
+                    entity.Activity = new Activity("Disposing of Bodies", ActivityTypes.BURY);
                     break;
                 }
                 else if (keyinput == 'b')
                 {
-                    entity.Activity = new Activity("Selling Brownies", ActivityTypes.ACTIVITY_FUNDS_ILLEGAL);
+                    entity.Activity = new Activity("Selling Brownies", ActivityTypes.FUNDS_ILLEGAL);
                     break;
                 }
                 else if (keyinput == 'r')
                 {
-                    entity.Activity = new Activity("Repairing Clothing", ActivityTypes.ACTIVITY_REPAIR_ARMOUR);
+                    entity.Activity = new Activity("Repairing Clothing", ActivityTypes.REPAIR_ARMOUR);
                     break;
                 }
                 else if (keyinput == 'p')
                 {
-                    entity.Activity = new Activity("Gathering Opinion Info", ActivityTypes.ACTIVITY_POLLS);
+                    entity.Activity = new Activity("Gathering Opinion Info", ActivityTypes.POLLS);
                     break;
                 }
                 else
                 {
-                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
                     break;
                 }
             }
@@ -2746,7 +3066,7 @@ namespace LCSRemake
             int position;
             int page = 0;
             int maxpage = liberals.Active.Count / 12;
-            Activity selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+            Activity selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
             selectedactivity.Funding = 0;
 
             while (true)
@@ -2940,33 +3260,33 @@ namespace LCSRemake
                     switch (keyinput)
                     {
                         case '1':
-                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                             selectedactivity.Funding = 0;
                             break;
                         case '2':
-                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                             selectedactivity.Funding = 20;
                             break;
                         case '3':
-                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                             selectedactivity.Funding = 50;
                             break;
                         case '4':
-                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                             selectedactivity.Funding = 100;
                             break;
                         case '5':
-                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                            selectedactivity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                             selectedactivity.Funding = 500;
                             break;
                         case '6':
-                            selectedactivity = new Activity("Soliciting Donations", ActivityTypes.ACTIVITY_FUNDS_LEGAL);
+                            selectedactivity = new Activity("Soliciting Donations", ActivityTypes.FUNDS_LEGAL);
                             break;
                         case '7':
-                            selectedactivity = new Activity("Selling Brownies", ActivityTypes.ACTIVITY_FUNDS_ILLEGAL);
+                            selectedactivity = new Activity("Selling Brownies", ActivityTypes.FUNDS_ILLEGAL);
                             break;
                         case '8':
-                            selectedactivity = new Activity("Stealing a Car", ActivityTypes.ACTIVITY_STEALCARS);
+                            selectedactivity = new Activity("Stealing a Car", ActivityTypes.STEALCARS);
                             break;
                     }
                 }
@@ -2998,37 +3318,37 @@ namespace LCSRemake
 
                 if (keyinput == 'a')
                 {
-                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                     entity.Activity.Funding = 0;
                     break;
                 }
                 else if (keyinput == 'b')
                 {
-                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                     entity.Activity.Funding = 20;
                     break;
                 }
                 else if (keyinput == 'c')
                 {
-                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                     entity.Activity.Funding = 50;
                     break;
                 }
                 else if (keyinput == 'd')
                 {
-                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                     entity.Activity.Funding = 100;
                     break;
                 }
                 else if (keyinput == 'e')
                 {
-                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.ACTIVITY_TROUBLE);
+                    entity.Activity = new Activity("Causing Trouble", ActivityTypes.TROUBLE);
                     entity.Activity.Funding = 500;
                     break;
                 }
                 else if (keyinput == 'x')
                 {
-                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
                     break;
                 }
             }
@@ -3181,56 +3501,56 @@ namespace LCSRemake
 
                 if (keyinput == 'a')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 0;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'b')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 1;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'c')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 20;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'd')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 50;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'e')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 100;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'f')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 500;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'k')
                 {
-                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.ACTIVITY_HOSTAGETENDING);
+                    entity.Activity = new Activity($"Tending to {hostage.Handle}", ActivityTypes.HOSTAGETENDING);
                     entity.Activity.Funding = 666;
                     entity.Activity.Hostage = hostage;
                     break;
                 }
                 else if (keyinput == 'x')
                 {
-                    entity.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+                    entity.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
                     break;
                 }
             }
@@ -3330,71 +3650,71 @@ namespace LCSRemake
                         switch (keyinput)
                         {
                             case 'a':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[0 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[0 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[0 + page * 17];
                                 break;
                             case 'b':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[1 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[1 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[1 + page * 17];
                                 break;
                             case 'c':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[2 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[2 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[2 + page * 17];
                                 break;
                             case 'd':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[3 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[3 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[3 + page * 17];
                                 break;
                             case 'e':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[4 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[4 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[4 + page * 17];
                                 break;
                             case 'f':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[5 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[5 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[5 + page * 17];
                                 break;
                             case 'g':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[6 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[6 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[6 + page * 17];
                                 break;
                             case 'h':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[7 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[7 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[7 + page * 17];
                                 break;
                             case 'i':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[8 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[8 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[8 + page * 17];
                                 break;
                             case 'j':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[9 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[9 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[9 + page * 17];
                                 break;
                             case 'k':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[10 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[10 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[10 + page * 17];
                                 break;
                             case 'l':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[11 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[11 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[11 + page * 17];
                                 break;
                             case 'm':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[12 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[12 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[12 + page * 17];
                                 break;
                             case 'n':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[13 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[13 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[13 + page * 17];
                                 break;
                             case 'o':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[14 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[14 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[14 + page * 17];
                                 break;
                             case 'p':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[15 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[15 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[15 + page * 17];
                                 break;
                             case 'q':
-                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[16 + page * 17].Name}", ActivityTypes.ACTIVITY_MAKE_ARMOUR);
+                                entity.Activity = new Activity($"Make {liberals.CraftableArmours[16 + page * 17].Name}", ActivityTypes.MAKE_ARMOUR);
                                 entity.Activity.Armour = liberals.CraftableArmours[16 + page * 17];
                                 break;
                         }
@@ -3724,11 +4044,11 @@ namespace LCSRemake
                     case 8:
                         if (keyinput == 'a')
                         {
-                            newcharacter.Armour = new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40);
+                            newcharacter.Armour = new Armour("Security Uniform", ArmourTypes.SECURITYUNIFORM, 0, 40);
                         }
                         if (keyinput == 'b')
                         {
-                            newcharacter.Weapon = new Weapon("AK47", SkillTypes.SKILL_ASSAULTRIFLE, ClipTypes.CLIP_ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 9), true);
+                            newcharacter.Weapon = new Weapon("AK47", SkillTypes.ASSAULTRIFLE, ClipTypes.ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.ASSAULT, 9), true);
                         }
                         if (keyinput == 'c')
                         {
@@ -3790,7 +4110,7 @@ namespace LCSRemake
             }
 
             newcharacter.AssignedSquad = newsquad;
-            newcharacter.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            newcharacter.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
 
             newlocation = new Location("Downtown", "Downtown", "downtown", false, null);
             maincity.Locations.Add(newlocation);
@@ -3979,7 +4299,7 @@ namespace LCSRemake
 
             if (newcharacter.Armour == null)
             {
-                newcharacter.Armour = new Armour("Clothes", ArmourTypes.ARMOUR_CLOTHES, 0, 10);
+                newcharacter.Armour = new Armour("Clothes", ArmourTypes.CLOTHES, 0, 10);
             }
 
             liberals.Active.Add(newcharacter);
@@ -3997,19 +4317,33 @@ namespace LCSRemake
             test4.AssignedTo = test3;
             test5.AssignedTo = test3;
 
-            test.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
-            test2.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
-            test3.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
-            test4.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
-            test5.Activity = new Activity("Hanging Out", ActivityTypes.ACTIVITY_NONE);
+            test.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
+            test2.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
+            test3.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
+            test4.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
+            test5.Activity = new Activity("Hanging Out", ActivityTypes.NONE);
             //-----------
 
             liberals.Squads.Add(newsquad);
             liberals.Activesquad = newsquad;
 
-            liberals.Activesquad.Location.Stash.Add(new Armour("Security Uniform", ArmourTypes.ARMOUR_SECURITYUNIFORM, 0, 40));
-            liberals.Activesquad.Location.Stash.Add(new Weapon("Carbine", SkillTypes.SKILL_ASSAULTRIFLE, ClipTypes.CLIP_ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 9), true));
-            liberals.Activesquad.Location.Stash.Add(new Clip("Aslt.Rifle Clip", ClipTypes.CLIP_ASSAULT, 5));
+            liberals.Activesquad.Location.Stash.Add(new Armour("Security Uniform", ArmourTypes.SECURITYUNIFORM, 0, 40));
+            liberals.Activesquad.Location.Stash.Add(new Weapon("Carbine", SkillTypes.ASSAULTRIFLE, ClipTypes.ASSAULT, new Clip("Aslt.Rifle Clip", ClipTypes.ASSAULT, 9), true));
+            liberals.Activesquad.Location.Stash.Add(new Clip("Aslt.Rifle Clip", ClipTypes.ASSAULT, 5));
+
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.AGENTCAR, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.POLICECAR, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.BUG, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.JEEP, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.PICKUP, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.POLICECAR, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.SPORTSCAR, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.STATIONWAGON, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.SUV, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.POLICECAR, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.TAXICAB, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.VAN, maincity.Locations[11], theDate));
+            liberals.Vehicles.Add(new Vehicle(VehicleTypes.VAN, maincity.Locations[11], theDate));
 
             Mainscreen();
         }
@@ -4049,14 +4383,23 @@ namespace LCSRemake
                     Print(43, 5 + member, selectedmember.GetWeaponName());
                     Print(61, 5 + member, selectedmember.GetArmourName());
                     GetHealthLabel(79, 5 + member, selectedmember);
-                    Print(97, 5 + member, selectedmember.GetVehicleType());
+                    Print(97, 5 + member, selectedmember.AssignedSquad.GetVehicle(selectedmember));
                 }
 
                 Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
 
-                Print(5, 14, "F - Go forth to stop EVIL");
+                Print(5, 14, "F - Go forth to stop EVIL", ConsoleColor.DarkGray);
                 Print(5, 15, "E - Equipment");
-                Print(5, 16, "V - Vehicles", ConsoleColor.DarkGray);
+
+                if (liberals.Vehicles.Count > 0)
+                {
+                    Print(5, 16, "V - Vehicles");
+                }
+                else
+                {
+                    Print(5, 16, "V - Vehicles", ConsoleColor.DarkGray);
+                }
+
                 Print(5, 17, "R - Review and reorganize liberals");
                 Print(5, 18, "A - Activate the uninvolved");
                 Print(5, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
@@ -4128,6 +4471,7 @@ namespace LCSRemake
 
                 if (keyinput == 'v')
                 {
+                    Vehicles();
                 }
 
                 if (keyinput == 'r')

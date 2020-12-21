@@ -163,6 +163,7 @@ namespace LCSRemake
         public string Type { get; set; }
         public bool Needs_car { get; set; }
         public bool HasFlag { get; set; }
+        public bool Safehouse { get; set; }
         public Faction Owner { get; set; }
         public List<Item> Stash { get; }
 
@@ -174,6 +175,7 @@ namespace LCSRemake
             this.Needs_car = needcar;
             this.Owner = owner;
             this.HasFlag = false;
+            this.Safehouse = false;
             this.Stash = new List<Item>();
         }
 
@@ -2396,18 +2398,19 @@ namespace LCSRemake
                 {
                     if (squad.Entities.Count == 0)
                     {
-                        if (squad == liberals.Activesquad)
+                        if (squad.Vehicle != null)
                         {
                             squad.Vehicle.AssignedTo = null;
+                            liberals.Activesquad = null;
                             liberals.Squads.Remove(squad);
-                            liberals.Activesquad = liberals.Squads[0];
+                            break;
                         }
                         else
                         {
-                            squad.Vehicle.AssignedTo = null;
+                            liberals.Activesquad = null;
                             liberals.Squads.Remove(squad);
+                            break;
                         }
-                        break;
                     }
                     else
                     {
@@ -4161,14 +4164,17 @@ namespace LCSRemake
 
             newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+            newlocation.Safehouse = true;
             maincity.Locations.Add(newlocation);
 
             newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+            newlocation.Safehouse = true;
             maincity.Locations.Add(newlocation);
 
             newlocation = new Location("Abandoned " + RandomLastName() + " ", null, "warehouse", false, null);
             newlocation.RandomName(new List<string> { "Meat Plant", "Warehouse", "Paper Mill", "Cement Factory", "Fertilizer Plant" });
+            newlocation.Safehouse = true;
             maincity.Locations.Add(newlocation);
 
             newlocation = new Location(null, null, "polluter", false, null);
@@ -4367,47 +4373,75 @@ namespace LCSRemake
 
         static void Mainscreen()
         {
+            List<Location> locationList = new List<Location> { maincity.Locations[11], maincity.Locations[12], maincity.Locations[13], maincity.Locations[14] };
+            Location selectedlocation = locationList[0];
+
             while (true)
             {
                 Console.Clear();
                 Border();
 
-                Print(5, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
-                Print((Console.BufferWidth / 2) - (liberals.Activesquad.GetActivityInfo().Length / 2), 2, liberals.Activesquad.GetActivityInfo(), ConsoleColor.White);
-                Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
-
-                Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
-                Print(5, 4, str_codename);
-                Print(26, 4, str_skill);
-                Print(43, 4, str_weapon);
-                Print(61, 4, str_armour);
-                Print(79, 4, str_health);
-                Print(97, 4, str_transport);
-                Print(3, 5, "1");
-                Print(3, 6, "2");
-                Print(3, 7, "3");
-                Print(3, 8, "4");
-                Print(3, 9, "5");
-                Print(3, 10, "6");
-
-                for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
+                if (liberals.Activesquad != null)
                 {
-                    Entity selectedmember = liberals.Activesquad.Entities[member];
+                    Print(5, 2, liberals.Activesquad.Location.Name + ", " + theDate.PrintDate());
+                    Print((Console.BufferWidth / 2) - (liberals.Activesquad.GetActivityInfo().Length / 2), 2, liberals.Activesquad.GetActivityInfo(), ConsoleColor.White);
+                    Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
 
-                    Print(5, 5 + member, selectedmember.Handle);
-                    Print(26, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
-                    Print(43, 5 + member, selectedmember.GetWeaponName());
-                    Print(61, 5 + member, selectedmember.GetArmourName());
-                    GetHealthLabel(79, 5 + member, selectedmember);
-                    Print(97, 5 + member, selectedmember.AssignedSquad.GetVehicle(selectedmember));
+                    Print(3, 4, "#----------------------------------------------------------------------------------------------------------------#");
+                    Print(5, 4, str_codename);
+                    Print(26, 4, str_skill);
+                    Print(43, 4, str_weapon);
+                    Print(61, 4, str_armour);
+                    Print(79, 4, str_health);
+                    Print(97, 4, str_transport);
+                    Print(3, 5, "1");
+                    Print(3, 6, "2");
+                    Print(3, 7, "3");
+                    Print(3, 8, "4");
+                    Print(3, 9, "5");
+                    Print(3, 10, "6");
+
+                    for (int member = 0; member < liberals.Activesquad.Entities.Count; member++)
+                    {
+                        Entity selectedmember = liberals.Activesquad.Entities[member];
+
+                        Print(5, 5 + member, selectedmember.Handle);
+                        Print(26, 5 + member, selectedmember.GetTotalSkillLevel() + "/" + selectedmember.GetWeaponSkill());
+                        Print(43, 5 + member, selectedmember.GetWeaponName());
+                        Print(61, 5 + member, selectedmember.GetArmourName());
+                        GetHealthLabel(79, 5 + member, selectedmember);
+                        Print(97, 5 + member, selectedmember.AssignedSquad.GetVehicle(selectedmember));
+                    }
+
+                    Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
+                }
+                else
+                {
+                    Print(5, 2, selectedlocation.Name + ", " + theDate.PrintDate());
+                    Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
+                    Print(5, 4, "You are not under siege... yet.");
+                    if (selectedlocation.Safehouse == true)
+                    {
+                        Print(5, 10, "0 Daily Rations");
+                        Print(25, 10, "0 Eating");
+                        Print(5, 12, "I - Invest in this location");
+                    }
                 }
 
-                Print(3, 11, "#----------------------------------------------------------------------------------------------------------------#");
-
-                Print(5, 14, "F - Go forth to stop EVIL", ConsoleColor.DarkGray);
-                Print(5, 15, "E - Equipment");
-
-                if (liberals.Vehicles.Count > 0)
+                if (liberals.Activesquad != null)
+                {
+                    Print(5, 14, "F - Go forth to stop EVIL");
+                    Print(5, 15, "E - Equipment");
+                    Print(76, 14, "# - Check the status of a squad liberal");
+                }
+                else
+                {
+                    Print(5, 14, "F - Go forth to stop EVIL", ConsoleColor.DarkGray);
+                    Print(5, 15, "E - Equipment", ConsoleColor.DarkGray);
+                    Print(76, 14, "# - Check the status of a squad liberal", ConsoleColor.DarkGray);
+                }
+                
+                if (liberals.Vehicles.Count > 0 && liberals.Activesquad != null)
                 {
                     Print(5, 16, "V - Vehicles");
                 }
@@ -4421,9 +4455,8 @@ namespace LCSRemake
                 Print(5, 19, "C - Cancel this squads departure", ConsoleColor.DarkGray);
                 Print(5, 20, "X - Live to fight EVIL another day");
                 Print(5, 21, "W - Wait a day");
-                Print(76, 14, "# - Check the status of a squad liberal");
 
-                if (liberals.Activesquad.Entities.Count > 1)
+                if (liberals.Activesquad != null && liberals.Activesquad.Entities.Count > 1)
                 {
                     Print(76, 15, "O - Change the squad's liberal order");
                 }
@@ -4432,7 +4465,7 @@ namespace LCSRemake
                     Print(76, 15, "O - Change the squad's liberal order", ConsoleColor.DarkGray);
                 }
 
-                if (liberals.Squads.Count > 1)
+                if (liberals.Squads.Count > 1 || liberals.Squads.Count > 0 && liberals.Activesquad == null)
                 {
                     Print(76, 16, "Tab - Next squad");
                 }
@@ -4441,10 +4474,10 @@ namespace LCSRemake
                     Print(76, 16, "Tab - Next squad", ConsoleColor.DarkGray);
                 }
 
-                Print(76, 17, "Z - Next location", ConsoleColor.DarkGray);
+                Print(76, 17, "Z - Next location");
                 Print(76, 18, "L - The status of the liberal agenda", ConsoleColor.DarkGray);
 
-                if (liberals.Activesquad.Location.HasFlag)
+                if (liberals.Activesquad != null && liberals.Activesquad.Location.HasFlag || liberals.Activesquad == null && selectedlocation.HasFlag)
                 {
                     Print(76, 19, "P - PROTEST: burn the flag");
                 }
@@ -4457,7 +4490,7 @@ namespace LCSRemake
 
                 Print((Console.BufferWidth / 2) - (liberals.Slogan.Length / 2), 24, liberals.Slogan, ConsoleColor.White);
 
-                if (liberals.Activesquad.Location.HasFlag)
+                if (liberals.Activesquad != null && liberals.Activesquad.Location.HasFlag || liberals.Activesquad == null && selectedlocation.HasFlag)
                 {
                     for (int y = 0; y < 7; y++)
                     {
@@ -4488,12 +4521,12 @@ namespace LCSRemake
                 {
                 }
 
-                if (keyinput == 'e')
+                if (keyinput == 'e' && liberals.Activesquad != null)
                 {
                     Equipment();
                 }
 
-                if (keyinput == 'v')
+                if (keyinput == 'v' && liberals.Activesquad != null)
                 {
                     Vehicles();
                 }
@@ -4522,7 +4555,7 @@ namespace LCSRemake
                     theDate.Advancetime();
                 }
 
-                if (keyinput >= '1' && keyinput <= '6')
+                if (keyinput >= '1' && keyinput <= '6' && liberals.Activesquad != null)
                 {
                     try
                     {
@@ -4533,7 +4566,7 @@ namespace LCSRemake
                     }
                 }
 
-                if (keyinput == 'o' && liberals.Activesquad.Entities.Count > 1)
+                if (keyinput == 'o' && liberals.Activesquad != null && liberals.Activesquad.Entities.Count > 1)
                 {
                     int i = 0;
                     while (i < liberals.Activesquad.Entities.Count - 1)
@@ -4564,20 +4597,43 @@ namespace LCSRemake
                     }
                 }
 
-                if (keyinput == 9 && liberals.Squads.Count > 1)
+                if (keyinput == 9 && liberals.Squads.Count > 1 || keyinput == 9 && liberals.Squads.Count > 0 && liberals.Activesquad == null)
                 {
-                    try
-                    {
-                        liberals.Activesquad = liberals.Squads[liberals.Squads.IndexOf(liberals.Activesquad) + 1];
-                    }
-                    catch (ArgumentOutOfRangeException)
+                    if (liberals.Activesquad == null)
                     {
                         liberals.Activesquad = liberals.Squads[0];
+                        selectedlocation = locationList[0];
+                    }
+                    else
+                    {
+                        try
+                        {
+                            liberals.Activesquad = liberals.Squads[liberals.Squads.IndexOf(liberals.Activesquad) + 1];
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            liberals.Activesquad = liberals.Squads[0];
+                        }
                     }
                 }
 
                 if (keyinput == 'z')
                 {
+                    if (liberals.Activesquad != null)
+                    {
+                        liberals.Activesquad = null;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            selectedlocation = locationList[locationList.IndexOf(selectedlocation) + 1];
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            selectedlocation = locationList[0];
+                        }
+                    }
                 }
 
                 if (keyinput == 'l')
@@ -4586,7 +4642,7 @@ namespace LCSRemake
 
                 if (keyinput == 'p')
                 {
-                    if (liberals.Activesquad.Location.HasFlag)
+                    if (liberals.Activesquad != null && liberals.Activesquad.Location.HasFlag || liberals.Activesquad == null && selectedlocation.HasFlag)
                     {
                         int x = 70;
                         int y = 20;
@@ -4625,14 +4681,29 @@ namespace LCSRemake
                             Thread.Sleep(10);
                             x--;
                         }
-                        liberals.Activesquad.Location.HasFlag = false;
+
+                        if (liberals.Activesquad != null)
+                        {
+                            liberals.Activesquad.Location.HasFlag = false;
+                        }
+                        else
+                        {
+                            selectedlocation.HasFlag = false;
+                        }
                     }
                     else
                     {
                         if (liberals.Funds >= 20)
                         {
                             liberals.Funds -= 20;
-                            liberals.Activesquad.Location.HasFlag = true;
+                            if (liberals.Activesquad != null)
+                            {
+                                liberals.Activesquad.Location.HasFlag = true;
+                            }
+                            else
+                            {
+                                selectedlocation.HasFlag = true;
+                            }
                         }
                     }
                 }

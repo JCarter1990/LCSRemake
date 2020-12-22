@@ -164,6 +164,14 @@ namespace LCSRemake
         public bool Needs_car { get; set; }
         public bool HasFlag { get; set; }
         public bool Safehouse { get; set; }
+        public bool Fortified { get; set; }
+        public bool PrintingPress { get; set; }
+        public bool BusinessFront { get; set; }
+        public bool Cameras { get; set; }
+        public bool BoobyTraps { get; set; }
+        public bool TankTraps { get; set; }
+        public bool Generator { get; set; }
+        public int Rations { get; set; }
         public Faction Owner { get; set; }
         public List<Item> Stash { get; }
 
@@ -3759,6 +3767,247 @@ namespace LCSRemake
             }
         }
 
+        static void InvestLocation(Location location)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Border();
+
+                Print(5, 2, location.Name + ", " + theDate.PrintDate());
+                Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
+                Print(5, 4, "You are not under siege... yet.");
+
+                if (location.Fortified == true)
+                {
+                    Print(5, 6, "FORTIFIED COMPOUND", ConsoleColor.White);
+                }
+                if (location.PrintingPress == true)
+                {
+                    Print(53, 6, "PRINTING PRESS", ConsoleColor.Cyan);
+                }
+                if (location.BusinessFront == true)
+                {
+                    Print(101, 6, "BUSINESS FRONT", ConsoleColor.Magenta);
+                }
+                if (location.Cameras == true)
+                {
+                    Print(5, 8, "CAMERAS ON", ConsoleColor.Green);
+                }
+                if (location.BoobyTraps == true)
+                {
+                    Print(39, 8, "BOOBY TRAPS", ConsoleColor.Red);
+                }
+                if (location.TankTraps == true)
+                {
+                    Print(74, 8, "TANK TRAPS", ConsoleColor.Yellow);
+                }
+                if (location.Generator == true)
+                {
+                    Print(101, 8, "GENERATOR", ConsoleColor.White);
+                }
+
+                Print(5, 10, $"{location.Rations} Daily Rations");
+                Print(25, 10, "0 Eating");
+
+                if (location.Fortified == false)
+                {
+                    if (liberals.Funds >= 2000)
+                    {
+                        Print(5, 12, "W - Fortify the Compound for a Siege ($2000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 12, "W - Fortify the Compound for a Siege ($2000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.Cameras == false)
+                {
+                    if (liberals.Funds >= 2000)
+                    {
+                        Print(5, 13, "C - Place Security Cameras around the Compound ($2000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 13, "C - Place Security Cameras around the Compound ($2000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.BoobyTraps == false)
+                {
+                    if (liberals.Funds >= 3000)
+                    {
+                        Print(5, 14, "B - Place Booby Traps throughout the Compound ($3000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 14, "B - Place Booby Traps throughout the Compound ($3000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.TankTraps == false)
+                {
+                    if (liberals.Funds >= 3000)
+                    {
+                        Print(5, 15, "T - Ring the Compound with Tank Traps ($3000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 15, "T - Ring the Compound with Tank Traps ($3000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.Generator == false)
+                {
+                    if (liberals.Funds >= 3000)
+                    {
+                        Print(5, 16, "G - Buy a Generator for Electricity ($3000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 16, "G - Buy a Generator for Electricity ($3000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.PrintingPress == false)
+                {
+                    if (liberals.Funds >= 3000)
+                    {
+                        Print(5, 17, "P - Setup a Printing Press ($3000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 17, "P - Setup a Printing Press ($3000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (location.BusinessFront == false)
+                {
+                    if (liberals.Funds >= 3000)
+                    {
+                        Print(5, 18, "F - Setup a Business Front ($3000)", ConsoleColor.White);
+                    }
+                    else
+                    {
+                        Print(5, 18, "F - Setup a Business Front ($3000)", ConsoleColor.DarkGray);
+                    }
+                }
+
+                if (liberals.Funds >= 150)
+                {
+                    Print(5, 19, "R - Buy 20 more daily rations ($150)", ConsoleColor.White);
+                }
+                else
+                {
+                    Print(5, 19, "R - Buy 20 more daily rations ($150)", ConsoleColor.DarkGray);
+                }
+
+                Print(5, 20, "Enter - Done");
+
+                char keyinput = Console.ReadKey(true).KeyChar;
+
+                if (keyinput == 13)
+                {
+                    break;
+                }
+
+                if (keyinput == 'w')
+                {
+                    if (location.Fortified == false && liberals.Funds >= 2000)
+                    {
+                        liberals.Funds -= 2000;
+                        location.Fortified = true;
+                    }
+                }
+
+                if (keyinput == 'c')
+                {
+                    if (location.Cameras == false && liberals.Funds >= 2000)
+                    {
+                        liberals.Funds -= 2000;
+                        location.Cameras = true;
+                    }
+                }
+
+                if (keyinput == 'b')
+                {
+                    if (location.BoobyTraps == false && liberals.Funds >= 3000)
+                    {
+                        liberals.Funds -= 3000;
+                        location.BoobyTraps = true;
+                    }
+                }
+
+                if (keyinput == 't')
+                {
+                    if (location.TankTraps == false && liberals.Funds >= 3000)
+                    {
+                        liberals.Funds -= 3000;
+                        location.TankTraps = true;
+                    }
+                }
+
+                if (keyinput == 'g')
+                {
+                    if (location.Generator == false && liberals.Funds >= 3000)
+                    {
+                        liberals.Funds -= 3000;
+                        location.Generator = true;
+                    }
+                }
+
+                if (keyinput == 'p')
+                {
+                    if (location.PrintingPress == false && liberals.Funds >= 3000)
+                    {
+                        liberals.Funds -= 3000;
+                        location.PrintingPress = true;
+                    }
+                }
+
+                if (keyinput == 'r')
+                {
+                    if (liberals.Funds >= 150)
+                    {
+                        liberals.Funds -= 150;
+                        location.Rations += 20;
+                    }
+                }
+
+                if (keyinput == 'f')
+                {
+                    if (location.BusinessFront == false && liberals.Funds >= 3000)
+                    {
+                        liberals.Funds -= 3000;
+                        location.BusinessFront = true;
+
+                        string frontName = RandomLastName();
+
+                        switch (random.Next(0, 1))
+                        {
+                            case 0:
+                                switch (random.Next(0, 2))
+                                {
+                                    case 0: frontName += " Auto"; break;
+                                    case 1: frontName += " Life"; break;
+                                    case 2: frontName += " Health"; break;
+                                }
+                                frontName += " Insurance";
+                                break;
+                            case 1:
+                                switch (random.Next(0, 1))
+                                {
+                                    case 0: frontName += " Temp Agency"; break;
+                                    case 1: frontName += " Manpower, LLC"; break;
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
         static void Titlescreen()
         {
             Console.Clear();
@@ -4420,11 +4669,41 @@ namespace LCSRemake
                     Print(5, 2, selectedlocation.Name + ", " + theDate.PrintDate());
                     Print(Console.BufferWidth - 13, 2, "$" + liberals.Funds, ConsoleColor.Green);
                     Print(5, 4, "You are not under siege... yet.");
+
                     if (selectedlocation.Safehouse == true)
                     {
-                        Print(5, 10, "0 Daily Rations");
+                        Print(5, 10, $"{selectedlocation.Rations} Daily Rations");
                         Print(25, 10, "0 Eating");
                         Print(5, 12, "I - Invest in this location");
+
+                        if (selectedlocation.Fortified == true)
+                        {
+                            Print(5, 6, "FORTIFIED COMPOUND", ConsoleColor.White);
+                        }
+                        if (selectedlocation.PrintingPress == true)
+                        {
+                            Print(53, 6, "PRINTING PRESS", ConsoleColor.Cyan);
+                        }
+                        if (selectedlocation.BusinessFront == true)
+                        {
+                            Print(101, 6, "BUSINESS FRONT", ConsoleColor.Magenta);
+                        }
+                        if (selectedlocation.Cameras == true)
+                        {
+                            Print(5, 8, "CAMERAS ON", ConsoleColor.Green);
+                        }
+                        if (selectedlocation.BoobyTraps == true)
+                        {
+                            Print(32, 8, "BOOBY TRAPS", ConsoleColor.Red);
+                        }
+                        if (selectedlocation.TankTraps == true)
+                        {
+                            Print(79, 8, "TANK TRAPS", ConsoleColor.Yellow);
+                        }
+                        if (selectedlocation.Generator == true)
+                        {
+                            Print(101, 8, "GENERATOR", ConsoleColor.White);
+                        }
                     }
                 }
 
@@ -4717,6 +4996,11 @@ namespace LCSRemake
                     {
                         liberals.Slogan = newslogan;
                     }
+                }
+
+                if (keyinput == 'i' && selectedlocation.Safehouse == true && liberals.Activesquad == null)
+                {
+                    InvestLocation(selectedlocation);
                 }
             }
         }

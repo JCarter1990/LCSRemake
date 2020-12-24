@@ -399,6 +399,7 @@ namespace LCSRemake
         public int HealTime { get; set; }
         public int DaysAway { get; set; }
         public int DaysDead { get; set; }
+        public int PoliticalLeaning { get; set; }
 
         public Squad AssignedSquad { get; set; }
         public Weapon Weapon { get; set; }
@@ -453,6 +454,7 @@ namespace LCSRemake
             this.HealTime = 0;
             this.DaysAway = 0;
             this.DaysDead = 0;
+            this.PoliticalLeaning = 0;
 
             this.AssignedTo = null;
 
@@ -901,12 +903,749 @@ namespace LCSRemake
         }
     }
 
+    public class Politics
+    {
+        public int Execterm { get; set; }
+
+        public int law_abortion { get; set; }
+        public int law_animalresearch { get; set; }
+        public int law_policebehaviour { get; set; }
+        public int law_privacy { get; set; }
+        public int law_deathpenalty { get; set; }
+        public int law_nuclearpower { get; set; }
+        public int law_pollution { get; set; }
+        public int law_labour { get; set; }
+        public int law_gay { get; set; }
+        public int law_corporate { get; set; }
+        public int law_freespeech { get; set; }
+        public int law_flagburning { get; set; }
+        public int law_tax { get; set; }
+
+        public Entity President { get; set; }
+        public Entity VicePresident { get; set; }
+        public Entity SecretaryOfState { get; set; }
+        public Entity AttorneyGeneral { get; set; }
+        public List<Entity> House = new List<Entity>();
+        public List<Entity> Senate = new List<Entity>();
+        public List<Entity> SupremeCourt = new List<Entity>();
+
+        Random random = new Random();
+
+        public Politics()
+        {
+            this.President = new Entity();
+            this.President.PoliticalLeaning = -1;
+            this.VicePresident = new Entity();
+            this.VicePresident.PoliticalLeaning = -1;
+            this.SecretaryOfState = new Entity();
+            this.SecretaryOfState.PoliticalLeaning = -1;
+            this.AttorneyGeneral = new Entity();
+            this.AttorneyGeneral.PoliticalLeaning = -1;
+
+            for (int h = 0; h < 435; h++)
+            {
+                Entity member = new Entity();
+                if (h < 30)
+                {
+                    member.PoliticalLeaning = -2;
+                }
+                else if (h < 200)
+                {
+                    member.PoliticalLeaning = -1;
+                }
+                else if (h < 300)
+                {
+                    member.PoliticalLeaning = 0;
+                }
+                else if (h < 400)
+                {
+                    member.PoliticalLeaning = 1;
+                }
+                else
+                {
+                    member.PoliticalLeaning = 2;
+                }
+                this.House.Add(member);
+            }
+
+            for (int s = 0; s < 100; s++)
+            {
+                Entity member = new Entity();
+                if (s < 20)
+                {
+                    member.PoliticalLeaning = -2;
+                }
+                else if (s < 45)
+                {
+                    member.PoliticalLeaning = -1;
+                }
+                else if (s < 70)
+                {
+                    member.PoliticalLeaning = 0;
+                }
+                else if (s < 90)
+                {
+                    member.PoliticalLeaning = 1;
+                }
+                else
+                {
+                    member.PoliticalLeaning = 2;
+                }
+                this.Senate.Add(member);
+            }
+
+            for (int c = 0; c < 9; c++)
+            {
+                Entity member = new Entity();
+
+                if (c < 2)
+                {
+                    member.PoliticalLeaning = -2;
+                }
+                else if (c < 5)
+                {
+                    member.PoliticalLeaning = -1;
+                }
+                else if (c < 7)
+                {
+                    member.PoliticalLeaning = 0;
+                }
+                else if (c < 8)
+                {
+                    member.PoliticalLeaning = 1;
+                }
+                else
+                {
+                    member.PoliticalLeaning = 2;
+                }
+                this.SupremeCourt.Add(member);
+            }
+
+            this.law_abortion = 2;
+            this.law_animalresearch = -2;
+            this.law_policebehaviour = 0;
+            this.law_privacy = 0;
+            this.law_deathpenalty = -1;
+            this.law_nuclearpower = -1;
+            this.law_pollution = -1;
+            this.law_labour = 0;
+            this.law_gay = 1;
+            this.law_corporate = 0;
+            this.law_freespeech = 0;
+            this.law_flagburning = 1;
+            this.law_tax = 0;
+        }
+
+        public void Status(int won)
+        {
+            Console.Clear();
+            Program.Border();
+
+            if (won == 1)
+            {
+                Program.Print(5, 2, "The Triumph of the Liberal Agenda", ConsoleColor.Green);
+            }
+            else if (won == -1)
+            {
+                Program.Print(5, 2, "The Abject Failure of the Liberal Agenda", ConsoleColor.Red);
+            }
+            else
+            {
+                Program.Print(5, 2, "The Status of the Liberal Agenda", ConsoleColor.White);
+            }
+
+            string title = null;
+            string term = null;
+
+            if (won != -1)
+            {
+                title = "President: ";
+                if (Execterm == 1)
+                {
+                    term = ", 1st Term";
+                }
+                else
+                {
+                    term = ", 2nd Term";
+                }
+            }
+            else
+            {
+                title = "King: ";
+            }
+
+            switch (this.President.PoliticalLeaning)
+            {
+                case -2:
+                    Program.Print(5, 4, $"{title}{this.President.Fullname}, Arch-Conservative{term}", ConsoleColor.Red);
+                    break;
+
+                case -1:
+                    Program.Print(5, 4, $"{title}{this.President.Fullname}, Conservative{term}", ConsoleColor.Magenta);
+                    break;
+
+                case 0:
+                    Program.Print(5, 4, $"{title}{this.President.Fullname}, Moderate{term}", ConsoleColor.Yellow);
+                    break;
+
+                case 1:
+                    Program.Print(5, 4, $"{title}{this.President.Fullname}, Liberal{term}", ConsoleColor.Blue);
+                    break;
+
+                case 2:
+                    Program.Print(5, 4, $"{title}{this.President.Fullname}, Elite Liberal{term}", ConsoleColor.Green);
+                    break;
+            }
+
+            switch (this.VicePresident.PoliticalLeaning)
+            {
+                case -2:
+                    Program.Print(5, 5, $"Vice President: {this.VicePresident.Fullname}, Arch-Conservative", ConsoleColor.Red);
+                    break;
+
+                case -1:
+                    Program.Print(5, 5, $"Vice President: {this.VicePresident.Fullname}, Conservative", ConsoleColor.Magenta);
+                    break;
+
+                case 0:
+                    Program.Print(5, 5, $"Vice President: {this.VicePresident.Fullname}, Moderate", ConsoleColor.Yellow);
+                    break;
+
+                case 1:
+                    Program.Print(5, 5, $"Vice President: {this.VicePresident.Fullname}, Liberal", ConsoleColor.Blue);
+                    break;
+
+                case 2:
+                    Program.Print(5, 5, $"Vice President: {this.VicePresident.Fullname}, Elite Liberal", ConsoleColor.Green);
+                    break;
+            }
+
+            switch (this.SecretaryOfState.PoliticalLeaning)
+            {
+                case -2:
+                    Program.Print(5, 6, $"Secretary of State: {this.SecretaryOfState.Fullname}, Arch-Conservative", ConsoleColor.Red);
+                    break;
+
+                case -1:
+                    Program.Print(5, 6, $"Secretary of State: {this.SecretaryOfState.Fullname}, Conservative", ConsoleColor.Magenta);
+                    break;
+
+                case 0:
+                    Program.Print(5, 6, $"Secretary of State: {this.SecretaryOfState.Fullname}, Moderate", ConsoleColor.Yellow);
+                    break;
+
+                case 1:
+                    Program.Print(5, 6, $"Secretary of State: {this.SecretaryOfState.Fullname}, Liberal", ConsoleColor.Blue);
+                    break;
+
+                case 2:
+                    Program.Print(5, 6, $"Secretary of State: {this.SecretaryOfState.Fullname}, Elite Liberal", ConsoleColor.Green);
+                    break;
+            }
+
+            switch (this.AttorneyGeneral.PoliticalLeaning)
+            {
+                case -2:
+                    Program.Print(5, 7, $"Attorney General: {this.AttorneyGeneral.Fullname}, Arch-Conservative", ConsoleColor.Red);
+                    break;
+
+                case -1:
+                    Program.Print(5, 7, $"Attorney General: {this.AttorneyGeneral.Fullname}, Conservative", ConsoleColor.Magenta);
+                    break;
+
+                case 0:
+                    Program.Print(5, 7, $"Attorney General: {this.AttorneyGeneral.Fullname}, Moderate", ConsoleColor.Yellow);
+                    break;
+
+                case 1:
+                    Program.Print(5, 7, $"Attorney General: {this.AttorneyGeneral.Fullname}, Liberal", ConsoleColor.Blue);
+                    break;
+
+                case 2:
+                    Program.Print(5, 7, $"Attorney General: {this.AttorneyGeneral.Fullname}, Elite Liberal", ConsoleColor.Green);
+                    break;
+            }
+
+            int[] houseleaning = new int[] { 0, 0, 0, 0, 0 };
+
+            for (int h = 0; h < 435; h++)
+            {
+                houseleaning[this.House[h].PoliticalLeaning + 2]++;
+            }
+
+            int lsum = houseleaning[3] + houseleaning[4] - houseleaning[0] - houseleaning[1];
+
+            if (won != -1)
+            {
+                if (lsum <= -145)
+                {
+                    Program.Print(5, 8, $"House: {houseleaning[4]}Lib+, {houseleaning[3]}Lib, {houseleaning[2]}Mod, {houseleaning[1]}Cons, {houseleaning[0]}Cons+", ConsoleColor.Red);
+                }
+                else if (lsum < 0)
+                {
+                    Program.Print(5, 8, $"House: {houseleaning[4]}Lib+, {houseleaning[3]}Lib, {houseleaning[2]}Mod, {houseleaning[1]}Cons, {houseleaning[0]}Cons+", ConsoleColor.Magenta);
+                }
+                else if (lsum < 145)
+                {
+                    Program.Print(5, 8, $"House: {houseleaning[4]}Lib+, {houseleaning[3]}Lib, {houseleaning[2]}Mod, {houseleaning[1]}Cons, {houseleaning[0]}Cons+", ConsoleColor.Yellow);
+                }
+                else if (houseleaning[4] < 290)
+                {
+                    Program.Print(5, 8, $"House: {houseleaning[4]}Lib+, {houseleaning[3]}Lib, {houseleaning[2]}Mod, {houseleaning[1]}Cons, {houseleaning[0]}Cons+", ConsoleColor.Blue);
+                }
+                else
+                {
+                    Program.Print(5, 8, $"House: {houseleaning[4]}Lib+, {houseleaning[3]}Lib, {houseleaning[2]}Mod, {houseleaning[1]}Cons, {houseleaning[0]}Cons+", ConsoleColor.Green);
+                }
+            }
+
+            int[] senateleaning = new int[] { 0, 0, 0, 0, 0 };
+
+            for (int s = 0; s < 100; s++)
+            {
+                senateleaning[this.Senate[s].PoliticalLeaning + 2]++;
+            }
+
+            lsum = senateleaning[3] + senateleaning[4] - senateleaning[0] - senateleaning[1];
+
+            if (won != -1)
+            {
+                if (lsum <= -33)
+                {
+                    Program.Print(5, 9, $"Senate: {senateleaning[4]}Lib+, {senateleaning[3]}Lib, {senateleaning[2]}Mod, {senateleaning[1]}Cons, {senateleaning[0]}Cons+", ConsoleColor.Red);
+                }
+                else if (lsum < 0)
+                {
+                    Program.Print(5, 9, $"Senate: {senateleaning[4]}Lib+, {senateleaning[3]}Lib, {senateleaning[2]}Mod, {senateleaning[1]}Cons, {senateleaning[0]}Cons+", ConsoleColor.Magenta);
+                }
+                else if (lsum < 33)
+                {
+                    Program.Print(5, 9, $"Senate: {senateleaning[4]}Lib+, {senateleaning[3]}Lib, {senateleaning[2]}Mod, {senateleaning[1]}Cons, {senateleaning[0]}Cons+", ConsoleColor.Yellow);
+                }
+                else if (senateleaning[4] < 67)
+                {
+                    Program.Print(5, 9, $"Senate: {senateleaning[4]}Lib+, {senateleaning[3]}Lib, {senateleaning[2]}Mod, {senateleaning[1]}Cons, {senateleaning[0]}Cons+", ConsoleColor.Blue);
+                }
+                else
+                {
+                    Program.Print(5, 9, $"Senate: {senateleaning[4]}Lib+, {senateleaning[3]}Lib, {senateleaning[2]}Mod, {senateleaning[1]}Cons, {senateleaning[0]}Cons+", ConsoleColor.Green);
+                }
+            }
+            else
+            {
+                Program.Print(5, 9, "The Congress consists of CEOs and televangelists.", ConsoleColor.Red);
+            }
+
+            int judgeleaning = 0;
+
+            for (int c = 0; c < 9; c++)
+            {
+                if (this.SupremeCourt[c].PoliticalLeaning == 2) judgeleaning++;
+            }
+
+            if (won == -1)
+            {
+                Program.Print(85, 2, "S", ConsoleColor.Red);
+                Program.Print(85, 3, "U", ConsoleColor.Red);
+                Program.Print(85, 4, "P", ConsoleColor.Red);
+                Program.Print(85, 5, "R", ConsoleColor.Red);
+                Program.Print(85, 6, "E", ConsoleColor.Red);
+                Program.Print(85, 7, "M", ConsoleColor.Red);
+                Program.Print(85, 8, "E", ConsoleColor.Red);
+
+                Program.Print(87, 2, "C", ConsoleColor.Red);
+                Program.Print(87, 3, "O", ConsoleColor.Red);
+                Program.Print(87, 4, "U", ConsoleColor.Red);
+                Program.Print(87, 5, "R", ConsoleColor.Red);
+                Program.Print(87, 6, "T", ConsoleColor.Red);
+            }
+            else if (won == 1 || judgeleaning >= 5)
+            {
+                Program.Print(85, 2, "S", ConsoleColor.Green);
+                Program.Print(85, 3, "U", ConsoleColor.Green);
+                Program.Print(85, 4, "P", ConsoleColor.Green);
+                Program.Print(85, 5, "R", ConsoleColor.Green);
+                Program.Print(85, 6, "E", ConsoleColor.Green);
+                Program.Print(85, 7, "M", ConsoleColor.Green);
+                Program.Print(85, 8, "E", ConsoleColor.Green);
+
+                Program.Print(87, 2, "C", ConsoleColor.Green);
+                Program.Print(87, 3, "O", ConsoleColor.Green);
+                Program.Print(87, 4, "U", ConsoleColor.Green);
+                Program.Print(87, 5, "R", ConsoleColor.Green);
+                Program.Print(87, 6, "T", ConsoleColor.Green);
+            }
+            else
+            {
+                Program.Print(85, 2, "S", ConsoleColor.White);
+                Program.Print(85, 3, "U", ConsoleColor.White);
+                Program.Print(85, 4, "P", ConsoleColor.White);
+                Program.Print(85, 5, "R", ConsoleColor.White);
+                Program.Print(85, 6, "E", ConsoleColor.White);
+                Program.Print(85, 7, "M", ConsoleColor.White);
+                Program.Print(85, 8, "E", ConsoleColor.White);
+
+                Program.Print(87, 2, "C", ConsoleColor.White);
+                Program.Print(87, 3, "O", ConsoleColor.White);
+                Program.Print(87, 4, "U", ConsoleColor.White);
+                Program.Print(87, 5, "R", ConsoleColor.White);
+                Program.Print(87, 6, "T", ConsoleColor.White);
+            }
+
+            if (won != -1)
+            {
+                int y = 2;
+
+                for (int c = 0; c < 9; c++)
+                {
+                    switch(this.SupremeCourt[c].PoliticalLeaning)
+                    {
+                        case -2:
+                            Program.Print(89, y, this.SupremeCourt[c].Fullname, ConsoleColor.Red);
+                            break;
+                        case -1:
+                            Program.Print(89, y, this.SupremeCourt[c].Fullname, ConsoleColor.Magenta);
+                            break;
+                        case 0:
+                            Program.Print(89, y, this.SupremeCourt[c].Fullname, ConsoleColor.Yellow);
+                            break;
+                        case 1:
+                            Program.Print(89, y, this.SupremeCourt[c].Fullname, ConsoleColor.Blue);
+                            break;
+                        case 2:
+                            Program.Print(89, y, this.SupremeCourt[c].Fullname, ConsoleColor.Green);
+                            break;
+                    }
+
+                    y++;
+                }
+            }
+            else
+            {
+                Program.Print(60, 2, "   Replaced", ConsoleColor.Red);
+                Program.Print(60, 3, " By Corporate", ConsoleColor.Red);
+                Program.Print(60, 4, "Ethics Officers", ConsoleColor.Red);
+            }
+
+            if (won == -1)
+            {
+                Program.Print(5, 11, "Use of contraception and abortion are capital offenses.", ConsoleColor.Red);
+                Program.Print(5, 12, "All forms of human experimentation on the poor are encouraged.", ConsoleColor.Red);
+                Program.Print(5, 13, "Policing is administered by corporations and has a draft.", ConsoleColor.Red);
+                Program.Print(5, 14, "Files on each citizen are easily accessible to corporations.", ConsoleColor.Red);
+                Program.Print(5, 15, "Poor criminals receive mandatory death sentences.", ConsoleColor.Red);
+                Program.Print(5, 16, "Nuclear power plants are ubiquitous.", ConsoleColor.Red);
+                Program.Print(5, 17, "Deformed children are the norm in industrial zones.", ConsoleColor.Red);
+                Program.Print(5, 18, "People are bred in pens to be farmed out to corporations like beasts.", ConsoleColor.Red);
+                Program.Print(5, 19, "Homosexuals are executed regularly.", ConsoleColor.Red);
+                Program.Print(5, 20, "Corporations under the King run the country in a feudal system.", ConsoleColor.Red);
+                Program.Print(5, 21, "Unacceptable speech is a capital crime.", ConsoleColor.Red);
+                Program.Print(5, 22, "Images or words describing flag burning are punished by death.", ConsoleColor.Red);
+                Program.Print(5, 23, "There are no taxes, yet most people have no money.", ConsoleColor.Red);
+            }
+            else
+            {
+                switch (this.law_abortion)
+                {
+                    case -2:
+                        Program.Print(5, 11, "Abortion is illegal in all cases.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 11, "Abortion is illegal except in extreme circumstances.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 11, "Abortion is illegal in the second and third trimesters.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 11, "Abortion is illegal in the third trimester.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 11, "Abortion is legal.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_animalresearch)
+                {
+                    case -2:
+                        Program.Print(5, 12, "Animal research is completely unregulated.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 12, "Animal research is lightly regulated.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 12, "Animal research is moderately regulated.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 12, "Animal research is stiffly regulated.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 12, "Animal research is illegal in all cases.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_policebehaviour)
+                {
+                    case -2:
+                        Program.Print(5, 13, "Law enforcement is given free reign.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 13, "Law enforcement is lightly regulated.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 13, "Law enforcement is moderately regulated.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 13, "Law enforcement is strictly controlled.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 13, "All law enforcement positions are subject to election and recall.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_privacy)
+                {
+                    case -2:
+                        Program.Print(5, 14, "Any corporation requesting private information is granted access.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 14, "Privacy laws are weak.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 14, "Privacy laws are moderate.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 14, "Privacy laws are strong.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 14, "Individual privacy is sacred.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_deathpenalty)
+                {
+                    case -2:
+                        Program.Print(5, 15, "People can be put to death for minor offenses.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 15, "The death penalty is actively enforced in many states.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 15, "The death penalty is in effect but under scrutiny.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 15, "The death penalty is not permitted in many circumstances.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 15, "The death penalty is considered barbaric and never practiced.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_nuclearpower)
+                {
+                    case -2:
+                        Program.Print(5, 16, "Nuclear power is proliferating with no controls.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 16, "Nuclear power is a preferred energy source.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 16, "Nuclear power is often an energy source.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 16, "Nuclear power is intensely regulated and seldom used.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 16, "Nuclear power is illegal.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_pollution)
+                {
+                    case -2:
+                        Program.Print(5, 17, "Industry may pollute as much as they like.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 17, "Industry voluntarily regulates pollution.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 17, "Industry is subject to moderate pollution regulations.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 17, "Industry is subject to strict pollution regulations.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 17, "Industry is subject to zero-tolerance pollution regulations.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_labour)
+                {
+                    case -2:
+                        Program.Print(5, 18, "There is no weekend and children are forced to work.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 18, "Working conditions are miserable and the minimum wage is low.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 18, "Workers still require some benefits.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 18, "Workers are fairly compensated and have benefits.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 18, "There are universal workers' rights and high wages.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_gay)
+                {
+                    case -2:
+                        Program.Print(5, 19, "Homosexuals are routinely persecuted with no recourse.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 19, "Homosexuals are not tolerated.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 19, "Homosexuals are grudgingly tolerated but have few equal rights.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 19, "Homosexuals have many rights shared by heterosexuals.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 19, "Homosexuals have equal rights.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_corporate)
+                {
+                    case -2:
+                        Program.Print(5, 20, "Corporations essentially run the country in a feudal system.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 20, "Corporate culture is corrupt and there is a great disparity in wages.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 20, "Corporations are moderately regulated, although wages are still unfair.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 20, "Corporations are stiffly regulated, and executives are fairly compensated.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 20, "Corporations are subject to intense regulation, and there is a maximum wage law.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_freespeech)
+                {
+                    case -2:
+                        Program.Print(5, 21, "Speech is routinely suppressed.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 21, "Some individuals are harassed because of their speech.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 21, "Free speech is tolerated.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 21, "Free speech is encouraged.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 21, "Free speech is universally supported.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_flagburning)
+                {
+                    case -2:
+                        Program.Print(5, 22, "Burning the flag is a crime on par with murder.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 22, "Burning the flag is a felony.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 22, "Flag-burning is a misdemeanor.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 22, "Flag-burning is legal but stigmatized.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 22, "Flag-burning is legal.", ConsoleColor.Green);
+                        break;
+                }
+
+                switch (this.law_tax)
+                {
+                    case -2:
+                        Program.Print(5, 23, "The tax code is a nightmare designed to maintain class structure.", ConsoleColor.Red);
+                        break;
+                    case -1:
+                        Program.Print(5, 23, "A flat tax is in effect.", ConsoleColor.Magenta);
+                        break;
+                    case 0:
+                        Program.Print(5, 23, "Taxes are moderate, and the code has loop-holes.", ConsoleColor.Yellow);
+                        break;
+                    case 1:
+                        Program.Print(5, 23, "Taxes are very high and steeply graded.", ConsoleColor.Blue);
+                        break;
+                    case 2:
+                        Program.Print(5, 23, "Rich people are virtually unheard of, due to taxation.", ConsoleColor.Green);
+                        break;
+                }
+            }
+
+            if (won == 1)
+            {
+                Program.Print(5, 25, "The country has achieved Elite Liberal status.", ConsoleColor.Green);
+                Program.Print(5, 26, "Press 'L' to view the high score list.", ConsoleColor.Green);
+
+                while (true)
+                {
+                    char keyinput = Console.ReadKey(true).KeyChar;
+
+                    if (keyinput == 'l') break;
+                }
+            }
+            else if (won == -1)
+            {
+                Program.Print(5, 25, "The country has been Reaganified.", ConsoleColor.Red);
+                Program.Print(5, 26, "Press 'L' to view the high score list.", ConsoleColor.Red);
+
+                while (true)
+                {
+                    char keyinput = Console.ReadKey(true).KeyChar;
+
+                    if (keyinput == 'l') break;
+                }
+            }
+            else
+            {
+                Program.Print(5, 25, "Once these are Green, the country will have achieved Elite Liberal status.");
+                Program.Print(5, 26, "Press D to disband and wait.  Press any other key to consider the situation.");
+
+                while (true)
+                {
+                    char keyinput = Console.ReadKey(true).KeyChar;
+
+                    if (keyinput == 'd')
+                    {
+                        //confirmdisband();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     class Program
     {
         static Random random = new Random();
         static Date theDate = new Date();
         static City maincity = new City();
         static Faction liberals = new Faction();
+        static Politics politics = new Politics();
         static string str_codename = "CODE NAME";
         static string str_skill = "SKILL";
         static string str_weapon = "WEAPON";
@@ -933,7 +1672,7 @@ namespace LCSRemake
         static string str_current_activity = "CURRENT ACTIVITY";
         static string str_bulk_activity = "BULK ACTIVITY";
 
-        static void Border()
+        public static void Border()
         {
             for (int x = 2; x < Console.BufferWidth - 2; x++)
             {
@@ -956,7 +1695,7 @@ namespace LCSRemake
             }
         }
 
-        static void Print(int x, int y, string write, ConsoleColor foregroundcolour = ConsoleColor.Gray, ConsoleColor backgroundcolour = ConsoleColor.Black)
+        public static void Print(int x, int y, string write, ConsoleColor foregroundcolour = ConsoleColor.Gray, ConsoleColor backgroundcolour = ConsoleColor.Black)
         {
             Console.ForegroundColor = foregroundcolour;
             Console.BackgroundColor = backgroundcolour;
@@ -4754,7 +5493,7 @@ namespace LCSRemake
                 }
 
                 Print(76, 17, "Z - Next location");
-                Print(76, 18, "L - The status of the liberal agenda", ConsoleColor.DarkGray);
+                Print(76, 18, "L - The status of the liberal agenda");
 
                 if (liberals.Activesquad != null && liberals.Activesquad.Location.HasFlag || liberals.Activesquad == null && selectedlocation.HasFlag)
                 {
@@ -4917,6 +5656,7 @@ namespace LCSRemake
 
                 if (keyinput == 'l')
                 {
+                    politics.Status(0);
                 }
 
                 if (keyinput == 'p')
